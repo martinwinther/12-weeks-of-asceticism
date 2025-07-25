@@ -1,12 +1,40 @@
-# React + Vite
+# 12 Weeks of Asceticism
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A minimalist web app to guide users through a 12-week asceticism program. Track your progress, unlock weekly practices, and reflect on your journey.
 
-Currently, two official plugins are available:
+## Tech Stack
+- React (Vite)
+- TailwindCSS
+- React Router
+- Context API + localStorage
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
+- Landing page with welcome and CTA
+- Dashboard with progress tracker and week links
+- 12 weekly practice pages with journal and reflection
+- State persistence via localStorage
 
-## Expanding the ESLint configuration
+## Getting Started
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+1. Clone the repo:
+   ```sh
+   git clone https://github.com/martinwinther/12-weeks-of-asceticism.git
+   cd 12-weeks-of-asceticism
+   ```
+2. Install dependencies:
+   ```sh
+   npm install
+   ```
+3. Start the dev server:
+   ```sh
+   npm run dev
+   ```
+4. Open your browser at the local address shown in the terminal.
+
+## Customization
+- Add or edit weekly content in `src/data/weeklyContent.js`.
+- Duplicate a week page for weeks 3-11 as needed.
+
+---
+
+Built for personal growth and simplicity.
