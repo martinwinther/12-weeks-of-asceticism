@@ -1,35 +1,159 @@
 import React from 'react';
-import Header from '../components/Header';
-import ProgressTracker from '../components/ProgressTracker';
 import { Link } from 'react-router-dom';
+import Header from '../components/Header';
 import { useAppContext } from '../context/AppContext';
 
 const Dashboard = () => {
-  const { currentWeek, completedWeeks } = useAppContext();
+  const { currentDay, isDayComplete, getJournalEntry } = useAppContext();
+  
+  // Generate 84 days grouped by weeks (12 weeks x 7 days)
+  const weeks = [];
+  for (let week = 0; week < 12; week++) {
+    const weekDays = [];
+    for (let day = 0; day < 7; day++) {
+      const dayNumber = week * 7 + day + 1;
+      weekDays.push(dayNumber);
+    }
+    weeks.push(weekDays);
+  }
+
+  const getDayStatus = (day) => {
+    const isComplete = isDayComplete(day);
+    const isCurrent = day === currentDay;
+    const isFuture = day > currentDay;
+    const hasReflection = getJournalEntry(day.toString()).trim().length > 0;
+    
+    return {
+      isComplete,
+      isCurrent,
+      isFuture,
+      hasReflection,
+    };
+  };
+
+  const getDayStyles = (day) => {
+    const { isComplete, isCurrent, isFuture, hasReflection } = getDayStatus(day);
+    
+    let baseStyles = "w-10 h-10 rounded-md flex items-center justify-center text-sm font-mono transition-all duration-200 border-2";
+    
+    if (isFuture) {
+      return `${baseStyles} bg-slate-100 text-slate-400 border-slate-200 cursor-not-allowed`;
+    } else if (isCurrent) {
+      return `${baseStyles} bg-primary text-white border-primary shadow-md ring-2 ring-primary/30`;
+    } else if (isComplete) {
+      return `${baseStyles} bg-accent text-white border-accent hover:bg-accent/80`;
+    } else {
+      return `${baseStyles} bg-white text-primary border-slate-300 hover:border-primary hover:shadow-sm`;
+    }
+  };
+
+  const getReflectionEmoji = (day) => {
+    const { hasReflection } = getDayStatus(day);
+    if (hasReflection) {
+      return '✍️';
+    }
+    return '';
+  };
+
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-700 font-serif">
-      <Header title="Your Dashboard" />
-      <div className="max-w-xl mx-auto p-6">
-        <ProgressTracker currentWeek={currentWeek} completedWeeks={completedWeeks} />
-        <h2 className="text-xl font-bold mb-4 mt-8">Weeks</h2>
-        <div className="grid grid-cols-3 gap-4">
-          {[...Array(12)].map((_, i) => {
-            const week = i + 1;
-            const isUnlocked = week <= currentWeek;
-            return (
-              <Link
-                key={week}
-                to={isUnlocked ? `/week${week.toString().padStart(2, '0')}` : '#'}
-                className={`block p-4 rounded border text-center font-mono transition
-                  ${isUnlocked ? 'bg-slate-700 text-white hover:bg-slate-600' : 'bg-white text-slate-500 border-slate-300 opacity-50 cursor-not-allowed'}`}
-                tabIndex={isUnlocked ? 0 : -1}
-                aria-disabled={!isUnlocked}
-              >
-                Week {week}
-              </Link>
-            );
-          })}
+    <div className="min-h-screen bg-background text-primary font-serif">
+      <Header title="Your Journey" />
+      <div className="max-w-4xl mx-auto p-6">
+        
+        {/* Legend */}
+        <div className="mb-8 flex flex-wrap gap-4 justify-center text-sm">
+          <div className="flex items-center gap-2">
+            <div className="w-4 h-4 rounded bg-primary"></div>
+            <span>Current Day</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-4 h-4 rounded bg-accent"></div>
+            <span>Completed</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-4 h-4 rounded bg-white border border-slate-300"></div>
+            <span>Available</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-4 h-4 rounded bg-slate-100"></div>
+            <span>Future</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span>✍️</span>
+            <span>Has Reflection</span>
+          </div>
         </div>
+
+        {/* 84-Day Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {weeks.map((weekDays, weekIndex) => (
+            <div key={weekIndex} className="bg-white rounded-lg shadow-sm p-4 border border-slate-200">
+              <h3 className="text-sm font-semibold text-accent mb-3 text-center">
+                Week {weekIndex + 1}
+              </h3>
+              <div className="grid grid-cols-7 gap-1">
+                {weekDays.map((day) => {
+                  const { isFuture } = getDayStatus(day);
+                  const emoji = getReflectionEmoji(day);
+                  
+                  if (isFuture) {
+                    return (
+                      <div
+                        key={day}
+                        className={getDayStyles(day)}
+                        title={`Day ${day} - Not yet available`}
+                      >
+                        {day}
+                      </div>
+                    );
+                  }
+                  
+                  return (
+                    <Link
+                      key={day}
+                      to={`/day/${day}`}
+                      className={getDayStyles(day)}
+                      title={`Day ${day}${emoji ? ' - Has reflection' : ''}`}
+                    >
+                      <div className="relative">
+                        {day}
+                        {emoji && (
+                          <div className="absolute -top-1 -right-1 text-xs">
+                            {emoji}
+                          </div>
+                        )}
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Current Progress Summary */}
+        <div className="mt-8 bg-white rounded-lg shadow-sm p-6 text-center">
+          <h2 className="text-xl font-bold mb-2">Your Progress</h2>
+          <div className="flex justify-center gap-8 text-sm">
+            <div>
+              <div className="text-2xl font-bold text-primary">{currentDay}</div>
+              <div className="text-accent">Current Day</div>
+            </div>
+            <div>
+              <div className="text-2xl font-bold text-accent">
+                {Array.from({length: 84}, (_, i) => i + 1).filter(day => isDayComplete(day)).length}
+              </div>
+              <div className="text-accent">Days Completed</div>
+            </div>
+            <div>
+              <div className="text-2xl font-bold text-slate-500">
+                {Array.from({length: 84}, (_, i) => i + 1).filter(day => getJournalEntry(day.toString()).trim().length > 0).length}
+              </div>
+              <div className="text-accent">Reflections Written</div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   );

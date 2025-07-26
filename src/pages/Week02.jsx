@@ -3,9 +3,9 @@ import Header from '../components/Header';
 import JournalTextarea from '../components/JournalTextarea';
 import Button from '../components/Button';
 import { useAppContext } from '../context/AppContext';
-import weeklyContent from '../data/weeklyContent';
+import program from '../data/program';
 
-const weekData = weeklyContent.find(w => w.week === 2) || { title: 'Week 2', practices: [], reflectionPrompts: [] };
+const weekData = program.find(w => w.week === 2);
 
 const Week02 = () => {
   const {
@@ -26,20 +26,21 @@ const Week02 = () => {
 
   return (
     <div className="min-h-screen bg-background text-primary font-serif">
-      <Header title={weekData.title} />
+      <Header title={`Week 2: ${weekData.title}`} />
       <div className="max-w-xl mx-auto p-6">
+        <div className="mb-4">
+          <p className="text-accent mb-4">{weekData.description}</p>
+        </div>
         <h2 className="text-lg font-bold mb-2">Practices</h2>
         <ul className="mb-6 list-disc list-inside">
-          {weekData.practices.map((p, i) => (
-            <li key={i}>{p}</li>
+          {weekData.details.map((detail, i) => (
+            <li key={i}>{detail}</li>
           ))}
         </ul>
-        <h2 className="text-lg font-bold mb-2">Reflection Prompts</h2>
-        <ul className="mb-6 list-disc list-inside">
-          {weekData.reflectionPrompts.map((q, i) => (
-            <li key={i}>{q}</li>
-          ))}
-        </ul>
+        <h2 className="text-lg font-bold mb-2">Reflection Prompt</h2>
+        <div className="mb-6 bg-accent/10 p-4 rounded">
+          <p>{weekData.prompt}</p>
+        </div>
         <h2 className="text-lg font-bold mb-2">Your Journal</h2>
         <JournalTextarea weekNumber="2" />
         <Button
