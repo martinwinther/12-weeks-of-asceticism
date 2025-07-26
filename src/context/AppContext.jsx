@@ -29,10 +29,11 @@ export const AppProvider = ({ children }) => {
       ? s.completedWeeks
       : [...s.completedWeeks, week],
   }));
-  const setJournalEntry = (week, entry) => setState((s) => ({
+  const setJournalEntry = (weekNumber, text) => setState((s) => ({
     ...s,
-    journalEntries: { ...s.journalEntries, [week]: entry },
+    journalEntries: { ...s.journalEntries, [weekNumber]: text },
   }));
+  const getJournalEntry = (weekNumber) => state.journalEntries[weekNumber] || '';
 
   return (
     <AppContext.Provider
@@ -41,6 +42,7 @@ export const AppProvider = ({ children }) => {
         setCurrentWeek,
         completeWeek,
         setJournalEntry,
+        getJournalEntry,
       }}
     >
       {children}

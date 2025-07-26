@@ -9,8 +9,6 @@ const weekData = weeklyContent.find(w => w.week === 12);
 
 const Week12 = () => {
   const {
-    journalEntries,
-    setJournalEntry,
     completeWeek,
     setCurrentWeek,
     currentWeek,
@@ -21,16 +19,12 @@ const Week12 = () => {
     if (currentWeek < 12) setCurrentWeek(12);
   }, [currentWeek, setCurrentWeek]);
 
-  const handleJournalChange = (e) => {
-    setJournalEntry('12', e.target.value);
-  };
-
   const handleComplete = () => {
     completeWeek(12);
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-700 font-serif">
+    <div className="min-h-screen bg-background text-primary font-serif">
       <Header title={weekData.title} />
       <div className="max-w-xl mx-auto p-6">
         <h2 className="text-lg font-bold mb-2">Practices</h2>
@@ -46,11 +40,7 @@ const Week12 = () => {
           ))}
         </ul>
         <h2 className="text-lg font-bold mb-2">Your Journal</h2>
-        <JournalTextarea
-          value={journalEntries['12'] || ''}
-          onChange={handleJournalChange}
-          placeholder="Write your reflections here..."
-        />
+        <JournalTextarea weekNumber="12" />
         <Button
           className="mt-4"
           onClick={handleComplete}
