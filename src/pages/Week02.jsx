@@ -31,7 +31,7 @@ const Week02 = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background text-primary font-serif">
+    <div className="min-h-screen bg-slate-50 text-slate-700 font-serif">
       <Header title={weekData.title} />
       <div className="max-w-xl mx-auto p-6">
         <h2 className="text-lg font-bold mb-2">Practices</h2>
