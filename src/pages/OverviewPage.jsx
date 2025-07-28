@@ -31,6 +31,55 @@ const OverviewPage = () => {
   const totalCompleted = completedDays.size;
   const progressPercentage = Math.round((totalCompleted / 84) * 100);
 
+  // Export journals function
+  const exportJournals = () => {
+    let content = '# 12 Weeks of Asceticism - Journal Entries\n\n';
+    content += `Exported on: ${new Date().toLocaleDateString('en-US', { 
+      weekday: 'long', 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    })}\n\n`;
+    content += '---\n\n';
+
+    let hasEntries = false;
+
+    for (let day = 1; day <= 84; day++) {
+      const entryText = getItem(`entry-day-${day}`, '');
+      
+      if (entryText && entryText.trim().length > 0) {
+        hasEntries = true;
+        const weekNumber = Math.ceil(day / 7);
+        const layerData = layersByWeek[weekNumber];
+        
+        // Create a mock date for the entry (can be enhanced with real timestamps later)
+        const entryDate = new Date();
+        entryDate.setDate(entryDate.getDate() - (84 - day));
+        const formattedDate = entryDate.toISOString().split('T')[0]; // YYYY-MM-DD
+        
+        content += `## Day ${day} – ${formattedDate}\n\n`;
+        content += `**Week ${weekNumber}: ${layerData?.title || 'Unknown'}**\n\n`;
+        content += `${entryText.trim()}\n\n`;
+        content += '---\n\n';
+      }
+    }
+
+    if (!hasEntries) {
+      content += 'No journal entries found. Start your ascetic journey by writing your first reflection!\n\n';
+    }
+
+    // Create and download the file
+    const blob = new Blob([content], { type: 'text/markdown;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'ascetic-journals.md';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
   // Generate days array for grid
   const days = Array.from({ length: 84 }, (_, index) => index + 1);
 
@@ -92,12 +141,24 @@ const OverviewPage = () => {
                 </div>
               </div>
               
-              <button
-                onClick={() => navigate('/dashboard')}
-                className="px-4 py-2 bg-gray-900 text-white rounded-md hover:bg-gray-800 transition-colors"
-              >
-                Dashboard
-              </button>
+              <div className="flex space-x-3">
+                <button
+                  onClick={exportJournals}
+                  className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors flex items-center space-x-2"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  <span>Export</span>
+                </button>
+                
+                <button
+                  onClick={() => navigate('/dashboard')}
+                  className="px-4 py-2 bg-gray-900 text-white rounded-md hover:bg-gray-800 transition-colors"
+                >
+                  Dashboard
+                </button>
+              </div>
             </div>
           </div>
           
