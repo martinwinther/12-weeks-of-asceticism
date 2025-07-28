@@ -116,6 +116,8 @@ export const AppProvider = ({ children }) => {
           completed_days: updatedState.completedDays,
           start_date: updatedState.startDate,
           updated_at: new Date().toISOString()
+        }, {
+          onConflict: 'user_id'
         });
 
       if (error) {

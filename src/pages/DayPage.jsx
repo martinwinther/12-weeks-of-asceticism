@@ -133,6 +133,8 @@ const DayPage = () => {
           day_number: dayNum,
           text: sanitizedText,
           updated_at: new Date().toISOString()
+        }, {
+          onConflict: 'user_id,day_number'
         });
 
       if (error) {

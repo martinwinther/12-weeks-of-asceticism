@@ -60,6 +60,8 @@ export const ThemeProvider = ({ children }) => {
           user_id: user.id,
           theme: newTheme,
           updated_at: new Date().toISOString()
+        }, {
+          onConflict: 'user_id'
         });
 
       if (error) {
