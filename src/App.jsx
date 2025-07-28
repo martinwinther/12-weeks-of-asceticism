@@ -19,7 +19,7 @@ import Week02 from './pages/Week02';
 const AppContent = () => {
   const location = useLocation();
   const { theme } = useTheme();
-  const showNavigation = location.pathname !== '/';
+  const showNavigation = location.pathname !== '/' && location.pathname !== '/auth';
 
   return (
     <div className={`theme-${theme} min-h-screen transition-colors duration-300`}>

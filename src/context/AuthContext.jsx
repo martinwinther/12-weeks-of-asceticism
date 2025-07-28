@@ -86,6 +86,10 @@ export const AuthProvider = ({ children }) => {
     try {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
+      
+      // Immediately clear user state to prevent race conditions
+      setUser(null);
+      
       return { success: true };
     } catch (error) {
       return { success: false, error: error.message };

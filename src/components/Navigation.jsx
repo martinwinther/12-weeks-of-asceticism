@@ -42,7 +42,8 @@ const Navigation = () => {
   const handleSignOut = async () => {
     const result = await signOut();
     if (result.success) {
-      navigate('/');
+      // Use replace to prevent going back to authenticated state
+      navigate('/', { replace: true });
     }
     setIsUserMenuOpen(false);
   };
