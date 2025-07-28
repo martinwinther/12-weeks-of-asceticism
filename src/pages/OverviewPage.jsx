@@ -5,7 +5,7 @@ import { useAppContext } from '../context/AppContext';
 
 const OverviewPage = () => {
   const navigate = useNavigate();
-  const { currentDay, isDayAvailable, hasStarted, startJourney, resetJourney, isDayComplete } = useAppContext();
+  const { currentDay, isDayAvailable, hasStarted, startJourney, isDayComplete } = useAppContext();
   const [completedDays, setCompletedDays] = useState([]);
 
   // Load completedDays from AppContext (Supabase data)
@@ -71,18 +71,6 @@ const OverviewPage = () => {
                 <p className="text-accent/80 text-sm mt-2">
                   Day {currentDay} • {84 - currentDay + 1} days remaining
                 </p>
-                {/* Development reset button */}
-                <button
-                  onClick={() => {
-                    if (confirm('Are you sure you want to reset your journey? This will delete all progress.')) {
-                      resetJourney();
-                      window.location.reload();
-                    }
-                  }}
-                  className="text-xs text-red-500 hover:text-red-700 mt-2 underline"
-                >
-                  Reset Journey (Dev)
-                </button>
               </div>
             )}
             {!hasStarted && (
