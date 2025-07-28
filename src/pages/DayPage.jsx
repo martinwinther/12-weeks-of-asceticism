@@ -109,35 +109,35 @@ const DayPage = () => {
 
   return (
     <div className="min-h-screen bg-background font-serif text-primary">
-      <div className="max-w-2xl mx-auto px-6 py-12">
+      <div className="max-w-2xl mx-auto px-4 py-6 md:px-6 md:py-12">
         
         {/* Header - Current Week's Layer Title and Description */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-light text-primary mb-2">Day {dayNum}</h1>
-          <h2 className="text-lg font-normal text-accent mb-4">
+        <div className="text-center mb-8 md:mb-12">
+          <h1 className="text-2xl md:text-4xl font-light text-primary mb-2">Day {dayNum}</h1>
+          <h2 className="text-base md:text-lg font-normal text-accent mb-4">
             Week {weekNumber}: {currentWeekLayer?.title}
           </h2>
-          <p className="text-accent max-w-lg mx-auto">
+          <p className="text-accent max-w-lg mx-auto text-sm md:text-base">
             {currentWeekLayer?.description}
           </p>
         </div>
 
         {/* Active Actions - Stacked List */}
-        <div className="mb-12">
-          <h3 className="text-xl font-medium text-primary mb-6">Active Practices</h3>
-          <div className="space-y-4">
+        <div className="mb-8 md:mb-12">
+          <h3 className="text-lg md:text-xl font-medium text-primary mb-4 md:mb-6">Active Practices</h3>
+          <div className="space-y-3 md:space-y-4">
             {activeActions.map((layer, index) => (
-              <div key={index} className="bg-white rounded-lg p-4 border-l-4 border-primary shadow-sm border border-accent/20">
+              <div key={index} className="bg-white rounded-lg p-3 md:p-4 border-l-4 border-primary shadow-sm border border-accent/20">
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
-                    <h4 className="font-semibold text-primary mb-2">
+                    <h4 className="font-semibold text-primary mb-2 text-sm md:text-base">
                       Week {index + 1}: {layer.title}
                     </h4>
-                    <p className="text-accent text-sm">
+                    <p className="text-accent text-xs md:text-sm">
                       {layer.action}
                     </p>
                   </div>
-                  <div className="ml-4 text-xs text-accent bg-background rounded-full px-2 py-1">
+                  <div className="ml-2 md:ml-4 text-xs text-accent bg-background rounded-full px-2 py-1 shrink-0">
                     Week {index + 1}
                   </div>
                 </div>
@@ -147,10 +147,10 @@ const DayPage = () => {
         </div>
 
         {/* Reflection Prompt */}
-        <div className="mb-12">
-          <h3 className="text-xl font-medium text-primary mb-4">This Week's Reflection</h3>
-          <div className="bg-primary/10 rounded-lg p-6 border-l-4 border-primary">
-            <p className="text-primary font-medium italic text-lg">
+        <div className="mb-8 md:mb-12">
+          <h3 className="text-lg md:text-xl font-medium text-primary mb-4">This Week's Reflection</h3>
+          <div className="bg-primary/10 rounded-lg p-4 md:p-6 border-l-4 border-primary">
+            <p className="text-primary font-medium italic text-base md:text-lg">
               {reflectionPrompt}
             </p>
           </div>
@@ -158,15 +158,15 @@ const DayPage = () => {
 
         {/* Start Journey Button for Day 1 */}
         {dayNum === 1 && !hasStarted && (
-          <div className="mb-12 text-center">
-            <div className="bg-primary/10 rounded-lg p-6 border border-primary/20">
-              <h3 className="text-xl font-medium text-primary mb-4">Begin Your 84-Day Journey</h3>
-              <p className="text-accent mb-6">
+          <div className="mb-8 md:mb-12 text-center">
+            <div className="bg-primary/10 rounded-lg p-4 md:p-6 border border-primary/20">
+              <h3 className="text-lg md:text-xl font-medium text-primary mb-4">Begin Your 84-Day Journey</h3>
+              <p className="text-accent mb-6 text-sm md:text-base">
                 Ready to start your ascetic practice? Click below to begin Day 1 and unlock your daily progression.
               </p>
               <button
                 onClick={() => startJourney()}
-                className="bg-primary text-white px-8 py-3 rounded-md hover:bg-accent transition-colors font-medium"
+                className="bg-primary text-white px-6 py-3 md:px-8 rounded-md hover:bg-accent transition-colors font-medium text-sm md:text-base"
               >
                 Start Journey
               </button>
@@ -175,10 +175,10 @@ const DayPage = () => {
         )}
 
         {/* Journal Textarea */}
-        <div className="mb-12">
-          <h3 className="text-xl font-medium text-primary mb-4">Your Journal</h3>
+        <div className="mb-8 md:mb-12">
+          <h3 className="text-lg md:text-xl font-medium text-primary mb-4">Your Journal</h3>
           <textarea
-            className="w-full h-64 p-4 border border-accent/30 rounded-lg resize-none focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent font-mono text-sm leading-relaxed"
+            className="w-full h-48 md:h-64 p-3 md:p-4 border border-accent/30 rounded-lg resize-none focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent font-mono text-sm leading-relaxed"
             value={journalEntry}
             onChange={handleJournalChange}
             placeholder="Write your thoughts and reflections..."
@@ -187,33 +187,39 @@ const DayPage = () => {
         </div>
 
         {/* Navigation */}
-        <div className="flex justify-between items-center">
+        <div className="flex flex-col space-y-4 md:flex-row md:justify-between md:items-center md:space-y-0">
           <button
             onClick={goToPreviousDay}
             disabled={dayNum === 1}
-            className={`px-6 py-2 text-sm font-medium rounded-md transition-colors ${
+            className={`px-4 py-3 md:px-6 md:py-2 text-sm font-medium rounded-md transition-colors touch-manipulation ${
               dayNum === 1
                 ? 'text-accent/50 cursor-not-allowed'
                 : 'text-accent hover:text-primary hover:bg-background'
             }`}
           >
-            ← Previous Day
+            <span className="hidden md:inline">← Previous Day</span>
+            <span className="md:hidden">← Previous</span>
           </button>
           
-          <div className="text-sm text-accent">
+          <div className="text-sm text-accent text-center md:order-none">
             {dayNum} of 84
           </div>
           
           <button
             onClick={goToNextDay}
             disabled={dayNum === 84 || !isDayAvailable(dayNum + 1)}
-            className={`px-6 py-2 text-sm font-medium rounded-md transition-colors ${
+            className={`px-4 py-3 md:px-6 md:py-2 text-sm font-medium rounded-md transition-colors touch-manipulation ${
               dayNum === 84 || !isDayAvailable(dayNum + 1)
                 ? 'text-accent/50 cursor-not-allowed'
                 : 'text-accent hover:text-primary hover:bg-background'
             }`}
           >
-            {dayNum === 84 ? 'Final Day' : !isDayAvailable(dayNum + 1) ? 'Locked →' : 'Next Day →'}
+            <span className="hidden md:inline">
+              {dayNum === 84 ? 'Final Day' : !isDayAvailable(dayNum + 1) ? 'Locked →' : 'Next Day →'}
+            </span>
+            <span className="md:hidden">
+              {dayNum === 84 ? 'Final' : !isDayAvailable(dayNum + 1) ? 'Locked →' : 'Next →'}
+            </span>
           </button>
         </div>
 

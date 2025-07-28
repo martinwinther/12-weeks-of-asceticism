@@ -34,16 +34,16 @@ const OverviewPage = () => {
     const isToday = dayNumber === currentDay;
     const isAvailable = isDayAvailable(dayNumber);
     
-    let styles = "aspect-square flex items-center justify-center rounded-md text-sm font-medium transition-all duration-200 ";
+    let styles = "aspect-square flex items-center justify-center rounded-md text-xs md:text-sm font-medium transition-all duration-200 touch-manipulation ";
     
     if (!isAvailable) {
-      styles += "bg-gray-100 text-gray-400 border-2 border-gray-200 cursor-not-allowed opacity-60";
+      styles += "bg-gray-100 text-gray-400 border md:border-2 border-gray-200 cursor-not-allowed opacity-60";
     } else if (isCompleted) {
-      styles += "bg-accent/20 text-accent border-2 border-accent/30 hover:bg-accent/30 cursor-pointer hover:scale-105";
+      styles += "bg-accent/20 text-accent border md:border-2 border-accent/30 hover:bg-accent/30 cursor-pointer hover:scale-105";
     } else if (isToday) {
-      styles += "bg-primary/20 text-primary border-2 border-primary ring-2 ring-primary/30 hover:bg-primary/30 cursor-pointer hover:scale-105";
+      styles += "bg-primary/20 text-primary border md:border-2 border-primary ring-1 md:ring-2 ring-primary/30 hover:bg-primary/30 cursor-pointer hover:scale-105";
     } else {
-      styles += "bg-white text-accent border-2 border-accent/20 hover:bg-background cursor-pointer hover:scale-105";
+      styles += "bg-white text-accent border md:border-2 border-accent/20 hover:bg-background cursor-pointer hover:scale-105";
     }
     
     return styles;
@@ -66,10 +66,10 @@ const OverviewPage = () => {
     <div className="min-h-screen bg-background font-serif text-primary">
       {/* Header */}
       <div className="bg-white border-b border-accent/20 shadow-sm">
-        <div className="max-w-6xl mx-auto px-6 py-6">
+        <div className="max-w-6xl mx-auto px-4 py-4 md:px-6 md:py-6">
           <div className="text-center">
-            <h1 className="text-3xl font-light text-primary">Overview</h1>
-            <p className="text-accent mt-1">84 days of ascetic practice</p>
+            <h1 className="text-2xl md:text-3xl font-light text-primary">Overview</h1>
+            <p className="text-accent mt-1 text-sm md:text-base">84 days of ascetic practice</p>
             {hasStarted && (
               <div>
                 <p className="text-accent/80 text-sm mt-2">
@@ -121,26 +121,26 @@ const OverviewPage = () => {
       </div>
 
       {/* 12 × 7 Grid */}
-      <div className="max-w-6xl mx-auto px-6 py-8">
-        <div className="space-y-6">
+      <div className="max-w-6xl mx-auto px-4 py-6 md:px-6 md:py-8">
+        <div className="space-y-4 md:space-y-6">
           {weeks.map((week, weekIndex) => {
             const weekNumber = weekIndex + 1;
             const weekLayer = layersByWeek[weekNumber];
             
             return (
-              <div key={weekIndex} className="bg-white rounded-lg shadow-sm p-6 border border-accent/20">
+              <div key={weekIndex} className="bg-white rounded-lg shadow-sm p-4 md:p-6 border border-accent/20">
                 {/* Week Header */}
-                <div className="mb-4">
-                  <h3 className="text-lg font-semibold text-primary">
+                <div className="mb-3 md:mb-4">
+                  <h3 className="text-base md:text-lg font-semibold text-primary">
                     Week {weekNumber}: {weekLayer?.title}
                   </h3>
-                  <p className="text-sm text-accent mt-1">
+                  <p className="text-xs md:text-sm text-accent mt-1">
                     {weekLayer?.description}
                   </p>
                 </div>
                 
                 {/* Week Grid - 7 days */}
-                <div className="grid grid-cols-7 gap-2">
+                <div className="grid grid-cols-7 gap-1 md:gap-2">
                   {week.map((dayNumber) => {
                     const isCompleted = completedDays.includes(dayNumber);
                     const isToday = dayNumber === currentDay;
@@ -153,15 +153,15 @@ const OverviewPage = () => {
                         className={getDayStyles(dayNumber)}
                       >
                         <div className="text-center">
-                          <div className="font-semibold">{dayNumber}</div>
+                          <div className="font-semibold text-xs md:text-sm">{dayNumber}</div>
                           {!isAvailable && (
-                            <div className="text-xs mt-1">🔒</div>
+                            <div className="text-xs mt-0.5">🔒</div>
                           )}
                           {isCompleted && isAvailable && (
-                            <div className="text-xs mt-1">✓</div>
+                            <div className="text-xs mt-0.5">✓</div>
                           )}
                           {isToday && isAvailable && (
-                            <div className="text-xs mt-1">●</div>
+                            <div className="text-xs mt-0.5">●</div>
                           )}
                         </div>
                       </div>
@@ -174,30 +174,30 @@ const OverviewPage = () => {
         </div>
 
         {/* Legend */}
-        <div className="mt-8 bg-white rounded-lg shadow-sm p-6 border border-accent/20">
-          <h3 className="text-lg font-medium text-primary mb-4">Legend</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-accent/20 border-2 border-accent/30 rounded-md flex items-center justify-center">
+        <div className="mt-6 md:mt-8 bg-white rounded-lg shadow-sm p-4 md:p-6 border border-accent/20">
+          <h3 className="text-base md:text-lg font-medium text-primary mb-3 md:mb-4">Legend</h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+            <div className="flex items-center space-x-2 md:space-x-3">
+              <div className="w-6 h-6 md:w-8 md:h-8 bg-accent/20 border md:border-2 border-accent/30 rounded-md flex items-center justify-center">
                 <span className="text-accent text-xs">✓</span>
               </div>
-              <span className="text-sm text-accent">Completed</span>
+              <span className="text-xs md:text-sm text-accent">Completed</span>
             </div>
-            <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-primary/20 border-2 border-primary rounded-md flex items-center justify-center">
+            <div className="flex items-center space-x-2 md:space-x-3">
+              <div className="w-6 h-6 md:w-8 md:h-8 bg-primary/20 border md:border-2 border-primary rounded-md flex items-center justify-center">
                 <span className="text-primary text-xs">●</span>
               </div>
-              <span className="text-sm text-accent">Current Day</span>
+              <span className="text-xs md:text-sm text-accent">Current</span>
             </div>
-            <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-white border-2 border-accent/20 rounded-md"></div>
-              <span className="text-sm text-accent">Available</span>
+            <div className="flex items-center space-x-2 md:space-x-3">
+              <div className="w-6 h-6 md:w-8 md:h-8 bg-white border md:border-2 border-accent/20 rounded-md"></div>
+              <span className="text-xs md:text-sm text-accent">Available</span>
             </div>
-            <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-gray-100 border-2 border-gray-200 rounded-md flex items-center justify-center opacity-60">
+            <div className="flex items-center space-x-2 md:space-x-3">
+              <div className="w-6 h-6 md:w-8 md:h-8 bg-gray-100 border md:border-2 border-gray-200 rounded-md flex items-center justify-center opacity-60">
                 <span className="text-gray-400 text-xs">🔒</span>
               </div>
-              <span className="text-sm text-accent">Locked</span>
+              <span className="text-xs md:text-sm text-accent">Locked</span>
             </div>
           </div>
         </div>
