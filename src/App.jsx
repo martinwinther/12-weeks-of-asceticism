@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AppProvider } from './context/AppContext';
 import LandingPage from './pages/LandingPage';
 import Dashboard from './pages/Dashboard';
+import OverviewPage from './pages/OverviewPage';
 import DayPage from './pages/DayPage';
 import Week01 from './pages/Week01';
 import Week12 from './pages/Week12';
@@ -15,6 +16,7 @@ const App = () => (
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/overview" element={<OverviewPage />} />
         <Route path="/day/:dayNumber" element={<DayPage />} />
         <Route path="/week01" element={<Week01 />} />
         <Route path="/week02" element={<Week02 />} />
