@@ -1,6 +1,7 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { AppProvider } from './context/AppContext';
+import Navigation from './components/Navigation';
 import LandingPage from './pages/LandingPage';
 import Dashboard from './pages/Dashboard';
 import OverviewPage from './pages/OverviewPage';
@@ -11,9 +12,13 @@ import Week12 from './pages/Week12';
 import Week02 from './pages/Week02';
 // ... import Week02 to Week11 when created
 
-const App = () => (
-  <AppProvider>
-    <BrowserRouter>
+const AppContent = () => {
+  const location = useLocation();
+  const showNavigation = location.pathname !== '/';
+
+  return (
+    <>
+      {showNavigation && <Navigation />}
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/dashboard" element={<Dashboard />} />
@@ -25,6 +30,14 @@ const App = () => (
         {/* <Route path="/week02" element={<Week02 />} /> ... */}
         <Route path="/week12" element={<Week12 />} />
       </Routes>
+    </>
+  );
+};
+
+const App = () => (
+  <AppProvider>
+    <BrowserRouter>
+      <AppContent />
     </BrowserRouter>
   </AppProvider>
 );

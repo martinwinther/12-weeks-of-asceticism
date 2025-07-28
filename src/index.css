@@ -1,9 +1,8 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-@theme {
-  --color-background: #f8fafc;
-  --color-primary: #334155;
-  --color-accent: #64748b;
-  --font-family-serif: Merriweather, serif;
-  --font-family-mono: "Fira Mono", ui-monospace, "SFMono-Regular", monospace;
+/* Custom styles can be added here */
+body {
+  font-family: system-ui, -apple-system, sans-serif;
 }
