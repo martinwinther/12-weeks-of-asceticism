@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import ThemeToggle from './ThemeToggle';
 
 const Navigation = () => {
   const location = useLocation();
@@ -38,8 +39,9 @@ const Navigation = () => {
     <>
       {/* Desktop Navigation - Clean minimal top bar */}
       <nav className="hidden md:block bg-white/80 backdrop-blur-sm border-b border-accent/10 sticky top-0 z-50">
-        <div className="max-w-4xl mx-auto px-6">
-          <div className="flex items-center justify-center h-16">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="flex items-center justify-between h-16">
+            {/* Main Navigation */}
             <div className="flex items-center space-x-1 bg-white rounded-full px-2 py-2 shadow-sm border border-accent/10">
               {navItems.map((item) => (
                 <Link
@@ -56,36 +58,47 @@ const Navigation = () => {
                 </Link>
               ))}
             </div>
+            
+            {/* Theme Toggle */}
+            <ThemeToggle />
           </div>
         </div>
       </nav>
 
       {/* Mobile Navigation - Bottom tab bar */}
       <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm border-t border-accent/10 z-50 safe-area-pb">
-        <div className="flex items-center justify-around px-2 py-2">
-          {navItems.map((item) => (
-            <Link
-              key={item.path}
-              to={item.path}
-              className={`flex flex-col items-center space-y-1 px-3 py-2 rounded-xl transition-all duration-200 touch-manipulation min-w-0 flex-1 ${
-                location.pathname === item.path
-                  ? 'text-primary bg-primary/10'
-                  : 'text-accent/70 hover:text-primary'
-              }`}
-            >
-              <div className={`transition-transform duration-200 ${
-                location.pathname === item.path ? 'scale-110' : 'scale-100'
-              }`}>
-                {item.icon}
-              </div>
-              <span className="text-xs font-medium truncate">{item.label}</span>
-            </Link>
-          ))}
+        <div className="px-2 py-2">
+          {/* Main Navigation Tabs */}
+          <div className="flex items-center justify-around mb-2">
+            {navItems.map((item) => (
+              <Link
+                key={item.path}
+                to={item.path}
+                className={`flex flex-col items-center space-y-1 px-3 py-2 rounded-xl transition-all duration-200 touch-manipulation min-w-0 flex-1 ${
+                  location.pathname === item.path
+                    ? 'text-primary bg-primary/10'
+                    : 'text-accent/70 hover:text-primary'
+                }`}
+              >
+                <div className={`transition-transform duration-200 ${
+                  location.pathname === item.path ? 'scale-110' : 'scale-100'
+                }`}>
+                  {item.icon}
+                </div>
+                <span className="text-xs font-medium truncate">{item.label}</span>
+              </Link>
+            ))}
+          </div>
+          
+          {/* Theme Toggle for Mobile */}
+          <div className="flex justify-center">
+            <ThemeToggle />
+          </div>
         </div>
       </nav>
 
       {/* Mobile bottom padding spacer */}
-      <div className="md:hidden h-20"></div>
+      <div className="md:hidden h-24"></div>
     </>
   );
 };

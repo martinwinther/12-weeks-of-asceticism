@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { AppProvider } from './context/AppContext';
+import { ThemeProvider, useTheme } from './context/ThemeContext';
 import Navigation from './components/Navigation';
 import LandingPage from './pages/LandingPage';
 import Dashboard from './pages/Dashboard';
@@ -14,10 +15,11 @@ import Week02 from './pages/Week02';
 
 const AppContent = () => {
   const location = useLocation();
+  const { theme } = useTheme();
   const showNavigation = location.pathname !== '/';
 
   return (
-    <>
+    <div className={`theme-${theme} min-h-screen transition-colors duration-300`}>
       {showNavigation && <Navigation />}
       <Routes>
         <Route path="/" element={<LandingPage />} />
@@ -30,16 +32,18 @@ const AppContent = () => {
         {/* <Route path="/week02" element={<Week02 />} /> ... */}
         <Route path="/week12" element={<Week12 />} />
       </Routes>
-    </>
+    </div>
   );
 };
 
 const App = () => (
-  <AppProvider>
-    <BrowserRouter>
-      <AppContent />
-    </BrowserRouter>
-  </AppProvider>
+  <ThemeProvider>
+    <AppProvider>
+      <BrowserRouter>
+        <AppContent />
+      </BrowserRouter>
+    </AppProvider>
+  </ThemeProvider>
 );
 
 export default App;

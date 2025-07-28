@@ -31,3 +31,56 @@ html, body {
     min-height: 44px;
   }
 }
+
+/* Theme classes */
+.theme-light {
+  background-color: #f8fafc;
+  color: #334155;
+}
+
+.theme-light .bg-background { background-color: #f8fafc !important; }
+.theme-light .bg-surface, .theme-light .bg-white { background-color: #ffffff !important; }
+.theme-light .text-primary { color: #334155 !important; }
+.theme-light .text-accent { color: #64748b !important; }
+.theme-light .text-muted { color: #94a3b8 !important; }
+.theme-light .border-accent { border-color: #e2e8f0 !important; }
+.theme-light .bg-primary { background-color: #334155 !important; }
+.theme-light .bg-primary\/10 { background-color: rgba(51, 65, 85, 0.1) !important; }
+.theme-light .bg-primary\/20 { background-color: rgba(51, 65, 85, 0.2) !important; }
+
+.theme-dark {
+  background-color: #0f172a;
+  color: #f1f5f9;
+}
+
+.theme-dark .bg-background { background-color: #0f172a !important; }
+.theme-dark .bg-surface, .theme-dark .bg-white { background-color: #1e293b !important; }
+.theme-dark .text-primary { color: #f1f5f9 !important; }
+.theme-dark .text-accent { color: #cbd5e1 !important; }
+.theme-dark .text-muted { color: #64748b !important; }
+.theme-dark .border-accent { border-color: #334155 !important; }
+.theme-dark .bg-primary { background-color: #f1f5f9 !important; }
+.theme-dark .text-white { color: #0f172a !important; }
+.theme-dark .bg-primary\/10 { background-color: rgba(241, 245, 249, 0.1) !important; }
+.theme-dark .bg-primary\/20 { background-color: rgba(241, 245, 249, 0.2) !important; }
+.theme-dark .bg-white\/80, .theme-dark .bg-white\/90, .theme-dark .bg-white\/95 { 
+  background-color: rgba(30, 41, 59, 0.9) !important; 
+}
+
+.theme-monastic {
+  background-color: #f0ebe0;
+  color: #2a1f15;
+}
+
+.theme-monastic .bg-background { background-color: #f0ebe0 !important; }
+.theme-monastic .bg-surface, .theme-monastic .bg-white { background-color: #e8dfd0 !important; }
+.theme-monastic .text-primary { color: #2a1f15 !important; }
+.theme-monastic .text-accent { color: #5d4e3a !important; }
+.theme-monastic .text-muted { color: #7a6b52 !important; }
+.theme-monastic .border-accent { border-color: #c4b594 !important; }
+.theme-monastic .bg-primary { background-color: #2a1f15 !important; }
+.theme-monastic .bg-primary\/10 { background-color: rgba(42, 31, 21, 0.1) !important; }
+.theme-monastic .bg-primary\/20 { background-color: rgba(42, 31, 21, 0.2) !important; }
+.theme-monastic .bg-white\/80, .theme-monastic .bg-white\/90, .theme-monastic .bg-white\/95 { 
+  background-color: rgba(232, 223, 208, 0.9) !important; 
+}
