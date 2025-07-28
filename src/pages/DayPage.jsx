@@ -17,6 +17,13 @@ const DayPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
 
+  // Auto-start journey if authenticated user visits Day 1 and hasn't started yet
+  useEffect(() => {
+    if (user && dayNum === 1 && !hasStarted) {
+      startJourney();
+    }
+  }, [user, dayNum, hasStarted, startJourney]);
+
   // Validate dayNumber is between 1 and 84
   if (isNaN(dayNum) || dayNum < 1 || dayNum > 84) {
     return (
