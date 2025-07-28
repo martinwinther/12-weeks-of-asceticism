@@ -43,20 +43,11 @@ const TimelinePage = () => {
       {/* Header */}
       <div className="bg-white border-b border-gray-200 shadow-sm">
         <div className="max-w-4xl mx-auto px-6 py-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-light text-gray-900">Timeline</h1>
-              <p className="text-gray-600 mt-1">
-                {journalEntries.length} reflection{journalEntries.length !== 1 ? 's' : ''} recorded
-              </p>
-            </div>
-            
-            <button
-              onClick={() => navigate('/overview')}
-              className="px-4 py-2 bg-gray-900 text-white rounded-md hover:bg-gray-800 transition-colors"
-            >
-              ← Back to Overview
-            </button>
+          <div className="text-center">
+            <h1 className="text-3xl font-light text-gray-900">Timeline</h1>
+            <p className="text-gray-600 mt-1">
+              {journalEntries.length} reflection{journalEntries.length !== 1 ? 's' : ''} recorded
+            </p>
           </div>
         </div>
       </div>

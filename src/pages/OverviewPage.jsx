@@ -64,22 +64,13 @@ const OverviewPage = () => {
       {/* Header */}
       <div className="bg-white border-b border-gray-200 shadow-sm">
         <div className="max-w-6xl mx-auto px-6 py-6">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h1 className="text-3xl font-light text-gray-900">Overview</h1>
-              <p className="text-gray-600 mt-1">84 days of ascetic practice</p>
-            </div>
-            
-            <button
-              onClick={() => navigate('/dashboard')}
-              className="px-4 py-2 bg-gray-900 text-white rounded-md hover:bg-gray-800 transition-colors"
-            >
-              ← Back to Dashboard
-            </button>
+          <div className="text-center">
+            <h1 className="text-3xl font-light text-gray-900">Overview</h1>
+            <p className="text-gray-600 mt-1">84 days of ascetic practice</p>
           </div>
 
           {/* Progress Indicator */}
-          <div className="mb-4">
+          <div className="mt-6">
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm font-medium text-gray-700">Progress</span>
               <span className="text-sm font-medium text-gray-700">
