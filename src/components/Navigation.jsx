@@ -104,20 +104,12 @@ const Navigation = () => {
                   )}
                 </div>
               ) : (
-                <div className="flex items-center space-x-2">
-                  <Link
-                    to="/login"
-                    className="px-3 py-2 text-sm text-accent hover:text-primary transition-colors"
-                  >
-                    Sign in
-                  </Link>
-                  <Link
-                    to="/signup"
-                    className="px-4 py-2 text-sm bg-primary text-white rounded-full hover:bg-primary/90 transition-colors"
-                  >
-                    Sign up
-                  </Link>
-                </div>
+                <Link
+                  to="/auth"
+                  className="px-4 py-2 text-sm bg-primary text-white rounded-full hover:bg-primary/90 transition-colors"
+                >
+                  Sign in
+                </Link>
               )}
               
               <ThemeToggle />
