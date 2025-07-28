@@ -78,30 +78,6 @@ const Dashboard = () => {
           <h1 className="text-2xl md:text-3xl font-bold text-primary mb-2">Your Journey</h1>
           <p className="text-accent text-sm md:text-base">Track your progress through 84 days of ascetic practice</p>
         </div>
-        
-        {/* Legend */}
-        <div className="mb-6 md:mb-8 flex flex-wrap gap-2 md:gap-4 justify-center text-xs md:text-sm bg-white rounded-lg p-3 md:p-4 shadow-sm border border-accent/20">
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded bg-primary"></div>
-            <span>Current Day</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded bg-accent"></div>
-            <span>Completed</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded bg-white border border-accent/30"></div>
-            <span>Available</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded bg-background"></div>
-            <span>Future</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span>✍️</span>
-            <span>Has Reflection</span>
-          </div>
-        </div>
 
         {/* 84-Day Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 mb-6 md:mb-8">
@@ -112,8 +88,7 @@ const Dashboard = () => {
               </h3>
               <div className="grid grid-cols-7 gap-0.5 md:gap-1">
                 {weekDays.map((day) => {
-                  const { isFuture } = getDayStatus(day);
-                  const emoji = getReflectionEmoji(day);
+                  const { isFuture, hasReflection } = getDayStatus(day);
                   
                   if (isFuture) {
                     return (
@@ -132,15 +107,13 @@ const Dashboard = () => {
                       key={day}
                       to={`/day/${day}`}
                       className={getDayStyles(day)}
-                      title={`Day ${day}${emoji ? ' - Has reflection' : ''}`}
+                      title={`Day ${day}${hasReflection ? ' - Has reflection' : ''}`}
                     >
-                      <div className="relative">
-                        {day}
-                        {emoji && (
-                          <div className="absolute -top-1 -right-1 text-xs">
-                            {emoji}
-                          </div>
+                      <div className="relative w-full h-full flex items-center justify-center">
+                        {hasReflection && (
+                          <div className="absolute top-0.5 left-0.5 w-1.5 h-1.5 bg-yellow-500 rounded-full"></div>
                         )}
+                        {day}
                       </div>
                     </Link>
                   );
