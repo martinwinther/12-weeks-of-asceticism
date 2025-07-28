@@ -1,4 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useAuth } from './AuthContext';
+import { supabase } from '../lib/supabaseClient';
 import { getItem } from '../utils/localStorage';
 
 const STORAGE_KEY = 'ascetic-app-state';
@@ -17,27 +19,60 @@ const AppContext = createContext();
 export const useAppContext = () => useContext(AppContext);
 
 export const AppProvider = ({ children }) => {
-  const [state, setState] = useState(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) {
-      try {
-        const parsedState = JSON.parse(stored);
-        // Migrate old data to include new properties
-        return {
-          ...defaultState,
-          ...parsedState,
-          // Ensure new properties exist with defaults if not present
-          currentDay: parsedState.currentDay || 1,
-          completedDays: parsedState.completedDays || [],
-          startDate: parsedState.startDate || null,
-        };
-      } catch (error) {
-        console.warn('Failed to parse stored state, using defaults:', error);
-        return defaultState;
+  const { user } = useAuth();
+  const [state, setState] = useState(defaultState);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Load progress data from Supabase on mount or user change
+  useEffect(() => {
+    const loadProgressData = async () => {
+      if (!user) {
+        // If no user, load from localStorage as fallback
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if (stored) {
+          try {
+            const parsedState = JSON.parse(stored);
+            setState({
+              ...defaultState,
+              ...parsedState,
+              currentDay: parsedState.currentDay || 1,
+              completedDays: parsedState.completedDays || [],
+              startDate: parsedState.startDate || null,
+            });
+          } catch (error) {
+            console.warn('Failed to parse stored state, using defaults:', error);
+            setState(defaultState);
+          }
+        }
+        setIsLoading(false);
+        return;
       }
-    }
-    return defaultState;
-  });
+
+      try {
+        const { data, error } = await supabase
+          .from('progress')
+          .select('completed_days, start_date')
+          .eq('user_id', user.id)
+          .single();
+
+        if (error && error.code !== 'PGRST116') { // PGRST116 = no rows returned
+          console.error('Error loading progress data:', error);
+        } else if (data) {
+          setState(prevState => ({
+            ...prevState,
+            completedDays: data.completed_days || [],
+            startDate: data.start_date || null,
+          }));
+        }
+      } catch (error) {
+        console.error('Error loading progress data:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadProgressData();
+  }, [user]);
 
   // Calculate current day based on calendar date since start
   const getCurrentDay = () => {
@@ -63,15 +98,42 @@ export const AppProvider = ({ children }) => {
     return dayNumber <= currentDay;
   };
 
+  // Helper function to sync progress data to Supabase
+  const syncProgressToSupabase = async (updatedState) => {
+    if (!user) return;
+
+    try {
+      const { error } = await supabase
+        .from('progress')
+        .upsert({
+          user_id: user.id,
+          completed_days: updatedState.completedDays,
+          start_date: updatedState.startDate,
+          updated_at: new Date().toISOString()
+        });
+
+      if (error) {
+        console.error('Error syncing progress to Supabase:', error);
+      }
+    } catch (error) {
+      console.error('Error syncing progress to Supabase:', error);
+    }
+  };
+
   // Start the journey by setting today as day 1
-  const startJourney = () => {
+  const startJourney = async () => {
     const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
-    setState((s) => ({ ...s, startDate: today }));
+    const updatedState = { ...state, startDate: today };
+    setState(updatedState);
+    await syncProgressToSupabase(updatedState);
   };
 
   // Reset journey (for testing or restarting)
-  const resetJourney = () => {
-    setState((s) => ({ ...s, startDate: null, completedDays: [], journalEntries: {} }));
+  const resetJourney = async () => {
+    const updatedState = { ...state, startDate: null, completedDays: [], journalEntries: {} };
+    setState(updatedState);
+    await syncProgressToSupabase(updatedState);
+    
     // Also clear localStorage entries
     for (let day = 1; day <= 84; day++) {
       localStorage.removeItem(`entry-day-${day}`);
@@ -80,9 +142,12 @@ export const AppProvider = ({ children }) => {
     }
   };
 
+  // Save to localStorage as fallback when state changes
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  }, [state]);
+    if (!isLoading) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+  }, [state, isLoading]);
 
   const setCurrentWeek = (week) => setState((s) => ({ ...s, currentWeek: week }));
   const setCurrentDay = (day) => setState((s) => ({ ...s, currentDay: day }));
@@ -94,14 +159,19 @@ export const AppProvider = ({ children }) => {
       : [...s.completedWeeks, week],
   }));
   
-  const completeDay = (day) => setState((s) => ({
-    ...s,
-    completedDays: (s.completedDays || []).includes(day)
-      ? s.completedDays
-      : [...(s.completedDays || []), day],
-  }));
+  const completeDay = async (day) => {
+    const currentCompletedDays = state.completedDays || [];
+    if (currentCompletedDays.includes(day)) return; // Already completed
+    
+    const updatedState = {
+      ...state,
+      completedDays: [...currentCompletedDays, day],
+    };
+    setState(updatedState);
+    await syncProgressToSupabase(updatedState);
+  };
   
-  const setJournalEntry = (weekNumber, text) => {
+  const setJournalEntry = async (weekNumber, text) => {
     setState((s) => ({
       ...s,
       journalEntries: { ...s.journalEntries, [weekNumber]: text },
@@ -110,7 +180,7 @@ export const AppProvider = ({ children }) => {
     // Auto-complete day if journal entry has content
     const dayNumber = parseInt(weekNumber);
     if (text.trim() && !isNaN(dayNumber)) {
-      completeDay(dayNumber);
+      await completeDay(dayNumber);
     }
   };
   
@@ -129,6 +199,7 @@ export const AppProvider = ({ children }) => {
         ...state,
         currentDay: getCurrentDay(), // Use dynamic calculation
         hasStarted: !!state.startDate, // Boolean for whether journey has begun
+        isLoading,
         setCurrentWeek,
         setCurrentDay,
         completeWeek,
