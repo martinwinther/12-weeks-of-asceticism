@@ -4,6 +4,7 @@ import { AppProvider } from './context/AppContext';
 import { ThemeProvider, useTheme } from './context/ThemeContext';
 import { AuthProvider } from './context/AuthContext';
 import Navigation from './components/Navigation';
+import PrivateRoute from './components/PrivateRoute';
 import LandingPage from './pages/LandingPage';
 import Dashboard from './pages/Dashboard';
 import OverviewPage from './pages/OverviewPage';
@@ -29,9 +30,21 @@ const AppContent = () => {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/overview" element={<OverviewPage />} />
-        <Route path="/timeline" element={<TimelinePage />} />
-        <Route path="/day/:dayNumber" element={<DayPage />} />
+        <Route path="/overview" element={
+          <PrivateRoute>
+            <OverviewPage />
+          </PrivateRoute>
+        } />
+        <Route path="/timeline" element={
+          <PrivateRoute>
+            <TimelinePage />
+          </PrivateRoute>
+        } />
+        <Route path="/day/:dayNumber" element={
+          <PrivateRoute>
+            <DayPage />
+          </PrivateRoute>
+        } />
         <Route path="/week01" element={<Week01 />} />
         <Route path="/week02" element={<Week02 />} />
         {/* <Route path="/week02" element={<Week02 />} /> ... */}
