@@ -1,4 +1,4 @@
-const prompts = {
+export const promptsByWeek = {
   1: [
     "How did waking before sunrise affect your mental clarity today?",
     "What did you notice about your energy levels without sugar?",
@@ -107,6 +107,4 @@ const prompts = {
     "What did you discover about your capacity for growth?",
     "Reflect on how you will continue your ascetic practices in the future."
   ]
-};
-
-export default prompts; 
+}; 

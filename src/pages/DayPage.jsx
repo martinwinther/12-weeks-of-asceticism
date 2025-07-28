@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import program from '../data/program';
-import weekLayers from '../data/weekLayers';
-import prompts from '../data/prompts';
+import { layersByWeek } from '../data/layersByWeek.ts';
+import { promptsByWeek } from '../data/promptsByWeek.ts';
 import { getItem, setItem } from '../utils/localStorage';
 
 const DayPage = () => {
@@ -26,15 +25,12 @@ const DayPage = () => {
   // Calculate current week using Math.ceil(dayNumber / 7)
   const currentWeek = Math.ceil(dayNum / 7);
   
-  // Get layer title from weekLayers
-  const layerTitle = weekLayers[currentWeek];
-  
-  // Get today's action summary (same for each day of a given week)
-  const weekData = program[currentWeek - 1];
+  // Get layer data from layersByWeek
+  const layerData = layersByWeek[currentWeek];
   
   // Get daily reflection prompt (cycle through 7 prompts per week)
   const dayOfWeek = ((dayNum - 1) % 7) + 1; // 1-7
-  const dailyPrompt = prompts[currentWeek]?.[dayOfWeek - 1] || '';
+  const dailyPrompt = promptsByWeek[currentWeek]?.[dayOfWeek - 1] || '';
 
   // Load existing entry from localStorage on mount
   useEffect(() => {
@@ -70,7 +66,7 @@ const DayPage = () => {
         <div className="text-center mb-12">
           <h1 className="text-4xl font-light text-gray-900 mb-2">Day {dayNum}</h1>
           <h2 className="text-lg font-normal text-gray-600">
-            Week {currentWeek} – Layer: {layerTitle}
+            Week {currentWeek} – Layer: {layerData?.title}
           </h2>
         </div>
 
@@ -78,14 +74,10 @@ const DayPage = () => {
         <div className="mb-12">
           <h3 className="text-xl font-medium text-gray-900 mb-4">Today's Practice</h3>
           <div className="bg-gray-50 rounded-lg p-6">
-            <p className="text-gray-700 font-medium mb-3">{weekData?.description}</p>
-            <ul className="space-y-2">
-              {weekData?.details.map((detail, index) => (
-                <li key={index} className="text-gray-600 text-sm">
-                  • {detail}
-                </li>
-              ))}
-            </ul>
+            <p className="text-gray-700 font-medium mb-3">{layerData?.description}</p>
+            <p className="text-gray-600 text-sm italic">
+              {layerData?.action}
+            </p>
           </div>
         </div>
 
