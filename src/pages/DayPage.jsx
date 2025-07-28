@@ -132,59 +132,43 @@ const DayPage = () => {
     }
   };
 
-  // Load existing entry from Supabase first, then localStorage fallback
+  // Load journal entry based on authentication status
   useEffect(() => {
     const loadJournalEntry = async () => {
       setIsLoading(true);
       
-      try {
-        // Try to load from Supabase first if user is authenticated
-        if (user) {
+      if (user) {
+        // Authenticated users: load from Supabase only
+        try {
           const supabaseEntry = await loadJournalFromSupabase();
-          if (supabaseEntry !== null) {
-            setJournalEntry(supabaseEntry);
-            // Also update localStorage with the latest from Supabase
-            setItem(`entry-day-${dayNum}`, supabaseEntry);
-            setIsLoading(false);
-            return;
-          }
+          setJournalEntry(supabaseEntry || '');
+        } catch (error) {
+          console.error('Error loading journal entry from Supabase:', error);
+          setJournalEntry('');
         }
-
-        // Fall back to localStorage
+      } else {
+        // Non-authenticated users: load from localStorage only
         const localEntry = getItem(`entry-day-${dayNum}`, '');
         setJournalEntry(localEntry);
-
-        // If we have a local entry but user is authenticated, sync it to Supabase
-        if (user && localEntry.trim()) {
-          await saveJournalToSupabase(localEntry);
-        }
-      } catch (error) {
-        console.error('Error loading journal entry:', error);
-        // Final fallback to localStorage
-        const localEntry = getItem(`entry-day-${dayNum}`, '');
-        setJournalEntry(localEntry);
-      } finally {
-        setIsLoading(false);
       }
+      
+      setIsLoading(false);
     };
 
     loadJournalEntry();
   }, [dayNum, user]);
 
-  // Save entry to localStorage immediately and debounce Supabase save
+  // Save entry based on authentication status
   const handleJournalChange = (e) => {
     const value = e.target.value;
     setJournalEntry(value);
     
-    // Save to localStorage immediately for instant backup
-    setItem(`entry-day-${dayNum}`, value);
-    
-    // Debounce Supabase save to avoid too many API calls
-    if (handleJournalChange.timeoutId) {
-      clearTimeout(handleJournalChange.timeoutId);
-    }
-    
     if (user) {
+      // Authenticated users: save to Supabase only with debouncing
+      if (handleJournalChange.timeoutId) {
+        clearTimeout(handleJournalChange.timeoutId);
+      }
+      
       setIsSaving(true);
       handleJournalChange.timeoutId = setTimeout(async () => {
         try {
@@ -195,6 +179,9 @@ const DayPage = () => {
           setIsSaving(false);
         }
       }, 1000); // Save 1 second after user stops typing
+    } else {
+      // Non-authenticated users: save to localStorage immediately
+      setItem(`entry-day-${dayNum}`, value);
     }
   };
 
@@ -307,7 +294,7 @@ const DayPage = () => {
           <p className="text-xs text-accent mt-2">
             {isLoading ? 'Loading...' : 
              isSaving ? 'Saving to cloud...' : 
-             user ? 'Auto-saved locally and synced to cloud' : 
+             user ? 'Auto-saved to cloud' : 
              'Auto-saved locally (sign in to sync across devices)'}
           </p>
         </div>
