@@ -4,13 +4,18 @@ import { layersByWeek } from '../data/layersByWeek';
 import { promptsByWeek } from '../data/promptsByWeek';
 import { getItem, setItem } from '../utils/localStorage';
 import { useAppContext } from '../context/AppContext';
+import { useAuth } from '../context/AuthContext';
+import { supabase } from '../lib/supabaseClient';
 
 const DayPage = () => {
   const { dayNumber } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const { isDayAvailable, hasStarted, startJourney, currentDay } = useAppContext();
   const dayNum = parseInt(dayNumber);
   const [journalEntry, setJournalEntry] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
 
   // Validate dayNumber is between 1 and 84
   if (isNaN(dayNum) || dayNum < 1 || dayNum > 84) {
@@ -81,18 +86,126 @@ const DayPage = () => {
   // For the reflection prompt, use promptsByWeek[weekNumber]
   const reflectionPrompt = promptsByWeek[weekNumber] || '';
 
-  // Load existing entry from localStorage on mount
-  useEffect(() => {
-    const existingEntry = getItem(`entry-day-${dayNum}`, '');
-    setJournalEntry(existingEntry);
-  }, [dayNum]);
+  // Helper function to load journal entry from Supabase
+  const loadJournalFromSupabase = async () => {
+    if (!user) return null;
 
-  // Save entry to localStorage immediately on change (autosave)
+    try {
+      const { data, error } = await supabase
+        .from('journals')
+        .select('text, updated_at')
+        .eq('user_id', user.id)
+        .eq('day_number', dayNum)
+        .single();
+
+      if (error && error.code !== 'PGRST116') { // PGRST116 = no rows returned
+        console.error('Error loading journal entry from Supabase:', error);
+        return null;
+      }
+
+      return data?.text || null;
+    } catch (error) {
+      console.error('Error loading journal entry from Supabase:', error);
+      return null;
+    }
+  };
+
+  // Helper function to save journal entry to Supabase
+  const saveJournalToSupabase = async (text) => {
+    if (!user) return;
+
+    try {
+      const { error } = await supabase
+        .from('journals')
+        .upsert({
+          user_id: user.id,
+          day_number: dayNum,
+          text: text,
+          updated_at: new Date().toISOString()
+        });
+
+      if (error) {
+        console.error('Error saving journal entry to Supabase:', error);
+      }
+    } catch (error) {
+      console.error('Error saving journal entry to Supabase:', error);
+    }
+  };
+
+  // Load existing entry from Supabase first, then localStorage fallback
+  useEffect(() => {
+    const loadJournalEntry = async () => {
+      setIsLoading(true);
+      
+      try {
+        // Try to load from Supabase first if user is authenticated
+        if (user) {
+          const supabaseEntry = await loadJournalFromSupabase();
+          if (supabaseEntry !== null) {
+            setJournalEntry(supabaseEntry);
+            // Also update localStorage with the latest from Supabase
+            setItem(`entry-day-${dayNum}`, supabaseEntry);
+            setIsLoading(false);
+            return;
+          }
+        }
+
+        // Fall back to localStorage
+        const localEntry = getItem(`entry-day-${dayNum}`, '');
+        setJournalEntry(localEntry);
+
+        // If we have a local entry but user is authenticated, sync it to Supabase
+        if (user && localEntry.trim()) {
+          await saveJournalToSupabase(localEntry);
+        }
+      } catch (error) {
+        console.error('Error loading journal entry:', error);
+        // Final fallback to localStorage
+        const localEntry = getItem(`entry-day-${dayNum}`, '');
+        setJournalEntry(localEntry);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadJournalEntry();
+  }, [dayNum, user]);
+
+  // Save entry to localStorage immediately and debounce Supabase save
   const handleJournalChange = (e) => {
     const value = e.target.value;
     setJournalEntry(value);
+    
+    // Save to localStorage immediately for instant backup
     setItem(`entry-day-${dayNum}`, value);
+    
+    // Debounce Supabase save to avoid too many API calls
+    if (handleJournalChange.timeoutId) {
+      clearTimeout(handleJournalChange.timeoutId);
+    }
+    
+    if (user) {
+      setIsSaving(true);
+      handleJournalChange.timeoutId = setTimeout(async () => {
+        try {
+          await saveJournalToSupabase(value);
+        } catch (error) {
+          console.error('Error auto-saving to Supabase:', error);
+        } finally {
+          setIsSaving(false);
+        }
+      }, 1000); // Save 1 second after user stops typing
+    }
   };
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (handleJournalChange.timeoutId) {
+        clearTimeout(handleJournalChange.timeoutId);
+      }
+    };
+  }, []);
 
   // Navigation handlers
   const goToPreviousDay = () => {
@@ -177,13 +290,26 @@ const DayPage = () => {
         {/* Journal Textarea */}
         <div className="mb-8 md:mb-12">
           <h3 className="text-lg md:text-xl font-medium text-primary mb-4">Your Journal</h3>
-          <textarea
-            className="w-full h-48 md:h-64 p-3 md:p-4 border border-accent/30 rounded-lg resize-none focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent font-mono text-sm leading-relaxed"
-            value={journalEntry}
-            onChange={handleJournalChange}
-            placeholder="Write your thoughts and reflections..."
-          />
-          <p className="text-xs text-accent mt-2">Your entry is automatically saved as you type.</p>
+          <div className="relative">
+            <textarea
+              className="w-full h-48 md:h-64 p-3 md:p-4 border border-accent/30 rounded-lg resize-none focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent font-mono text-sm leading-relaxed"
+              value={journalEntry}
+              onChange={handleJournalChange}
+              placeholder={isLoading ? "Loading your entry..." : "Write your thoughts and reflections..."}
+              disabled={isLoading}
+            />
+            {(isLoading || isSaving) && (
+              <div className="absolute top-2 right-2">
+                <div className="w-4 h-4 border-2 border-accent/30 border-t-accent rounded-full animate-spin"></div>
+              </div>
+            )}
+          </div>
+          <p className="text-xs text-accent mt-2">
+            {isLoading ? 'Loading...' : 
+             isSaving ? 'Saving to cloud...' : 
+             user ? 'Auto-saved locally and synced to cloud' : 
+             'Auto-saved locally (sign in to sync across devices)'}
+          </p>
         </div>
 
         {/* Navigation */}

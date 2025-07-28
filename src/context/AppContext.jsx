@@ -184,7 +184,14 @@ export const AppProvider = ({ children }) => {
     }
   };
   
-  const getJournalEntry = (weekNumber) => state.journalEntries[weekNumber] || '';
+  const getJournalEntry = (weekNumber) => {
+    // Check state first (for Supabase-synced entries)
+    const stateEntry = state.journalEntries[weekNumber] || '';
+    // Check localStorage for day-specific entries
+    const localEntry = getItem(`entry-day-${weekNumber}`, '');
+    // Return whichever has content, preferring state entry if both exist
+    return stateEntry || localEntry;
+  };
   
   const isDayComplete = (day) => {
     const hasJournal = state.journalEntries[day.toString()]?.trim().length > 0;
