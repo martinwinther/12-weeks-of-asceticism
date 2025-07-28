@@ -1,37 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getItem } from '../utils/localStorage';
+import { useAppContext } from '../context/AppContext';
 
 const TimelinePage = () => {
   const navigate = useNavigate();
   const [journalEntries, setJournalEntries] = useState([]);
+  const { getJournalEntry } = useAppContext();
 
-  // Load journalEntries from localStorage
+  // Load journalEntries from AppContext (Supabase data)
   useEffect(() => {
     const loadJournalEntries = () => {
       const entries = [];
       
       for (let dayNumber = 1; dayNumber <= 84; dayNumber++) {
-        const text = getItem(`entry-day-${dayNumber}`, '');
-        const timestamp = getItem(`timestamp-day-${dayNumber}`, null);
+        const text = getJournalEntry(dayNumber.toString());
         
         if (text && text.trim().length > 0) {
           entries.push({
             dayNumber,
             text: text.trim(),
-            timestamp: timestamp || Date.now() - (84 - dayNumber) * 24 * 60 * 60 * 1000 // Mock timestamp if none exists
+            timestamp: Date.now() - (84 - dayNumber) * 24 * 60 * 60 * 1000 // Mock timestamp based on day number
           });
         }
       }
       
-      // Sort by timestamp descending (most recent first)
-      entries.sort((a, b) => b.timestamp - a.timestamp);
+      // Sort by day number descending (most recent first)
+      entries.sort((a, b) => b.dayNumber - a.dayNumber);
       
       setJournalEntries(entries);
     };
 
     loadJournalEntries();
-  }, []);
+  }, [getJournalEntry]);
 
   // Format date as YYYY-MM-DD
   const formatDate = (timestamp) => {

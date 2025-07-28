@@ -10,7 +10,13 @@ const LandingPage = () => {
       <p className="mb-8 max-w-xl text-center text-lg text-accent">
         Welcome to your minimalist journey. Each week, unlock new practices and reflect on your progress. Embrace simplicity, discipline, and self-discovery.
       </p>
-      <Button onClick={() => navigate('/dashboard')}>Start My Ascetic Journey</Button>
+      <p className="mb-8 max-w-md text-center text-base text-accent/80">
+        Create an account to track your progress across all devices and never lose your reflections.
+      </p>
+      <div className="space-x-4">
+        <Button onClick={() => navigate('/signup')}>Sign Up</Button>
+        <Button variant="outline" onClick={() => navigate('/login')}>Sign In</Button>
+      </div>
     </div>
   );
 };

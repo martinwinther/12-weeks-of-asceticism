@@ -1,29 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { layersByWeek } from '../data/layersByWeek';
-import { getItem } from '../utils/localStorage';
 import { useAppContext } from '../context/AppContext';
 
 const OverviewPage = () => {
   const navigate = useNavigate();
-  const { currentDay, isDayAvailable, hasStarted, startJourney, resetJourney } = useAppContext();
+  const { currentDay, isDayAvailable, hasStarted, startJourney, resetJourney, isDayComplete } = useAppContext();
   const [completedDays, setCompletedDays] = useState([]);
 
-  // Load completedDays from localStorage
+  // Load completedDays from AppContext (Supabase data)
   useEffect(() => {
     const completed = [];
     
     for (let day = 1; day <= 84; day++) {
-      const isComplete = getItem(`complete-day-${day}`, false);
-      const hasEntry = getItem(`entry-day-${day}`, '').trim().length > 0;
-      
-      if (isComplete || hasEntry) {
+      if (isDayComplete(day)) {
         completed.push(day);
       }
     }
     
     setCompletedDays(completed);
-  }, []);
+  }, [isDayComplete]);
 
   // Calculate progress
   const progressPercentage = Math.round((completedDays.length / 84) * 100);

@@ -29,7 +29,11 @@ const AppContent = () => {
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/dashboard" element={
+          <PrivateRoute>
+            <Dashboard />
+          </PrivateRoute>
+        } />
         <Route path="/overview" element={
           <PrivateRoute>
             <OverviewPage />
@@ -45,10 +49,21 @@ const AppContent = () => {
             <DayPage />
           </PrivateRoute>
         } />
-        <Route path="/week01" element={<Week01 />} />
-        <Route path="/week02" element={<Week02 />} />
-        {/* <Route path="/week02" element={<Week02 />} /> ... */}
-        <Route path="/week12" element={<Week12 />} />
+        <Route path="/week01" element={
+          <PrivateRoute>
+            <Week01 />
+          </PrivateRoute>
+        } />
+        <Route path="/week02" element={
+          <PrivateRoute>
+            <Week02 />
+          </PrivateRoute>
+        } />
+        <Route path="/week12" element={
+          <PrivateRoute>
+            <Week12 />
+          </PrivateRoute>
+        } />
       </Routes>
     </div>
   );

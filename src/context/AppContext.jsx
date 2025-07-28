@@ -1,9 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
 import { supabase } from '../lib/supabaseClient';
-import { getItem, setItem } from '../utils/localStorage';
-
-const STORAGE_KEY = 'ascetic-app-state';
 
 const defaultState = {
   currentWeek: 1,
@@ -23,32 +20,14 @@ export const AppProvider = ({ children }) => {
   const [state, setState] = useState(defaultState);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Load data based on authentication status
+  // Load data from Supabase (all users are authenticated)
   useEffect(() => {
     const loadData = async () => {
       if (!user) {
-        // Non-authenticated users: use localStorage only
-        const stored = localStorage.getItem(STORAGE_KEY);
-        if (stored) {
-          try {
-            const parsedState = JSON.parse(stored);
-            setState({
-              ...defaultState,
-              ...parsedState,
-              currentDay: parsedState.currentDay || 1,
-              completedDays: parsedState.completedDays || [],
-              startDate: parsedState.startDate || null,
-            });
-          } catch (error) {
-            console.warn('Failed to parse stored state, using defaults:', error);
-            setState(defaultState);
-          }
-        }
         setIsLoading(false);
         return;
       }
 
-      // Authenticated users: use Supabase only
       try {
         // Load progress data from Supabase
         const { data: progressData, error: progressError } = await supabase
@@ -79,7 +58,7 @@ export const AppProvider = ({ children }) => {
           });
         }
 
-        // Update state with Supabase data only
+        // Update state with Supabase data
         setState({
           ...defaultState,
           completedDays: progressData?.completed_days || [],
@@ -89,7 +68,6 @@ export const AppProvider = ({ children }) => {
 
       } catch (error) {
         console.error('Error loading data from Supabase:', error);
-        // Don't fall back to localStorage for authenticated users
         setState(defaultState);
       } finally {
         setIsLoading(false);
@@ -159,20 +137,24 @@ export const AppProvider = ({ children }) => {
     setState(updatedState);
     await syncProgressToSupabase(updatedState);
     
-    // Also clear localStorage entries
-    for (let day = 1; day <= 84; day++) {
-      localStorage.removeItem(`entry-day-${day}`);
-      localStorage.removeItem(`complete-day-${day}`);
-      localStorage.removeItem(`timestamp-day-${day}`);
+    // Also clear journal entries from Supabase
+    if (user) {
+      try {
+        const { error } = await supabase
+          .from('journals')
+          .delete()
+          .eq('user_id', user.id);
+          
+        if (error) {
+          console.error('Error clearing journal entries:', error);
+        }
+      } catch (error) {
+        console.error('Error clearing journal entries:', error);
+      }
     }
   };
 
-  // Save to localStorage only for non-authenticated users
-  useEffect(() => {
-    if (!isLoading && !user) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-    }
-  }, [state, isLoading, user]);
+
 
   const setCurrentWeek = (week) => setState((s) => ({ ...s, currentWeek: week }));
   const setCurrentDay = (day) => setState((s) => ({ ...s, currentDay: day }));
@@ -197,74 +179,47 @@ export const AppProvider = ({ children }) => {
   };
   
   const setJournalEntry = async (weekNumber, text) => {
-    if (user) {
-      // Authenticated users: save to Supabase only
-      try {
-        const { error } = await supabase
-          .from('journals')
-          .upsert({
-            user_id: user.id,
-            day_number: parseInt(weekNumber),
-            text: text,
-            updated_at: new Date().toISOString()
-          });
+    if (!user) return; // All users must be authenticated
+    
+    try {
+      const { error } = await supabase
+        .from('journals')
+        .upsert({
+          user_id: user.id,
+          day_number: parseInt(weekNumber),
+          text: text,
+          updated_at: new Date().toISOString()
+        });
 
-        if (error) {
-          console.error('Error saving journal entry to Supabase:', error);
-          return;
-        }
-
-        // Update state after successful Supabase save
-        setState((s) => ({
-          ...s,
-          journalEntries: { ...s.journalEntries, [weekNumber]: text },
-        }));
-      } catch (error) {
+      if (error) {
         console.error('Error saving journal entry to Supabase:', error);
         return;
       }
-    } else {
-      // Non-authenticated users: save to localStorage only
+
+      // Update state after successful Supabase save
       setState((s) => ({
         ...s,
         journalEntries: { ...s.journalEntries, [weekNumber]: text },
       }));
-      setItem(`entry-day-${weekNumber}`, text);
-    }
-    
-    // Auto-complete day if journal entry has content
-    const dayNumber = parseInt(weekNumber);
-    if (text.trim() && !isNaN(dayNumber)) {
-      await completeDay(dayNumber);
+
+      // Auto-complete day if journal entry has content
+      const dayNumber = parseInt(weekNumber);
+      if (text.trim() && !isNaN(dayNumber)) {
+        await completeDay(dayNumber);
+      }
+    } catch (error) {
+      console.error('Error saving journal entry to Supabase:', error);
     }
   };
   
   const getJournalEntry = (weekNumber) => {
-    if (user) {
-      // Authenticated users: use Supabase data from state only
-      return state.journalEntries[weekNumber] || '';
-    } else {
-      // Non-authenticated users: check both state and localStorage
-      const stateEntry = state.journalEntries[weekNumber] || '';
-      const localEntry = getItem(`entry-day-${weekNumber}`, '');
-      return stateEntry || localEntry;
-    }
+    return state.journalEntries[weekNumber] || '';
   };
   
   const isDayComplete = (day) => {
-    if (user) {
-      // Authenticated users: check Supabase data only
-      const hasJournal = state.journalEntries[day.toString()]?.trim().length > 0;
-      const isMarkedComplete = (state.completedDays || []).includes(day);
-      return hasJournal || isMarkedComplete;
-    } else {
-      // Non-authenticated users: check localStorage and state
-      const hasJournal = state.journalEntries[day.toString()]?.trim().length > 0;
-      const hasLocalStorageEntry = getItem(`entry-day-${day}`, '').trim().length > 0;
-      const isMarkedComplete = getItem(`complete-day-${day}`, false);
-      const isMarkedCompleteInState = (state.completedDays || []).includes(day);
-      return hasJournal || hasLocalStorageEntry || isMarkedComplete || isMarkedCompleteInState;
-    }
+    const hasJournal = state.journalEntries[day.toString()]?.trim().length > 0;
+    const isMarkedComplete = (state.completedDays || []).includes(day);
+    return hasJournal || isMarkedComplete;
   };
 
   return (

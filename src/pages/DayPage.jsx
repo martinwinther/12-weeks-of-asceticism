@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { layersByWeek } from '../data/layersByWeek';
 import { promptsByWeek } from '../data/promptsByWeek';
-import { getItem, setItem } from '../utils/localStorage';
 import { useAppContext } from '../context/AppContext';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../lib/supabaseClient';
@@ -132,57 +131,52 @@ const DayPage = () => {
     }
   };
 
-  // Load journal entry based on authentication status
+  // Load journal entry from Supabase
   useEffect(() => {
     const loadJournalEntry = async () => {
+      if (!user) {
+        setIsLoading(false);
+        return;
+      }
+
       setIsLoading(true);
       
-      if (user) {
-        // Authenticated users: load from Supabase only
-        try {
-          const supabaseEntry = await loadJournalFromSupabase();
-          setJournalEntry(supabaseEntry || '');
-        } catch (error) {
-          console.error('Error loading journal entry from Supabase:', error);
-          setJournalEntry('');
-        }
-      } else {
-        // Non-authenticated users: load from localStorage only
-        const localEntry = getItem(`entry-day-${dayNum}`, '');
-        setJournalEntry(localEntry);
+      try {
+        const supabaseEntry = await loadJournalFromSupabase();
+        setJournalEntry(supabaseEntry || '');
+      } catch (error) {
+        console.error('Error loading journal entry from Supabase:', error);
+        setJournalEntry('');
+      } finally {
+        setIsLoading(false);
       }
-      
-      setIsLoading(false);
     };
 
     loadJournalEntry();
   }, [dayNum, user]);
 
-  // Save entry based on authentication status
+  // Save entry to Supabase with debouncing
   const handleJournalChange = (e) => {
     const value = e.target.value;
     setJournalEntry(value);
     
-    if (user) {
-      // Authenticated users: save to Supabase only with debouncing
-      if (handleJournalChange.timeoutId) {
-        clearTimeout(handleJournalChange.timeoutId);
-      }
-      
-      setIsSaving(true);
-      handleJournalChange.timeoutId = setTimeout(async () => {
-        try {
-          await saveJournalToSupabase(value);
-        } catch (error) {
-          console.error('Error auto-saving to Supabase:', error);
-        } finally {
-          setIsSaving(false);
-        }
-      }, 1000); // Save 1 second after user stops typing
-    } else {
-      // Non-authenticated users: save to localStorage immediately
-      setItem(`entry-day-${dayNum}`, value);
+    if (!user) return; // All users must be authenticated
+    
+    // Debounce Supabase save to avoid too many API calls
+    if (handleJournalChange.timeoutId) {
+      clearTimeout(handleJournalChange.timeoutId);
     }
+    
+    setIsSaving(true);
+    handleJournalChange.timeoutId = setTimeout(async () => {
+      try {
+        await saveJournalToSupabase(value);
+      } catch (error) {
+        console.error('Error auto-saving to Supabase:', error);
+      } finally {
+        setIsSaving(false);
+      }
+    }, 1000); // Save 1 second after user stops typing
   };
 
   // Cleanup timeout on unmount
@@ -262,13 +256,19 @@ const DayPage = () => {
             <div className="bg-primary/10 rounded-lg p-4 md:p-6 border border-primary/20">
               <h3 className="text-lg md:text-xl font-medium text-primary mb-4">Begin Your 84-Day Journey</h3>
               <p className="text-accent mb-6 text-sm md:text-base">
-                Ready to start your ascetic practice? Click below to begin Day 1 and unlock your daily progression.
+                Ready to start your ascetic practice? Create an account or sign in to begin your journey.
               </p>
               <button
-                onClick={() => startJourney()}
-                className="bg-primary text-white px-6 py-3 md:px-8 rounded-md hover:bg-accent transition-colors font-medium text-sm md:text-base"
+                onClick={() => navigate('/signup')}
+                className="bg-primary text-white px-6 py-3 md:px-8 rounded-md hover:bg-accent transition-colors font-medium text-sm md:text-base mr-3"
               >
-                Start Journey
+                Sign Up
+              </button>
+              <button
+                onClick={() => navigate('/login')}
+                className="bg-white text-primary border-2 border-primary px-6 py-3 md:px-8 rounded-md hover:bg-background transition-colors font-medium text-sm md:text-base"
+              >
+                Sign In
               </button>
             </div>
           </div>
@@ -294,8 +294,7 @@ const DayPage = () => {
           <p className="text-xs text-accent mt-2">
             {isLoading ? 'Loading...' : 
              isSaving ? 'Saving to cloud...' : 
-             user ? 'Auto-saved to cloud' : 
-             'Auto-saved locally (sign in to sync across devices)'}
+             'Auto-saved to cloud'}
           </p>
         </div>
 

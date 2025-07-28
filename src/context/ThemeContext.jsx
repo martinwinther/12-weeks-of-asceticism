@@ -17,15 +17,10 @@ export const ThemeProvider = ({ children }) => {
   const [theme, setThemeState] = useState('light');
   const [isLoading, setIsLoading] = useState(true);
 
-  // Load theme from Supabase on mount or user change
+  // Load theme from Supabase (all users are authenticated)
   useEffect(() => {
     const loadTheme = async () => {
       if (!user) {
-        // If no user, load from localStorage as fallback
-        const savedTheme = localStorage.getItem('ascetic-theme');
-        if (savedTheme && ['light', 'dark', 'monastic'].includes(savedTheme)) {
-          setThemeState(savedTheme);
-        }
         setIsLoading(false);
         return;
       }
@@ -55,11 +50,8 @@ export const ThemeProvider = ({ children }) => {
   // Save theme to Supabase when it changes
   const setTheme = async (newTheme) => {
     setThemeState(newTheme);
-    
-    // Save to localStorage as fallback
-    localStorage.setItem('ascetic-theme', newTheme);
 
-    if (!user) return;
+    if (!user) return; // All users must be authenticated
 
     try {
       const { error } = await supabase
