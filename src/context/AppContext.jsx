@@ -24,7 +24,7 @@ export const AppProvider = ({ children }) => {
   // Load data from Supabase (all users are authenticated)
   useEffect(() => {
     const loadData = async () => {
-      if (!user) {
+      if (!user?.id) {
         setIsLoading(false);
         return;
       }
@@ -78,7 +78,7 @@ export const AppProvider = ({ children }) => {
     };
 
     loadData();
-  }, [user]);
+  }, [user?.id]); // Only reload when user ID changes, not on every auth refresh
 
   // Calculate current day based on calendar date since start
   const getCurrentDay = () => {
