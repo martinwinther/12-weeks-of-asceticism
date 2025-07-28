@@ -11,10 +11,6 @@ import OverviewPage from './pages/OverviewPage';
 import TimelinePage from './pages/TimelinePage';
 import DayPage from './pages/DayPage';
 import AuthPage from './pages/AuthPage';
-import Week01 from './pages/Week01';
-import Week12 from './pages/Week12';
-import Week02 from './pages/Week02';
-// ... import Week02 to Week11 when created
 
 const AppContent = () => {
   const location = useLocation();
@@ -48,21 +44,6 @@ const AppContent = () => {
         <Route path="/day/:dayNumber" element={
           <PrivateRoute>
             <DayPage />
-          </PrivateRoute>
-        } />
-        <Route path="/week01" element={
-          <PrivateRoute>
-            <Week01 />
-          </PrivateRoute>
-        } />
-        <Route path="/week02" element={
-          <PrivateRoute>
-            <Week02 />
-          </PrivateRoute>
-        } />
-        <Route path="/week12" element={
-          <PrivateRoute>
-            <Week12 />
           </PrivateRoute>
         } />
       </Routes>

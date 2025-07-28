@@ -181,51 +181,8 @@ export const AppProvider = ({ children }) => {
     await syncProgressToSupabase(updatedState);
   };
   
-  const setJournalEntry = async (weekNumber, text) => {
-    if (!user) return; // All users must be authenticated
-    
-    try {
-      // Validate and sanitize input
-      const validation = validateText(text);
-      if (!validation.isValid) {
-        console.error('Invalid text input:', validation.error);
-        return;
-      }
-
-      const sanitizedText = sanitizeText(text);
-
-      const { error } = await supabase
-        .from('journals')
-        .upsert({
-          user_id: user.id,
-          day_number: parseInt(weekNumber),
-          text: sanitizedText,
-          updated_at: new Date().toISOString()
-        });
-
-      if (error) {
-        console.error('Error saving journal entry to Supabase:', error);
-        return;
-      }
-
-      // Update state after successful Supabase save
-      setState((s) => ({
-        ...s,
-        journalEntries: { ...s.journalEntries, [weekNumber]: sanitizedText },
-      }));
-
-      // Auto-complete day if journal entry has content
-      const dayNumber = parseInt(weekNumber);
-      if (sanitizedText.trim() && !isNaN(dayNumber)) {
-        await completeDay(dayNumber);
-      }
-    } catch (error) {
-      console.error('Error saving journal entry to Supabase:', error);
-    }
-  };
-  
-  const getJournalEntry = (weekNumber) => {
-    return state.journalEntries[weekNumber] || '';
+  const getJournalEntry = (dayNumber) => {
+    return state.journalEntries[dayNumber] || '';
   };
   
   const isDayComplete = (day) => {
@@ -234,24 +191,25 @@ export const AppProvider = ({ children }) => {
     return hasJournal || isMarkedComplete;
   };
 
+  const value = {
+    state,
+    isLoading,
+    currentDay: getCurrentDay(),
+    hasStarted: !!state.startDate,
+    startJourney,
+    resetJourney,
+    completeWeek,
+    completeDay,
+    getJournalEntry,
+    isDayAvailable,
+    isDayComplete,
+    setCurrentWeek,
+    setCurrentDay,
+  };
+
   return (
     <AppContext.Provider
-      value={{
-        ...state,
-        currentDay: getCurrentDay(), // Use dynamic calculation
-        hasStarted: !!state.startDate, // Boolean for whether journey has begun
-        isLoading,
-        setCurrentWeek,
-        setCurrentDay,
-        completeWeek,
-        completeDay,
-        setJournalEntry,
-        getJournalEntry,
-        isDayComplete,
-        isDayAvailable,
-        startJourney,
-        resetJourney,
-      }}
+      value={value}
     >
       {children}
     </AppContext.Provider>

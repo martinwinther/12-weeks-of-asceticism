@@ -23,7 +23,7 @@ export const sanitizeText = (text) => {
 
 // Validate text input
 export const validateText = (text) => {
-  if (!text) return true; // Empty text is valid
+  if (!text) return { isValid: true }; // Empty text is valid
   
   if (typeof text !== 'string') {
     return { isValid: false, error: 'Text must be a string' };
