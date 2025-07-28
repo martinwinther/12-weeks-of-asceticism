@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { layersByWeek } from '../data/layersByWeek.js';
-import { promptsByWeek } from '../data/promptsByWeek.js';
+import { layersByWeek } from '../data/layersByWeek';
+import { promptsByWeek } from '../data/promptsByWeek';
 import { getItem, setItem } from '../utils/localStorage';
 
 const DayPage = () => {

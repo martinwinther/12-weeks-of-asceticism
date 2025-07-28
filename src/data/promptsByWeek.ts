@@ -1,4 +1,4 @@
-export const promptsByWeek = {
+export const promptsByWeek: Record<number, string[]> = {
   1: [
     "How did waking before sunrise affect your mental clarity today?",
     "What did you notice about your energy levels without sugar?",

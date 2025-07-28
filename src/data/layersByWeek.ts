@@ -1,4 +1,10 @@
-export const layersByWeek = {
+export interface Layer {
+  title: string;
+  description: string;
+  action: string;
+}
+
+export const layersByWeek: Record<number, Layer> = {
   1: {
     title: "Foundations",
     description: "Establish core practices for mindful living through early rising, clean eating, and daily meditation.",

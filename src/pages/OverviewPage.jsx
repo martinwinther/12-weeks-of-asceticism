@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { layersByWeek } from '../data/layersByWeek.js';
+import { layersByWeek } from '../data/layersByWeek';
 import { getItem } from '../utils/localStorage';
 
 const OverviewPage = () => {
