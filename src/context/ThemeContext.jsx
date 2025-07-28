@@ -20,7 +20,7 @@ export const ThemeProvider = ({ children }) => {
   // Load theme from Supabase (all users are authenticated)
   useEffect(() => {
     const loadTheme = async () => {
-      if (!user) {
+      if (!user?.id) {
         setIsLoading(false);
         return;
       }
@@ -45,7 +45,7 @@ export const ThemeProvider = ({ children }) => {
     };
 
     loadTheme();
-  }, [user]);
+  }, [user?.id]); // Only reload when user ID changes, not on every auth refresh
 
   // Save theme to Supabase when it changes
   const setTheme = async (newTheme) => {
