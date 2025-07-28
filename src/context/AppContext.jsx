@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
 import { supabase } from '../lib/supabaseClient';
-import { getItem } from '../utils/localStorage';
+import { getItem, setItem } from '../utils/localStorage';
 
 const STORAGE_KEY = 'ascetic-app-state';
 
@@ -23,9 +23,66 @@ export const AppProvider = ({ children }) => {
   const [state, setState] = useState(defaultState);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Load progress data from Supabase on mount or user change
+  // Migration function to sync all localStorage data to Supabase
+  const migrateLocalStorageToSupabase = async () => {
+    if (!user) return;
+
+    console.log('Starting migration of localStorage data to Supabase...');
+    
+    try {
+      // Migrate all journal entries (1-84 days)
+      const journalEntriesToMigrate = [];
+      
+      for (let day = 1; day <= 84; day++) {
+        const localEntry = getItem(`entry-day-${day}`, '');
+        if (localEntry.trim()) {
+          journalEntriesToMigrate.push({
+            user_id: user.id,
+            day_number: day,
+            text: localEntry,
+            updated_at: new Date().toISOString()
+          });
+        }
+      }
+
+      // Batch upsert all journal entries
+      if (journalEntriesToMigrate.length > 0) {
+        const { error: journalError } = await supabase
+          .from('journals')
+          .upsert(journalEntriesToMigrate);
+
+        if (journalError) {
+          console.error('Error migrating journal entries:', journalError);
+        } else {
+          console.log(`Successfully migrated ${journalEntriesToMigrate.length} journal entries`);
+        }
+      }
+
+      // Migrate progress data from localStorage
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) {
+        try {
+          const parsedState = JSON.parse(stored);
+          if (parsedState.startDate || parsedState.completedDays?.length > 0) {
+            await syncProgressToSupabase({
+              completedDays: parsedState.completedDays || [],
+              startDate: parsedState.startDate || null,
+            });
+            console.log('Successfully migrated progress data');
+          }
+        } catch (error) {
+          console.error('Error parsing stored state for migration:', error);
+        }
+      }
+
+    } catch (error) {
+      console.error('Error during localStorage migration:', error);
+    }
+  };
+
+  // Load all data from Supabase on mount or user change
   useEffect(() => {
-    const loadProgressData = async () => {
+    const loadAllData = async () => {
       if (!user) {
         // If no user, load from localStorage as fallback
         const stored = localStorage.getItem(STORAGE_KEY);
@@ -49,29 +106,61 @@ export const AppProvider = ({ children }) => {
       }
 
       try {
-        const { data, error } = await supabase
+        // Load progress data from Supabase
+        const { data: progressData, error: progressError } = await supabase
           .from('progress')
           .select('completed_days, start_date')
           .eq('user_id', user.id)
           .single();
 
-        if (error && error.code !== 'PGRST116') { // PGRST116 = no rows returned
-          console.error('Error loading progress data:', error);
-        } else if (data) {
-          setState(prevState => ({
-            ...prevState,
-            completedDays: data.completed_days || [],
-            startDate: data.start_date || null,
-          }));
+        // Load journal entries from Supabase
+        const { data: journalData, error: journalError } = await supabase
+          .from('journals')
+          .select('day_number, text')
+          .eq('user_id', user.id);
+
+        if (progressError && progressError.code !== 'PGRST116') {
+          console.error('Error loading progress data:', progressError);
         }
+
+        if (journalError) {
+          console.error('Error loading journal data:', journalError);
+        }
+
+        // Build journal entries object from Supabase data
+        const journalEntries = {};
+        if (journalData) {
+          journalData.forEach(entry => {
+            journalEntries[entry.day_number.toString()] = entry.text;
+          });
+        }
+
+        // Update state with Supabase data
+        setState(prevState => ({
+          ...prevState,
+          completedDays: progressData?.completed_days || [],
+          startDate: progressData?.start_date || null,
+          journalEntries: journalEntries,
+        }));
+
+        // If this is the first time loading and we have localStorage data, migrate it
+        if ((!progressData || !journalData?.length) && localStorage.getItem(STORAGE_KEY)) {
+          await migrateLocalStorageToSupabase();
+          
+          // Reload data after migration
+          setTimeout(() => {
+            window.location.reload();
+          }, 1000);
+        }
+
       } catch (error) {
-        console.error('Error loading progress data:', error);
+        console.error('Error loading data:', error);
       } finally {
         setIsLoading(false);
       }
     };
 
-    loadProgressData();
+    loadAllData();
   }, [user]);
 
   // Calculate current day based on calendar date since start
@@ -172,10 +261,34 @@ export const AppProvider = ({ children }) => {
   };
   
   const setJournalEntry = async (weekNumber, text) => {
+    // Update state immediately
     setState((s) => ({
       ...s,
       journalEntries: { ...s.journalEntries, [weekNumber]: text },
     }));
+    
+    // Save to localStorage as backup
+    setItem(`entry-day-${weekNumber}`, text);
+    
+    // Save to Supabase if user is authenticated
+    if (user) {
+      try {
+        const { error } = await supabase
+          .from('journals')
+          .upsert({
+            user_id: user.id,
+            day_number: parseInt(weekNumber),
+            text: text,
+            updated_at: new Date().toISOString()
+          });
+
+        if (error) {
+          console.error('Error saving journal entry to Supabase:', error);
+        }
+      } catch (error) {
+        console.error('Error saving journal entry to Supabase:', error);
+      }
+    }
     
     // Auto-complete day if journal entry has content
     const dayNumber = parseInt(weekNumber);
@@ -185,11 +298,17 @@ export const AppProvider = ({ children }) => {
   };
   
   const getJournalEntry = (weekNumber) => {
-    // Check state first (for Supabase-synced entries)
-    const stateEntry = state.journalEntries[weekNumber] || '';
-    // Check localStorage for day-specific entries
+    // Prioritize Supabase-synced entries from state when user is authenticated
+    if (user && state.journalEntries[weekNumber]) {
+      return state.journalEntries[weekNumber];
+    }
+    
+    // Fall back to localStorage
     const localEntry = getItem(`entry-day-${weekNumber}`, '');
-    // Return whichever has content, preferring state entry if both exist
+    
+    // Also check state entries for non-authenticated users
+    const stateEntry = state.journalEntries[weekNumber] || '';
+    
     return stateEntry || localEntry;
   };
   
