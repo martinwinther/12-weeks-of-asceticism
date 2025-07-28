@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../lib/supabaseClient';
+import { sanitizeText, validateText } from '../utils/sanitize';
 
 const JournalTextarea = ({ weekNumber }) => {
   const { user } = useAuth();
@@ -27,7 +28,9 @@ const JournalTextarea = ({ weekNumber }) => {
         if (error && error.code !== 'PGRST116') { // PGRST116 = no rows returned
           console.error('Error loading journal entry:', error);
         } else if (data) {
-          setText(data.text || '');
+          // Sanitize text when loading (in case of legacy data)
+          const text = data.text || '';
+          setText(text ? sanitizeText(text) : '');
         }
       } catch (error) {
         console.error('Error loading journal entry:', error);
@@ -54,12 +57,22 @@ const JournalTextarea = ({ weekNumber }) => {
 
     setIsSaving(true);
     try {
+      // Validate and sanitize input
+      const validation = validateText(newText);
+      if (!validation.isValid) {
+        console.error('Invalid text input:', validation.error);
+        setIsSaving(false);
+        return;
+      }
+
+      const sanitizedText = sanitizeText(newText);
+
       const { error } = await supabase
         .from('journals')
         .upsert({
           user_id: user.id,
           day_number: weekNumber,
-          text: newText,
+          text: sanitizedText,
           updated_at: new Date().toISOString()
         });
 

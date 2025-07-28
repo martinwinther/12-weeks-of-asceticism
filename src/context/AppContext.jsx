@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
 import { supabase } from '../lib/supabaseClient';
+import { sanitizeText, validateText } from '../utils/sanitize';
 
 const defaultState = {
   currentWeek: 1,
@@ -54,7 +55,9 @@ export const AppProvider = ({ children }) => {
         const journalEntries = {};
         if (journalData) {
           journalData.forEach(entry => {
-            journalEntries[entry.day_number.toString()] = entry.text;
+            // Sanitize text when loading (in case of legacy data)
+            const text = entry.text || '';
+            journalEntries[entry.day_number.toString()] = text ? sanitizeText(text) : '';
           });
         }
 
@@ -182,12 +185,21 @@ export const AppProvider = ({ children }) => {
     if (!user) return; // All users must be authenticated
     
     try {
+      // Validate and sanitize input
+      const validation = validateText(text);
+      if (!validation.isValid) {
+        console.error('Invalid text input:', validation.error);
+        return;
+      }
+
+      const sanitizedText = sanitizeText(text);
+
       const { error } = await supabase
         .from('journals')
         .upsert({
           user_id: user.id,
           day_number: parseInt(weekNumber),
-          text: text,
+          text: sanitizedText,
           updated_at: new Date().toISOString()
         });
 
@@ -199,12 +211,12 @@ export const AppProvider = ({ children }) => {
       // Update state after successful Supabase save
       setState((s) => ({
         ...s,
-        journalEntries: { ...s.journalEntries, [weekNumber]: text },
+        journalEntries: { ...s.journalEntries, [weekNumber]: sanitizedText },
       }));
 
       // Auto-complete day if journal entry has content
       const dayNumber = parseInt(weekNumber);
-      if (text.trim() && !isNaN(dayNumber)) {
+      if (sanitizedText.trim() && !isNaN(dayNumber)) {
         await completeDay(dayNumber);
       }
     } catch (error) {

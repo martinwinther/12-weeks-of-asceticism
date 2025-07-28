@@ -5,6 +5,7 @@ import { promptsByWeek } from '../data/promptsByWeek';
 import { useAppContext } from '../context/AppContext';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../lib/supabaseClient';
+import { sanitizeText, validateText } from '../utils/sanitize';
 
 const DayPage = () => {
   const { dayNumber } = useParams();
@@ -102,7 +103,9 @@ const DayPage = () => {
         return null;
       }
 
-      return data?.text || null;
+      // Sanitize text when loading (in case of legacy data)
+      const text = data?.text || null;
+      return text ? sanitizeText(text) : null;
     } catch (error) {
       console.error('Error loading journal entry from Supabase:', error);
       return null;
@@ -114,12 +117,21 @@ const DayPage = () => {
     if (!user) return;
 
     try {
+      // Validate and sanitize input
+      const validation = validateText(text);
+      if (!validation.isValid) {
+        console.error('Invalid text input:', validation.error);
+        return;
+      }
+
+      const sanitizedText = sanitizeText(text);
+
       const { error } = await supabase
         .from('journals')
         .upsert({
           user_id: user.id,
           day_number: dayNum,
-          text: text,
+          text: sanitizedText,
           updated_at: new Date().toISOString()
         });
 
