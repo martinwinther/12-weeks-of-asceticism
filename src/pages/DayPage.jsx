@@ -28,9 +28,8 @@ const DayPage = () => {
   // Get layer data from layersByWeek
   const layerData = layersByWeek[currentWeek];
   
-  // Get daily reflection prompt (cycle through 7 prompts per week)
-  const dayOfWeek = ((dayNum - 1) % 7) + 1; // 1-7
-  const dailyPrompt = promptsByWeek[currentWeek]?.[dayOfWeek - 1] || '';
+  // Get weekly reflection prompt (one prompt per week)
+  const weeklyPrompt = promptsByWeek[currentWeek] || '';
 
   // Load existing entry from localStorage on mount
   useEffect(() => {
@@ -81,12 +80,12 @@ const DayPage = () => {
           </div>
         </div>
 
-        {/* Section 2: Daily Reflection Prompt */}
+        {/* Section 2: Weekly Reflection Prompt */}
         <div className="mb-12">
-          <h3 className="text-xl font-medium text-gray-900 mb-4">Today's Reflection</h3>
+          <h3 className="text-xl font-medium text-gray-900 mb-4">This Week's Reflection</h3>
           <div className="border-l-4 border-gray-300 pl-6">
             <p className="text-gray-800 font-medium italic">
-              {dailyPrompt}
+              {weeklyPrompt}
             </p>
           </div>
         </div>
