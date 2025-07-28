@@ -36,13 +36,13 @@ const Dashboard = () => {
     let baseStyles = "w-10 h-10 rounded-md flex items-center justify-center text-sm font-mono transition-all duration-200 border-2";
     
     if (isFuture) {
-      return `${baseStyles} bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed`;
+      return `${baseStyles} bg-background text-accent/60 border-accent/20 cursor-not-allowed`;
     } else if (isCurrent) {
-      return `${baseStyles} bg-blue-600 text-white border-blue-600 shadow-md ring-2 ring-blue-300`;
+      return `${baseStyles} bg-primary text-white border-primary shadow-md ring-2 ring-primary/30`;
     } else if (isComplete) {
-      return `${baseStyles} bg-green-600 text-white border-green-600 hover:bg-green-700`;
+      return `${baseStyles} bg-accent text-white border-accent hover:bg-accent/80`;
     } else {
-      return `${baseStyles} bg-white text-gray-700 border-gray-300 hover:border-blue-600 hover:shadow-sm`;
+      return `${baseStyles} bg-white text-primary border-accent/30 hover:border-primary hover:shadow-sm`;
     }
   };
 
@@ -55,31 +55,31 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background text-primary font-serif">
       <div className="max-w-6xl mx-auto p-6">
         
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Your Journey</h1>
-          <p className="text-gray-600">Track your progress through 84 days of ascetic practice</p>
+          <h1 className="text-3xl font-bold text-primary mb-2">Your Journey</h1>
+          <p className="text-accent">Track your progress through 84 days of ascetic practice</p>
         </div>
         
         {/* Legend */}
-        <div className="mb-8 flex flex-wrap gap-4 justify-center text-sm bg-white rounded-lg p-4 shadow-sm">
+        <div className="mb-8 flex flex-wrap gap-4 justify-center text-sm bg-white rounded-lg p-4 shadow-sm border border-accent/20">
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded bg-blue-600"></div>
+            <div className="w-4 h-4 rounded bg-primary"></div>
             <span>Current Day</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded bg-green-600"></div>
+            <div className="w-4 h-4 rounded bg-accent"></div>
             <span>Completed</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded bg-white border border-gray-300"></div>
+            <div className="w-4 h-4 rounded bg-white border border-accent/30"></div>
             <span>Available</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded bg-gray-100"></div>
+            <div className="w-4 h-4 rounded bg-background"></div>
             <span>Future</span>
           </div>
           <div className="flex items-center gap-2">
@@ -91,8 +91,8 @@ const Dashboard = () => {
         {/* 84-Day Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
           {weeks.map((weekDays, weekIndex) => (
-            <div key={weekIndex} className="bg-white rounded-lg shadow-sm p-4 border border-gray-200">
-              <h3 className="text-sm font-semibold text-gray-600 mb-3 text-center">
+            <div key={weekIndex} className="bg-white rounded-lg shadow-sm p-4 border border-accent/20">
+              <h3 className="text-sm font-semibold text-accent mb-3 text-center">
                 Week {weekIndex + 1}
               </h3>
               <div className="grid grid-cols-7 gap-1">
@@ -136,24 +136,24 @@ const Dashboard = () => {
         </div>
 
         {/* Current Progress Summary */}
-        <div className="bg-white rounded-lg shadow-sm p-6 text-center">
-          <h2 className="text-xl font-bold mb-4 text-gray-900">Your Progress</h2>
+        <div className="bg-white rounded-lg shadow-sm p-6 text-center border border-accent/20">
+          <h2 className="text-xl font-bold mb-4 text-primary">Your Progress</h2>
           <div className="flex justify-center gap-8 text-sm">
             <div>
-              <div className="text-2xl font-bold text-blue-600">{currentDay}</div>
-              <div className="text-gray-600">Current Day</div>
+              <div className="text-2xl font-bold text-primary">{currentDay}</div>
+              <div className="text-accent">Current Day</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-green-600">
+              <div className="text-2xl font-bold text-accent">
                 {Array.from({length: 84}, (_, i) => i + 1).filter(day => isDayComplete(day)).length}
               </div>
-              <div className="text-gray-600">Days Completed</div>
+              <div className="text-accent">Days Completed</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-gray-600">
+              <div className="text-2xl font-bold text-accent">
                 {Array.from({length: 84}, (_, i) => i + 1).filter(day => getJournalEntry(day.toString()).trim().length > 0).length}
               </div>
-              <div className="text-gray-600">Reflections Written</div>
+              <div className="text-accent">Reflections Written</div>
             </div>
           </div>
         </div>
