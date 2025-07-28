@@ -2,12 +2,15 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { AppProvider } from './context/AppContext';
 import { ThemeProvider, useTheme } from './context/ThemeContext';
+import { AuthProvider } from './context/AuthContext';
 import Navigation from './components/Navigation';
 import LandingPage from './pages/LandingPage';
 import Dashboard from './pages/Dashboard';
 import OverviewPage from './pages/OverviewPage';
 import TimelinePage from './pages/TimelinePage';
 import DayPage from './pages/DayPage';
+import LoginPage from './pages/LoginPage';
+import SignupPage from './pages/SignupPage';
 import Week01 from './pages/Week01';
 import Week12 from './pages/Week12';
 import Week02 from './pages/Week02';
@@ -23,6 +26,8 @@ const AppContent = () => {
       {showNavigation && <Navigation />}
       <Routes>
         <Route path="/" element={<LandingPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/overview" element={<OverviewPage />} />
         <Route path="/timeline" element={<TimelinePage />} />
@@ -38,11 +43,13 @@ const AppContent = () => {
 
 const App = () => (
   <ThemeProvider>
-    <AppProvider>
-      <BrowserRouter>
-        <AppContent />
-      </BrowserRouter>
-    </AppProvider>
+    <AuthProvider>
+      <AppProvider>
+        <BrowserRouter>
+          <AppContent />
+        </BrowserRouter>
+      </AppProvider>
+    </AuthProvider>
   </ThemeProvider>
 );
 

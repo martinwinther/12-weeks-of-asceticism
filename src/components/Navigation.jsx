@@ -1,9 +1,13 @@
-import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import ThemeToggle from './ThemeToggle';
 
 const Navigation = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, signOut } = useAuth();
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   
   const navItems = [
     { 
@@ -35,6 +39,14 @@ const Navigation = () => {
     },
   ];
 
+  const handleSignOut = async () => {
+    const result = await signOut();
+    if (result.success) {
+      navigate('/');
+    }
+    setIsUserMenuOpen(false);
+  };
+
   return (
     <>
       {/* Desktop Navigation - Clean minimal top bar */}
@@ -59,8 +71,56 @@ const Navigation = () => {
               ))}
             </div>
             
-            {/* Theme Toggle */}
-            <ThemeToggle />
+            {/* Right side - User menu and Theme Toggle */}
+            <div className="flex items-center space-x-3">
+              {user ? (
+                <div className="relative">
+                  <button
+                    onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                    className="flex items-center space-x-2 px-3 py-2 rounded-full bg-white border border-accent/10 hover:bg-background transition-colors"
+                  >
+                    <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center">
+                      <span className="text-white text-xs font-medium">
+                        {user.email?.charAt(0).toUpperCase()}
+                      </span>
+                    </div>
+                    <span className="text-sm text-accent hidden sm:block">{user.email}</span>
+                  </button>
+                  
+                  {isUserMenuOpen && (
+                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-accent/10 py-1 z-50">
+                      <div className="px-4 py-2 border-b border-accent/10">
+                        <p className="text-xs text-accent/70">Signed in as</p>
+                        <p className="text-sm font-medium text-accent truncate">{user.email}</p>
+                      </div>
+                      <button
+                        onClick={handleSignOut}
+                        className="w-full text-left px-4 py-2 text-sm text-accent hover:bg-background transition-colors"
+                      >
+                        Sign out
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="flex items-center space-x-2">
+                  <Link
+                    to="/login"
+                    className="px-3 py-2 text-sm text-accent hover:text-primary transition-colors"
+                  >
+                    Sign in
+                  </Link>
+                  <Link
+                    to="/signup"
+                    className="px-4 py-2 text-sm bg-primary text-white rounded-full hover:bg-primary/90 transition-colors"
+                  >
+                    Sign up
+                  </Link>
+                </div>
+              )}
+              
+              <ThemeToggle />
+            </div>
           </div>
         </div>
       </nav>
@@ -90,10 +150,51 @@ const Navigation = () => {
             ))}
           </div>
           
-          {/* Theme Toggle for Mobile */}
-          <div className="flex justify-center">
+          {/* User menu and Theme Toggle for Mobile */}
+          <div className="flex justify-between items-center px-4">
+            {user ? (
+              <button
+                onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                className="flex items-center space-x-2 px-3 py-2 rounded-full bg-white border border-accent/10"
+              >
+                <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center">
+                  <span className="text-white text-xs font-medium">
+                    {user.email?.charAt(0).toUpperCase()}
+                  </span>
+                </div>
+                <span className="text-sm text-accent">{user.email}</span>
+              </button>
+            ) : (
+              <div className="flex items-center space-x-2">
+                <Link
+                  to="/login"
+                  className="px-3 py-2 text-sm text-accent"
+                >
+                  Sign in
+                </Link>
+                <Link
+                  to="/signup"
+                  className="px-3 py-2 text-sm bg-primary text-white rounded-full"
+                >
+                  Sign up
+                </Link>
+              </div>
+            )}
+            
             <ThemeToggle />
           </div>
+          
+          {/* Mobile user menu dropdown */}
+          {user && isUserMenuOpen && (
+            <div className="mt-2 mx-4 bg-white rounded-lg shadow-lg border border-accent/10 py-1">
+              <button
+                onClick={handleSignOut}
+                className="w-full text-left px-4 py-2 text-sm text-accent"
+              >
+                Sign out
+              </button>
+            </div>
+          )}
         </div>
       </nav>
 
