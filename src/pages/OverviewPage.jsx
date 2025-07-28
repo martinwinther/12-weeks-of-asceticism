@@ -2,16 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { layersByWeek } from '../data/layersByWeek';
 import { getItem } from '../utils/localStorage';
+import { useAppContext } from '../context/AppContext';
 
 const OverviewPage = () => {
   const navigate = useNavigate();
+  const { currentDay, isDayAvailable, hasStarted, startJourney, resetJourney } = useAppContext();
   const [completedDays, setCompletedDays] = useState([]);
-  const [currentDay, setCurrentDay] = useState(1);
 
   // Load completedDays from localStorage
   useEffect(() => {
     const completed = [];
-    let today = 1;
     
     for (let day = 1; day <= 84; day++) {
       const isComplete = getItem(`complete-day-${day}`, false);
@@ -19,12 +19,10 @@ const OverviewPage = () => {
       
       if (isComplete || hasEntry) {
         completed.push(day);
-        today = Math.max(today, day + 1);
       }
     }
     
     setCompletedDays(completed);
-    setCurrentDay(Math.min(today, 84));
   }, []);
 
   // Calculate progress
@@ -34,15 +32,18 @@ const OverviewPage = () => {
   const getDayStyles = (dayNumber) => {
     const isCompleted = completedDays.includes(dayNumber);
     const isToday = dayNumber === currentDay;
+    const isAvailable = isDayAvailable(dayNumber);
     
-    let styles = "aspect-square flex items-center justify-center rounded-md text-sm font-medium cursor-pointer transition-all duration-200 hover:scale-105 ";
+    let styles = "aspect-square flex items-center justify-center rounded-md text-sm font-medium transition-all duration-200 ";
     
-    if (isCompleted) {
-      styles += "bg-accent/20 text-accent border-2 border-accent/30 hover:bg-accent/30";
+    if (!isAvailable) {
+      styles += "bg-gray-100 text-gray-400 border-2 border-gray-200 cursor-not-allowed opacity-60";
+    } else if (isCompleted) {
+      styles += "bg-accent/20 text-accent border-2 border-accent/30 hover:bg-accent/30 cursor-pointer hover:scale-105";
     } else if (isToday) {
-      styles += "bg-primary/20 text-primary border-2 border-primary ring-2 ring-primary/30 hover:bg-primary/30";
+      styles += "bg-primary/20 text-primary border-2 border-primary ring-2 ring-primary/30 hover:bg-primary/30 cursor-pointer hover:scale-105";
     } else {
-      styles += "bg-white text-accent border-2 border-accent/20 hover:bg-background";
+      styles += "bg-white text-accent border-2 border-accent/20 hover:bg-background cursor-pointer hover:scale-105";
     }
     
     return styles;
@@ -50,7 +51,9 @@ const OverviewPage = () => {
 
   // Handle day click
   const handleDayClick = (dayNumber) => {
-    navigate(`/day/${dayNumber}`);
+    if (isDayAvailable(dayNumber)) {
+      navigate(`/day/${dayNumber}`);
+    }
   };
 
   // Generate 12 weeks of 7 days each
@@ -67,6 +70,36 @@ const OverviewPage = () => {
           <div className="text-center">
             <h1 className="text-3xl font-light text-primary">Overview</h1>
             <p className="text-accent mt-1">84 days of ascetic practice</p>
+            {hasStarted && (
+              <div>
+                <p className="text-accent/80 text-sm mt-2">
+                  Day {currentDay} • {84 - currentDay + 1} days remaining
+                </p>
+                {/* Development reset button */}
+                <button
+                  onClick={() => {
+                    if (confirm('Are you sure you want to reset your journey? This will delete all progress.')) {
+                      resetJourney();
+                      window.location.reload();
+                    }
+                  }}
+                  className="text-xs text-red-500 hover:text-red-700 mt-2 underline"
+                >
+                  Reset Journey (Dev)
+                </button>
+              </div>
+            )}
+            {!hasStarted && (
+              <div className="mt-4">
+                <p className="text-accent mb-3">Ready to begin your journey?</p>
+                <button
+                  onClick={() => navigate('/day/1')}
+                  className="bg-primary text-white px-6 py-2 rounded-md hover:bg-accent transition-colors font-medium"
+                >
+                  Start Day 1
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Progress Indicator */}
@@ -108,23 +141,32 @@ const OverviewPage = () => {
                 
                 {/* Week Grid - 7 days */}
                 <div className="grid grid-cols-7 gap-2">
-                  {week.map((dayNumber) => (
-                    <div
-                      key={dayNumber}
-                      onClick={() => handleDayClick(dayNumber)}
-                      className={getDayStyles(dayNumber)}
-                    >
-                      <div className="text-center">
-                        <div className="font-semibold">{dayNumber}</div>
-                        {completedDays.includes(dayNumber) && (
-                          <div className="text-xs mt-1">✓</div>
-                        )}
-                        {dayNumber === currentDay && (
-                          <div className="text-xs mt-1">●</div>
-                        )}
+                  {week.map((dayNumber) => {
+                    const isCompleted = completedDays.includes(dayNumber);
+                    const isToday = dayNumber === currentDay;
+                    const isAvailable = isDayAvailable(dayNumber);
+                    
+                    return (
+                      <div
+                        key={dayNumber}
+                        onClick={() => handleDayClick(dayNumber)}
+                        className={getDayStyles(dayNumber)}
+                      >
+                        <div className="text-center">
+                          <div className="font-semibold">{dayNumber}</div>
+                          {!isAvailable && (
+                            <div className="text-xs mt-1">🔒</div>
+                          )}
+                          {isCompleted && isAvailable && (
+                            <div className="text-xs mt-1">✓</div>
+                          )}
+                          {isToday && isAvailable && (
+                            <div className="text-xs mt-1">●</div>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             );
@@ -134,7 +176,7 @@ const OverviewPage = () => {
         {/* Legend */}
         <div className="mt-8 bg-white rounded-lg shadow-sm p-6 border border-accent/20">
           <h3 className="text-lg font-medium text-primary mb-4">Legend</h3>
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="flex items-center space-x-3">
               <div className="w-8 h-8 bg-accent/20 border-2 border-accent/30 rounded-md flex items-center justify-center">
                 <span className="text-accent text-xs">✓</span>
@@ -150,6 +192,12 @@ const OverviewPage = () => {
             <div className="flex items-center space-x-3">
               <div className="w-8 h-8 bg-white border-2 border-accent/20 rounded-md"></div>
               <span className="text-sm text-accent">Available</span>
+            </div>
+            <div className="flex items-center space-x-3">
+              <div className="w-8 h-8 bg-gray-100 border-2 border-gray-200 rounded-md flex items-center justify-center opacity-60">
+                <span className="text-gray-400 text-xs">🔒</span>
+              </div>
+              <span className="text-sm text-accent">Locked</span>
             </div>
           </div>
         </div>

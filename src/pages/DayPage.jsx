@@ -3,10 +3,12 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { layersByWeek } from '../data/layersByWeek';
 import { promptsByWeek } from '../data/promptsByWeek';
 import { getItem, setItem } from '../utils/localStorage';
+import { useAppContext } from '../context/AppContext';
 
 const DayPage = () => {
   const { dayNumber } = useParams();
   const navigate = useNavigate();
+  const { isDayAvailable, hasStarted, startJourney, currentDay } = useAppContext();
   const dayNum = parseInt(dayNumber);
   const [journalEntry, setJournalEntry] = useState('');
 
@@ -17,6 +19,51 @@ const DayPage = () => {
         <div className="text-center">
           <h1 className="text-2xl font-bold text-primary mb-4">Invalid Day</h1>
           <p className="text-accent">Please choose a day between 1 and 84.</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Check if journey has started and day is available
+  if (!hasStarted && dayNum > 1) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center font-serif">
+        <div className="text-center max-w-md mx-auto p-6">
+          <h1 className="text-2xl font-bold text-primary mb-4">Journey Not Started</h1>
+          <p className="text-accent mb-6">You need to begin your 84-day ascetic journey to access this day.</p>
+          <button
+            onClick={() => navigate('/day/1')}
+            className="bg-primary text-white px-6 py-3 rounded-md hover:bg-accent transition-colors font-medium"
+          >
+            Start with Day 1
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isDayAvailable(dayNum)) {
+    const daysToWait = dayNum - currentDay;
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center font-serif">
+        <div className="text-center max-w-md mx-auto p-6">
+          <h1 className="text-2xl font-bold text-primary mb-4">Day {dayNum} Locked</h1>
+          <p className="text-accent mb-4">This day isn't available yet. You're currently on Day {currentDay}.</p>
+          <p className="text-accent/80 text-sm mb-6">
+            Come back in {daysToWait} day{daysToWait !== 1 ? 's' : ''} to unlock this day.
+          </p>
+          <button
+            onClick={() => navigate(`/day/${currentDay}`)}
+            className="bg-primary text-white px-6 py-3 rounded-md hover:bg-accent transition-colors font-medium mr-3"
+          >
+            Go to Day {currentDay}
+          </button>
+          <button
+            onClick={() => navigate('/overview')}
+            className="bg-white text-primary border-2 border-primary px-6 py-3 rounded-md hover:bg-background transition-colors font-medium"
+          >
+            View Overview
+          </button>
         </div>
       </div>
     );
@@ -55,7 +102,7 @@ const DayPage = () => {
   };
 
   const goToNextDay = () => {
-    if (dayNum < 84) {
+    if (dayNum < 84 && isDayAvailable(dayNum + 1)) {
       navigate(`/day/${dayNum + 1}`);
     }
   };
@@ -109,6 +156,24 @@ const DayPage = () => {
           </div>
         </div>
 
+        {/* Start Journey Button for Day 1 */}
+        {dayNum === 1 && !hasStarted && (
+          <div className="mb-12 text-center">
+            <div className="bg-primary/10 rounded-lg p-6 border border-primary/20">
+              <h3 className="text-xl font-medium text-primary mb-4">Begin Your 84-Day Journey</h3>
+              <p className="text-accent mb-6">
+                Ready to start your ascetic practice? Click below to begin Day 1 and unlock your daily progression.
+              </p>
+              <button
+                onClick={() => startJourney()}
+                className="bg-primary text-white px-8 py-3 rounded-md hover:bg-accent transition-colors font-medium"
+              >
+                Start Journey
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Journal Textarea */}
         <div className="mb-12">
           <h3 className="text-xl font-medium text-primary mb-4">Your Journal</h3>
@@ -141,14 +206,14 @@ const DayPage = () => {
           
           <button
             onClick={goToNextDay}
-            disabled={dayNum === 84}
+            disabled={dayNum === 84 || !isDayAvailable(dayNum + 1)}
             className={`px-6 py-2 text-sm font-medium rounded-md transition-colors ${
-              dayNum === 84
+              dayNum === 84 || !isDayAvailable(dayNum + 1)
                 ? 'text-accent/50 cursor-not-allowed'
                 : 'text-accent hover:text-primary hover:bg-background'
             }`}
           >
-            Next Day →
+            {dayNum === 84 ? 'Final Day' : !isDayAvailable(dayNum + 1) ? 'Locked →' : 'Next Day →'}
           </button>
         </div>
 
