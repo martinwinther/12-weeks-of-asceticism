@@ -1,9 +1,24 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
+import { useAuth } from '../context/AuthContext';
 
 const Dashboard = () => {
   const { currentDay, isDayComplete, getJournalEntry } = useAppContext();
+  const { loading: authLoading } = useAuth();
+
+  // Show loading state while authentication is being processed
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center font-serif">
+        <div className="text-center">
+          <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <h1 className="text-xl font-medium text-primary mb-2">Processing Authentication</h1>
+          <p className="text-accent">Please wait while we set up your account...</p>
+        </div>
+      </div>
+    );
+  }
   
   // Generate 84 days grouped by weeks (12 weeks x 7 days)
   const weeks = [];

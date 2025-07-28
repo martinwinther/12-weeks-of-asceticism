@@ -16,19 +16,49 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Get initial session
-    const getSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      setUser(session?.user ?? null);
-      setLoading(false);
+    // Handle magic link tokens from URL hash
+    const handleAuthCallback = async () => {
+      try {
+        // Check if we have auth tokens in the URL hash (magic link callback)
+        const hashParams = new URLSearchParams(window.location.hash.substring(1));
+        const accessToken = hashParams.get('access_token');
+        const refreshToken = hashParams.get('refresh_token');
+        const type = hashParams.get('type');
+
+        if (accessToken && type === 'magiclink') {
+          // Set the session with the tokens from the URL
+          const { data, error } = await supabase.auth.setSession({
+            access_token: accessToken,
+            refresh_token: refreshToken,
+          });
+
+          if (error) {
+            console.error('Error setting session from magic link:', error);
+          } else {
+            console.log('Successfully authenticated via magic link');
+            // Clean up the URL by removing the hash
+            window.history.replaceState(null, null, window.location.pathname);
+          }
+        }
+
+        // Get the current session (this will work for both magic link and existing sessions)
+        const { data: { session } } = await supabase.auth.getSession();
+        setUser(session?.user ?? null);
+      } catch (error) {
+        console.error('Error handling auth callback:', error);
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
     };
 
-    getSession();
+    handleAuthCallback();
 
     // Listen for auth changes
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log('Auth state changed:', event, session?.user?.email);
       setUser(session?.user ?? null);
       setLoading(false);
     });
