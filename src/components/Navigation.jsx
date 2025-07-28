@@ -165,20 +165,12 @@ const Navigation = () => {
                 <span className="text-sm text-accent">{user.email}</span>
               </button>
             ) : (
-              <div className="flex items-center space-x-2">
-                <Link
-                  to="/login"
-                  className="px-3 py-2 text-sm text-accent"
-                >
-                  Sign in
-                </Link>
-                <Link
-                  to="/signup"
-                  className="px-3 py-2 text-sm bg-primary text-white rounded-full"
-                >
-                  Sign up
-                </Link>
-              </div>
+              <Link
+                to="/auth"
+                className="px-3 py-2 text-sm bg-primary text-white rounded-full"
+              >
+                Sign in
+              </Link>
             )}
             
             <ThemeToggle />

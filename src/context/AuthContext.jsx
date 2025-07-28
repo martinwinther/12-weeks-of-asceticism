@@ -67,21 +67,6 @@ export const AuthProvider = ({ children }) => {
     return () => subscription.unsubscribe();
   }, []);
 
-  const signUpWithMagicLink = async (email) => {
-    try {
-      const { error } = await supabase.auth.signInWithOtp({
-        email,
-        options: {
-          emailRedirectTo: `${window.location.origin}/dashboard`,
-        },
-      });
-      if (error) throw error;
-      return { success: true };
-    } catch (error) {
-      return { success: false, error: error.message };
-    }
-  };
-
   const signInWithMagicLink = async (email) => {
     try {
       const { error } = await supabase.auth.signInWithOtp({
@@ -110,7 +95,6 @@ export const AuthProvider = ({ children }) => {
   const value = {
     user,
     loading,
-    signUp: signUpWithMagicLink,
     signIn: signInWithMagicLink,
     signOut,
   };

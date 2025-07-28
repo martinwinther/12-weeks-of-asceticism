@@ -10,8 +10,7 @@ import Dashboard from './pages/Dashboard';
 import OverviewPage from './pages/OverviewPage';
 import TimelinePage from './pages/TimelinePage';
 import DayPage from './pages/DayPage';
-import LoginPage from './pages/LoginPage';
-import SignupPage from './pages/SignupPage';
+import AuthPage from './pages/AuthPage';
 import Week01 from './pages/Week01';
 import Week12 from './pages/Week12';
 import Week02 from './pages/Week02';
@@ -27,8 +26,7 @@ const AppContent = () => {
       {showNavigation && <Navigation />}
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup" element={<SignupPage />} />
+        <Route path="/auth" element={<AuthPage />} />
         <Route path="/dashboard" element={
           <PrivateRoute>
             <Dashboard />

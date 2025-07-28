@@ -3,7 +3,7 @@ import { Link, Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Button from '../components/Button';
 
-const LoginPage = () => {
+const AuthPage = () => {
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState('');
@@ -30,7 +30,7 @@ const LoginPage = () => {
     const result = await signIn(email);
     
     if (result.success) {
-      setMessage('Check your email for a magic link to sign in!');
+      setMessage('Check your email for a magic link to access your account!');
     } else {
       setError(result.error);
     }
@@ -43,10 +43,10 @@ const LoginPage = () => {
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Welcome Back
+            Welcome to 12 Weeks of Asceticism
           </h1>
           <p className="text-gray-600">
-            Sign in to continue your asceticism journey
+            Enter your email to sign in or create an account
           </p>
         </div>
 
@@ -90,17 +90,18 @@ const LoginPage = () => {
           </form>
 
           <div className="mt-6 text-center">
-            <p className="text-gray-600">
-              Don't have an account?{' '}
-              <Link to="/signup" className="text-purple-600 hover:text-purple-700 font-medium">
-                Sign up
-              </Link>
-            </p>
+            <div className="text-xs text-gray-500 space-y-1">
+              <p>We'll email you a secure link to sign in or create your account.</p>
+              <p>No password required!</p>
+            </div>
           </div>
         </div>
 
         <div className="text-center">
-          <Link to="/" className="text-gray-500 hover:text-gray-700 text-sm">
+          <Link
+            to="/"
+            className="text-sm text-gray-500 hover:text-gray-700 transition-colors"
+          >
             ← Back to home
           </Link>
         </div>
@@ -109,4 +110,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage; 
+export default AuthPage; 

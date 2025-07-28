@@ -268,19 +268,13 @@ const DayPage = () => {
             <div className="bg-primary/10 rounded-lg p-4 md:p-6 border border-primary/20">
               <h3 className="text-lg md:text-xl font-medium text-primary mb-4">Begin Your 84-Day Journey</h3>
               <p className="text-accent mb-6 text-sm md:text-base">
-                Ready to start your ascetic practice? Create an account or sign in to begin your journey.
+                Ready to start your ascetic practice? We'll send you a secure link to access your account.
               </p>
               <button
-                onClick={() => navigate('/signup')}
-                className="bg-primary text-white px-6 py-3 md:px-8 rounded-md hover:bg-accent transition-colors font-medium text-sm md:text-base mr-3"
+                onClick={() => navigate('/auth')}
+                className="bg-primary text-white px-6 py-3 md:px-8 rounded-md hover:bg-accent transition-colors font-medium text-sm md:text-base"
               >
-                Sign Up
-              </button>
-              <button
-                onClick={() => navigate('/login')}
-                className="bg-white text-primary border-2 border-primary px-6 py-3 md:px-8 rounded-md hover:bg-background transition-colors font-medium text-sm md:text-base"
-              >
-                Sign In
+                Get Started
               </button>
             </div>
           </div>
