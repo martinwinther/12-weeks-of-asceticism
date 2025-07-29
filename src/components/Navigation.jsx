@@ -184,7 +184,7 @@ const Navigation = () => {
       </nav>
 
       {/* Mobile top padding spacer */}
-      <div className="md:hidden h-24"></div>
+      <div className="md:hidden h-32"></div>
     </>
   );
 };
