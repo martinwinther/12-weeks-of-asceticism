@@ -103,10 +103,15 @@ const DayPage = () => {
         .select('text, updated_at')
         .eq('user_id', user.id)
         .eq('day_number', dayNum)
-        .single();
+        .maybeSingle(); // Use maybeSingle instead of single to handle no rows
 
-      if (error && error.code !== 'PGRST116') { // PGRST116 = no rows returned
+      if (error) {
         console.error('Error loading journal entry from Supabase:', error);
+        return null;
+      }
+
+      // If no data found, return null (no journal entry exists yet)
+      if (!data) {
         return null;
       }
 
