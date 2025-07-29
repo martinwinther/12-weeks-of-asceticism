@@ -11,7 +11,7 @@ const DayPage = () => {
   const { dayNumber } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { isDayAvailable, hasStarted, startJourney, currentDay, getJournalEntry, updateJournalEntry } = useAppContext();
+  const { isDayAvailable, hasStarted, startJourney, currentDay, getJournalEntry, updateJournalEntry, isLoading: contextLoading } = useAppContext();
   const dayNum = parseInt(dayNumber);
   const [journalEntry, setJournalEntry] = useState('');
   const [isLoading, setIsLoading] = useState(true);
@@ -19,10 +19,10 @@ const DayPage = () => {
 
   // Auto-start journey if authenticated user visits Day 1 and hasn't started yet
   useEffect(() => {
-    if (user && dayNum === 1 && !hasStarted) {
+    if (user && dayNum === 1 && !hasStarted && !contextLoading) {
       startJourney();
     }
-  }, [user, dayNum, hasStarted, startJourney]);
+  }, [user, dayNum, hasStarted, startJourney, contextLoading]);
 
   // Validate dayNumber is between 1 and 84
   if (isNaN(dayNum) || dayNum < 1 || dayNum > 84) {

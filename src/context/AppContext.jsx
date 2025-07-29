@@ -135,9 +135,9 @@ export const AppProvider = ({ children }) => {
 
   // Start the journey by setting today as day 1
   const startJourney = async () => {
-    // Only start journey if no start date exists
-    if (state.startDate) {
-      console.log('Journey already started, not overwriting start date');
+    // Don't start journey if data is still loading or if start date already exists
+    if (isLoading || state.startDate) {
+      console.log('Journey already started or data still loading, not overwriting start date');
       return;
     }
     
