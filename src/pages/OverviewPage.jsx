@@ -5,7 +5,7 @@ import { useAppContext } from '../context/AppContext';
 
 const OverviewPage = () => {
   const navigate = useNavigate();
-  const { currentDay, isDayAvailable, hasStarted, startJourney, isDayComplete } = useAppContext();
+  const { currentDay, isDayAvailable, hasStarted, startJourney, isDayComplete, state } = useAppContext();
   const [completedDays, setCompletedDays] = useState([]);
 
   // Load completedDays from AppContext (Supabase data)
@@ -19,7 +19,7 @@ const OverviewPage = () => {
     }
     
     setCompletedDays(completed);
-  }, [isDayComplete]);
+  }, [isDayComplete, state.journalEntries, state.completedDays]); // Re-run when journal entries or completed days change
 
   // Calculate progress
   const progressPercentage = Math.round((completedDays.length / 84) * 100);

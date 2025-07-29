@@ -88,7 +88,12 @@ export const AppProvider = ({ children }) => {
     
     const startDate = new Date(state.startDate);
     const today = new Date();
-    const daysSinceStart = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
+    
+    // Reset time to midnight for accurate day comparison
+    const startMidnight = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
+    const todayMidnight = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    
+    const daysSinceStart = Math.floor((todayMidnight - startMidnight) / (1000 * 60 * 60 * 24));
     
     // Current day is days since start + 1, capped at 84
     return Math.min(Math.max(daysSinceStart + 1, 1), 84);
@@ -186,6 +191,17 @@ export const AppProvider = ({ children }) => {
   const getJournalEntry = (dayNumber) => {
     return state.journalEntries[dayNumber] || '';
   };
+
+  // Update journal entry in context state
+  const updateJournalEntry = (dayNumber, text) => {
+    setState(prevState => ({
+      ...prevState,
+      journalEntries: {
+        ...prevState.journalEntries,
+        [dayNumber.toString()]: text
+      }
+    }));
+  };
   
   const isDayComplete = (day) => {
     const hasJournal = state.journalEntries[day.toString()]?.trim().length > 0;
@@ -203,6 +219,7 @@ export const AppProvider = ({ children }) => {
     completeWeek,
     completeDay,
     getJournalEntry,
+    updateJournalEntry,
     isDayAvailable,
     isDayComplete,
     setCurrentWeek,

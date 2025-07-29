@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
 import { supabase } from '../lib/supabaseClient';
+import { getItem, setItem } from '../utils/localStorage';
 
 const ThemeContext = createContext();
 
@@ -14,7 +15,10 @@ export const useTheme = () => {
 
 export const ThemeProvider = ({ children }) => {
   const { user } = useAuth();
-  const [theme, setThemeState] = useState('light');
+  const [theme, setThemeState] = useState(() => {
+    // Initialize with localStorage fallback
+    return getItem('theme', 'light');
+  });
   const [isLoading, setIsLoading] = useState(true);
 
   // Load theme from Supabase (all users are authenticated)
@@ -36,9 +40,17 @@ export const ThemeProvider = ({ children }) => {
           console.error('Error loading theme:', error);
         } else if (data && data.theme) {
           setThemeState(data.theme);
+          setItem('theme', data.theme); // Update localStorage
+        } else {
+          // No theme in Supabase, use localStorage fallback
+          const localTheme = getItem('theme', 'light');
+          setThemeState(localTheme);
         }
       } catch (error) {
         console.error('Error loading theme:', error);
+        // Fallback to localStorage
+        const localTheme = getItem('theme', 'light');
+        setThemeState(localTheme);
       } finally {
         setIsLoading(false);
       }
@@ -47,9 +59,10 @@ export const ThemeProvider = ({ children }) => {
     loadTheme();
   }, [user?.id]); // Only reload when user ID changes, not on every auth refresh
 
-  // Save theme to Supabase when it changes
+  // Save theme to Supabase and localStorage when it changes
   const setTheme = async (newTheme) => {
     setThemeState(newTheme);
+    setItem('theme', newTheme); // Always update localStorage
 
     if (!user) return; // All users must be authenticated
 

@@ -4,7 +4,7 @@ import { useAppContext } from '../context/AppContext';
 import { useAuth } from '../context/AuthContext';
 
 const Dashboard = () => {
-  const { currentDay, isDayComplete, getJournalEntry } = useAppContext();
+  const { currentDay, isDayComplete, getJournalEntry, state } = useAppContext();
   const { loading: authLoading } = useAuth();
 
   // Show loading state while authentication is being processed

@@ -5,7 +5,7 @@ import { useAppContext } from '../context/AppContext';
 const TimelinePage = () => {
   const navigate = useNavigate();
   const [journalEntries, setJournalEntries] = useState([]);
-  const { getJournalEntry } = useAppContext();
+  const { getJournalEntry, state } = useAppContext();
 
   // Load journalEntries from AppContext (Supabase data)
   useEffect(() => {
@@ -31,7 +31,7 @@ const TimelinePage = () => {
     };
 
     loadJournalEntries();
-  }, [getJournalEntry]);
+  }, [getJournalEntry, state.journalEntries]); // Re-run when journal entries change
 
   // Format date as YYYY-MM-DD
   const formatDate = (timestamp) => {

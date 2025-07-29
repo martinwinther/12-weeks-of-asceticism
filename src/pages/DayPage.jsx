@@ -11,7 +11,7 @@ const DayPage = () => {
   const { dayNumber } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { isDayAvailable, hasStarted, startJourney, currentDay } = useAppContext();
+  const { isDayAvailable, hasStarted, startJourney, currentDay, getJournalEntry, updateJournalEntry } = useAppContext();
   const dayNum = parseInt(dayNumber);
   const [journalEntry, setJournalEntry] = useState('');
   const [isLoading, setIsLoading] = useState(true);
@@ -152,7 +152,7 @@ const DayPage = () => {
     }
   };
 
-  // Load journal entry from Supabase
+  // Load journal entry from context first, then from Supabase if needed
   useEffect(() => {
     const loadJournalEntry = async () => {
       if (!user) {
@@ -163,8 +163,21 @@ const DayPage = () => {
       setIsLoading(true);
       
       try {
+        // First try to get from context
+        const contextEntry = getJournalEntry(dayNum.toString());
+        if (contextEntry) {
+          setJournalEntry(contextEntry);
+          setIsLoading(false);
+          return;
+        }
+        
+        // If not in context, load from Supabase
         const supabaseEntry = await loadJournalFromSupabase();
-        setJournalEntry(supabaseEntry || '');
+        const finalEntry = supabaseEntry || '';
+        setJournalEntry(finalEntry);
+        
+        // Update context with the loaded entry
+        updateJournalEntry(dayNum, finalEntry);
       } catch (error) {
         console.error('Error loading journal entry from Supabase:', error);
         setJournalEntry('');
@@ -174,12 +187,15 @@ const DayPage = () => {
     };
 
     loadJournalEntry();
-  }, [dayNum, user]);
+  }, [dayNum, user, getJournalEntry, updateJournalEntry]);
 
   // Save entry to Supabase with debouncing
   const handleJournalChange = (e) => {
     const value = e.target.value;
     setJournalEntry(value);
+    
+    // Update context immediately for responsive UI
+    updateJournalEntry(dayNum, value);
     
     if (!user) return; // All users must be authenticated
     
