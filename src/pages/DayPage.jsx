@@ -17,6 +17,8 @@ const DayPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
 
+  console.log('DayPage component rendered:', { dayNum, user: !!user, hasStarted, currentDay });
+
   // Auto-start journey if authenticated user visits Day 1 and hasn't started yet
   useEffect(() => {
     if (user && dayNum === 1 && !hasStarted && !contextLoading) {
@@ -165,6 +167,8 @@ const DayPage = () => {
 
   // Load journal entry from context first, then from Supabase if needed
   useEffect(() => {
+    console.log('useEffect triggered for day:', dayNum);
+    
     const loadJournalEntry = async () => {
       if (!user) {
         setIsLoading(false);
