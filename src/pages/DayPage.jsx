@@ -162,24 +162,43 @@ const DayPage = () => {
 
       setIsLoading(true);
       
+      // Add timeout to prevent infinite loading
+      const timeoutId = setTimeout(() => {
+        console.warn('Journal loading timeout, using empty entry');
+        setJournalEntry('');
+        updateJournalEntry(dayNum, '');
+        setIsLoading(false);
+      }, 5000); // 5 second timeout
+      
       try {
         // First try to get from context
         const contextEntry = getJournalEntry(dayNum.toString());
         if (contextEntry) {
+          clearTimeout(timeoutId);
           setJournalEntry(contextEntry);
           setIsLoading(false);
           return;
         }
         
-        // If not in context, load from Supabase
-        const supabaseEntry = await loadJournalFromSupabase();
-        const finalEntry = supabaseEntry || '';
-        setJournalEntry(finalEntry);
-        
-        // Update context with the loaded entry
-        updateJournalEntry(dayNum, finalEntry);
+        // If not in context, try to load from Supabase
+        try {
+          const supabaseEntry = await loadJournalFromSupabase();
+          clearTimeout(timeoutId);
+          const finalEntry = supabaseEntry || '';
+          setJournalEntry(finalEntry);
+          
+          // Update context with the loaded entry
+          updateJournalEntry(dayNum, finalEntry);
+        } catch (supabaseError) {
+          clearTimeout(timeoutId);
+          console.error('Supabase query failed, using empty entry:', supabaseError);
+          // If Supabase fails, just use empty entry and continue
+          setJournalEntry('');
+          updateJournalEntry(dayNum, '');
+        }
       } catch (error) {
-        console.error('Error loading journal entry from Supabase:', error);
+        clearTimeout(timeoutId);
+        console.error('Error loading journal entry:', error);
         setJournalEntry('');
       } finally {
         setIsLoading(false);
@@ -210,6 +229,7 @@ const DayPage = () => {
         await saveJournalToSupabase(value);
       } catch (error) {
         console.error('Error auto-saving to Supabase:', error);
+        // Don't show error to user, just log it
       } finally {
         setIsSaving(false);
       }

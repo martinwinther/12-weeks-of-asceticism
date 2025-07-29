@@ -51,6 +51,13 @@ export const AppProvider = ({ children }) => {
           console.error('Error loading journal data:', journalError);
         }
 
+        console.log('Loaded data from Supabase:', {
+          progressData,
+          startDate: progressData?.start_date,
+          journalData: journalData?.length || 0,
+          user: user.id
+        });
+
         // Build journal entries object from Supabase data
         const journalEntries = {};
         if (journalData) {
@@ -83,6 +90,7 @@ export const AppProvider = ({ children }) => {
   // Calculate current day based on calendar date since start
   const getCurrentDay = () => {
     if (!state.startDate) {
+      console.log('No start date, returning day 1');
       return 1; // Journey hasn't started yet
     }
     
@@ -96,7 +104,17 @@ export const AppProvider = ({ children }) => {
     const daysSinceStart = Math.floor((todayMidnight - startMidnight) / (1000 * 60 * 60 * 24));
     
     // Current day is days since start + 1, capped at 84
-    return Math.min(Math.max(daysSinceStart + 1, 1), 84);
+    const currentDay = Math.min(Math.max(daysSinceStart + 1, 1), 84);
+    
+    console.log('Day calculation:', {
+      startDate: state.startDate,
+      startMidnight: startMidnight.toISOString(),
+      todayMidnight: todayMidnight.toISOString(),
+      daysSinceStart,
+      currentDay
+    });
+    
+    return currentDay;
   };
 
   // Check if a day is available (unlocked) based on calendar
