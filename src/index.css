@@ -23,6 +23,53 @@ html {
 /* Prevent horizontal scroll on mobile */
 html, body {
   overflow-x: hidden;
+  /* Prevent zoom on input focus */
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* Prevent zoom on input focus for iOS */
+input, textarea, select {
+  font-size: 16px !important;
+  -webkit-appearance: none;
+  border-radius: 0;
+}
+
+/* Ensure proper touch behavior */
+* {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+/* Prevent layout shifts on mobile */
+.container {
+  min-height: 100vh;
+  min-height: 100dvh; /* Dynamic viewport height for mobile */
+}
+
+/* Ensure inputs don't cause layout shifts */
+input, textarea, select {
+  transform: translateZ(0); /* Force hardware acceleration */
+  backface-visibility: hidden;
+}
+
+/* Mobile-specific improvements */
+@media (max-width: 768px) {
+  /* Prevent zoom on focus */
+  input:focus, textarea:focus, select:focus {
+    font-size: 16px !important;
+  }
+  
+  /* Ensure proper spacing */
+  body {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  /* Prevent horizontal scroll */
+  .container, .container-fluid {
+    overflow-x: hidden;
+  }
 }
 
 /* Better touch targets on mobile */

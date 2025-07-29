@@ -324,11 +324,15 @@ const DayPage = () => {
           <h3 className="text-lg md:text-xl font-medium text-primary mb-4">Your Journal</h3>
           <div className="relative">
             <textarea
-              className="w-full h-48 md:h-64 p-3 md:p-4 border border-accent/30 rounded-lg resize-none focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent font-mono text-sm leading-relaxed"
+              className="w-full h-48 md:h-64 p-3 md:p-4 border border-accent/30 rounded-lg resize-none focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent font-mono text-sm leading-relaxed touch-manipulation"
               value={journalEntry}
               onChange={handleJournalChange}
               placeholder={isLoading ? "Loading your entry..." : "Write your thoughts and reflections..."}
               disabled={isLoading}
+              autoComplete="off"
+              autoCorrect="off"
+              autoCapitalize="sentences"
+              spellCheck="true"
             />
             {(isLoading || isSaving) && (
               <div className="absolute top-2 right-2">
