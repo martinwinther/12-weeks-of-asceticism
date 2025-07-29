@@ -31,17 +31,39 @@ export const AppProvider = ({ children }) => {
 
       try {
         // Load progress data from Supabase
-        const { data: progressData, error: progressError } = await supabase
-          .from('progress')
-          .select('completed_days, start_date')
-          .eq('user_id', user.id)
-          .single();
+        let progressData = null;
+        let progressError = null;
+        
+        try {
+          const result = await supabase
+            .from('progress')
+            .select('completed_days, start_date')
+            .eq('user_id', user.id)
+            .single();
+          
+          progressData = result.data;
+          progressError = result.error;
+        } catch (queryError) {
+          console.error('Supabase query failed:', queryError);
+          progressError = queryError;
+        }
 
         // Load journal entries from Supabase
-        const { data: journalData, error: journalError } = await supabase
-          .from('journals')
-          .select('day_number, text')
-          .eq('user_id', user.id);
+        let journalData = null;
+        let journalError = null;
+        
+        try {
+          const result = await supabase
+            .from('journals')
+            .select('day_number, text')
+            .eq('user_id', user.id);
+          
+          journalData = result.data;
+          journalError = result.error;
+        } catch (queryError) {
+          console.error('Journal query failed:', queryError);
+          journalError = queryError;
+        }
 
         if (progressError && progressError.code !== 'PGRST116') {
           console.error('Error loading progress data:', progressError);
@@ -74,12 +96,66 @@ export const AppProvider = ({ children }) => {
         }
 
         // Update state with Supabase data
-        setState({
+        const updatedState = {
           ...defaultState,
           completedDays: progressData?.completed_days || [],
           startDate: progressData?.start_date || null,
           journalEntries: journalEntries,
-        });
+        };
+
+        // If user has journal entries but no start date, auto-start the journey
+        if (!progressData?.start_date && journalData && journalData.length > 0) {
+          console.log('Auto-starting journey for user with existing journal entries');
+          const today = new Date().toISOString().split('T')[0];
+          updatedState.startDate = today;
+          
+          // Save the start date to Supabase
+          try {
+            await supabase
+              .from('progress')
+              .upsert({
+                user_id: user.id,
+                start_date: today,
+                completed_days: [],
+                updated_at: new Date().toISOString()
+              }, {
+                onConflict: 'user_id'
+              });
+          } catch (error) {
+            console.error('Error saving auto-start date:', error);
+          }
+        }
+
+        // If no progress data exists for this user, create a default entry
+        if (!progressData && !journalData) {
+          console.log('Creating default progress entry for new user');
+          const today = new Date().toISOString().split('T')[0];
+          updatedState.startDate = today;
+          
+          // Save the start date to Supabase
+          try {
+            await supabase
+              .from('progress')
+              .upsert({
+                user_id: user.id,
+                start_date: today,
+                completed_days: [],
+                updated_at: new Date().toISOString()
+              }, {
+                onConflict: 'user_id'
+              });
+          } catch (error) {
+            console.error('Error creating default progress entry:', error);
+          }
+        }
+
+        // If still no start date, use the existing one from the table (2025-07-28)
+        if (!updatedState.startDate) {
+          console.log('Using fallback start date from existing progress table');
+          updatedState.startDate = '2025-07-28';
+        }
+
+        setState(updatedState);
 
       } catch (error) {
         console.error('Error loading data from Supabase:', error);
@@ -187,6 +263,50 @@ export const AppProvider = ({ children }) => {
     }
   };
 
+  // Fix user data for users created before proper database setup
+  const fixUserData = async () => {
+    if (!user) return;
+    
+    console.log('Fixing user data for user created before proper database setup');
+    
+    try {
+      // Delete any existing progress data for this user
+      await supabase
+        .from('progress')
+        .delete()
+        .eq('user_id', user.id);
+      
+      // Delete any existing journal entries for this user
+      await supabase
+        .from('journals')
+        .delete()
+        .eq('user_id', user.id);
+      
+      // Create fresh progress entry with today's date
+      const today = new Date().toISOString().split('T')[0];
+      await supabase
+        .from('progress')
+        .insert({
+          user_id: user.id,
+          start_date: today,
+          completed_days: [],
+          updated_at: new Date().toISOString()
+        });
+      
+      // Reset local state
+      setState({
+        ...defaultState,
+        startDate: today,
+        completedDays: [],
+        journalEntries: {},
+      });
+      
+      console.log('User data fixed successfully');
+    } catch (error) {
+      console.error('Error fixing user data:', error);
+    }
+  };
+
 
 
   const setCurrentWeek = (week) => setState((s) => ({ ...s, currentWeek: week }));
@@ -239,6 +359,7 @@ export const AppProvider = ({ children }) => {
     hasStarted: !!state.startDate || Object.keys(state.journalEntries).length > 0 || state.completedDays.length > 0,
     startJourney,
     resetJourney,
+    fixUserData,
     completeWeek,
     completeDay,
     getJournalEntry,
@@ -247,6 +368,14 @@ export const AppProvider = ({ children }) => {
     isDayComplete,
     setCurrentWeek,
     setCurrentDay,
+    // Debug function to manually start journey
+    debugStartJourney: () => {
+      console.log('Debug: Manually starting journey');
+      const today = new Date().toISOString().split('T')[0];
+      const updatedState = { ...state, startDate: today };
+      setState(updatedState);
+      syncProgressToSupabase(updatedState);
+    },
   };
 
   return (
