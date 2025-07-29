@@ -135,8 +135,10 @@ export const AppProvider = ({ children }) => {
 
   // Start the journey by setting today as day 1
   const startJourney = async () => {
-    // Don't start journey if data is still loading or if start date already exists
-    if (isLoading || state.startDate) {
+    // Don't start journey if data is still loading or if journey already started
+    const hasStarted = !!state.startDate || Object.keys(state.journalEntries).length > 0 || state.completedDays.length > 0;
+    
+    if (isLoading || hasStarted) {
       console.log('Journey already started or data still loading, not overwriting start date');
       return;
     }
