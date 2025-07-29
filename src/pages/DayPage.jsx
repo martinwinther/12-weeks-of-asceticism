@@ -97,6 +97,8 @@ const DayPage = () => {
   const loadJournalFromSupabase = async () => {
     if (!user) return null;
 
+    console.log('Starting Supabase query for user:', user.id, 'day:', dayNum);
+    
     try {
       const { data, error } = await supabase
         .from('journals')
@@ -105,6 +107,8 @@ const DayPage = () => {
         .eq('day_number', dayNum)
         .maybeSingle(); // Use maybeSingle instead of single to handle no rows
 
+      console.log('Supabase response:', { data, error });
+
       if (error) {
         console.error('Error loading journal entry from Supabase:', error);
         return null;
@@ -112,11 +116,13 @@ const DayPage = () => {
 
       // If no data found, return null (no journal entry exists yet)
       if (!data) {
+        console.log('No journal entry found for day:', dayNum);
         return null;
       }
 
       // Sanitize text when loading (in case of legacy data)
       const text = data?.text || null;
+      console.log('Found journal entry, text length:', text?.length || 0);
       return text ? sanitizeText(text) : null;
     } catch (error) {
       console.error('Error loading journal entry from Supabase:', error);
@@ -165,11 +171,14 @@ const DayPage = () => {
         return;
       }
 
+      console.log('Loading journal entry for day:', dayNum);
       setIsLoading(true);
       
       try {
         // First try to get from context
         const contextEntry = getJournalEntry(dayNum.toString());
+        console.log('Context entry:', contextEntry ? 'found' : 'not found');
+        
         if (contextEntry) {
           setJournalEntry(contextEntry);
           setIsLoading(false);
@@ -177,7 +186,9 @@ const DayPage = () => {
         }
         
         // If not in context, try to load from Supabase
+        console.log('Loading from Supabase...');
         const supabaseEntry = await loadJournalFromSupabase();
+        console.log('Supabase entry:', supabaseEntry ? 'found' : 'not found');
         
         if (supabaseEntry) {
           // Found existing entry
@@ -193,6 +204,7 @@ const DayPage = () => {
         setJournalEntry('');
         updateJournalEntry(dayNum, '');
       } finally {
+        console.log('Setting loading to false');
         setIsLoading(false);
       }
     };
