@@ -17,8 +17,6 @@ const DayPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
 
-  console.log('DayPage component rendered:', { dayNum, user: !!user, hasStarted, currentDay });
-
   // Auto-start journey if authenticated user visits Day 1 and hasn't started yet
   useEffect(() => {
     if (user && dayNum === 1 && !hasStarted) {
@@ -99,8 +97,6 @@ const DayPage = () => {
   // Helper function to load journal entry from Supabase
   const loadJournalFromSupabase = async () => {
     if (!user) return null;
-
-    console.log('Starting Supabase query for user:', user.id, 'day:', dayNum);
     
     try {
       const { data, error } = await supabase
@@ -110,8 +106,6 @@ const DayPage = () => {
         .eq('day_number', dayNum)
         .maybeSingle(); // Use maybeSingle instead of single to handle no rows
 
-      console.log('Supabase response:', { data, error });
-
       if (error) {
         console.error('Error loading journal entry from Supabase:', error);
         return null;
@@ -119,13 +113,11 @@ const DayPage = () => {
 
       // If no data found, return null (no journal entry exists yet)
       if (!data) {
-        console.log('No journal entry found for day:', dayNum);
         return null;
       }
 
       // Sanitize text when loading (in case of legacy data)
       const text = data?.text || null;
-      console.log('Found journal entry, text length:', text?.length || 0);
       return text ? sanitizeText(text) : null;
     } catch (error) {
       console.error('Error loading journal entry from Supabase:', error);
@@ -168,21 +160,17 @@ const DayPage = () => {
 
   // Load journal entry from context first, then from Supabase if needed
   useEffect(() => {
-    console.log('useEffect triggered for day:', dayNum);
-    
     const loadJournalEntry = async () => {
       if (!user) {
         setIsLoading(false);
         return;
       }
 
-      console.log('Loading journal entry for day:', dayNum);
       setIsLoading(true);
       
       try {
         // First try to get from context
         const contextEntry = getJournalEntry(dayNum.toString());
-        console.log('Context entry:', contextEntry ? 'found' : 'not found');
         
         if (contextEntry) {
           setJournalEntry(contextEntry);
@@ -191,9 +179,7 @@ const DayPage = () => {
         }
         
         // If not in context, try to load from Supabase
-        console.log('Loading from Supabase...');
         const supabaseEntry = await loadJournalFromSupabase();
-        console.log('Supabase entry:', supabaseEntry ? 'found' : 'not found');
         
         if (supabaseEntry) {
           // Found existing entry
@@ -209,13 +195,12 @@ const DayPage = () => {
         setJournalEntry('');
         updateJournalEntry(dayNum, '');
       } finally {
-        console.log('Setting loading to false');
         setIsLoading(false);
       }
     };
 
     loadJournalEntry();
-  }, [dayNum, user, getJournalEntry, updateJournalEntry]);
+  }, [dayNum, user?.id]); // Only depend on dayNum and user.id, not the functions
 
   // Save entry to Supabase with debouncing
   const handleJournalChange = (e) => {
