@@ -51,13 +51,6 @@ export const AppProvider = ({ children }) => {
           console.error('Error loading journal data:', journalError);
         }
 
-        console.log('Loaded data from Supabase:', {
-          progressData,
-          startDate: progressData?.start_date,
-          journalData: journalData?.length || 0,
-          user: user.id
-        });
-
         // Build journal entries object from Supabase data
         const journalEntries = {};
         if (journalData) {
@@ -90,7 +83,6 @@ export const AppProvider = ({ children }) => {
   // Calculate current day based on calendar date since start
   const getCurrentDay = () => {
     if (!state.startDate) {
-      console.log('No start date, returning day 1');
       return 1; // Journey hasn't started yet
     }
     
@@ -104,17 +96,7 @@ export const AppProvider = ({ children }) => {
     const daysSinceStart = Math.floor((todayMidnight - startMidnight) / (1000 * 60 * 60 * 24));
     
     // Current day is days since start + 1, capped at 84
-    const currentDay = Math.min(Math.max(daysSinceStart + 1, 1), 84);
-    
-    console.log('Day calculation:', {
-      startDate: state.startDate,
-      startMidnight: startMidnight.toISOString(),
-      todayMidnight: todayMidnight.toISOString(),
-      daysSinceStart,
-      currentDay
-    });
-    
-    return currentDay;
+    return Math.min(Math.max(daysSinceStart + 1, 1), 84);
   };
 
   // Check if a day is available (unlocked) based on calendar
@@ -153,7 +135,13 @@ export const AppProvider = ({ children }) => {
 
   // Start the journey by setting today as day 1
   const startJourney = async () => {
-    const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
+    // Only start journey if no start date exists
+    if (state.startDate) {
+      console.log('Journey already started, not overwriting start date');
+      return;
+    }
+    
+    const today = new Date().toISOString().split('T')[0];
     const updatedState = { ...state, startDate: today };
     setState(updatedState);
     await syncProgressToSupabase(updatedState);

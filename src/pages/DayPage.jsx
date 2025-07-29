@@ -162,43 +162,36 @@ const DayPage = () => {
 
       setIsLoading(true);
       
-      // Add timeout to prevent infinite loading
-      const timeoutId = setTimeout(() => {
-        console.warn('Journal loading timeout, using empty entry');
-        setJournalEntry('');
-        updateJournalEntry(dayNum, '');
-        setIsLoading(false);
-      }, 5000); // 5 second timeout
-      
       try {
         // First try to get from context
         const contextEntry = getJournalEntry(dayNum.toString());
         if (contextEntry) {
-          clearTimeout(timeoutId);
           setJournalEntry(contextEntry);
           setIsLoading(false);
           return;
         }
         
-        // If not in context, try to load from Supabase
+        // If not in context, try to load from Supabase with timeout
+        const timeoutPromise = new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Timeout')), 3000)
+        );
+        
         try {
-          const supabaseEntry = await loadJournalFromSupabase();
-          clearTimeout(timeoutId);
+          const supabaseEntry = await Promise.race([
+            loadJournalFromSupabase(),
+            timeoutPromise
+          ]);
+          
           const finalEntry = supabaseEntry || '';
           setJournalEntry(finalEntry);
-          
-          // Update context with the loaded entry
           updateJournalEntry(dayNum, finalEntry);
-        } catch (supabaseError) {
-          clearTimeout(timeoutId);
-          console.error('Supabase query failed, using empty entry:', supabaseError);
-          // If Supabase fails, just use empty entry and continue
+        } catch (error) {
+          console.warn('Journal loading failed, using empty entry:', error);
           setJournalEntry('');
           updateJournalEntry(dayNum, '');
         }
       } catch (error) {
-        clearTimeout(timeoutId);
-        console.error('Error loading journal entry:', error);
+        console.error('Error in journal loading:', error);
         setJournalEntry('');
       } finally {
         setIsLoading(false);
