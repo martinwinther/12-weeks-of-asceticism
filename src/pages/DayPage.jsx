@@ -176,28 +176,22 @@ const DayPage = () => {
           return;
         }
         
-        // If not in context, try to load from Supabase with timeout
-        const timeoutPromise = new Promise((_, reject) => 
-          setTimeout(() => reject(new Error('Timeout')), 3000)
-        );
+        // If not in context, try to load from Supabase
+        const supabaseEntry = await loadJournalFromSupabase();
         
-        try {
-          const supabaseEntry = await Promise.race([
-            loadJournalFromSupabase(),
-            timeoutPromise
-          ]);
-          
-          const finalEntry = supabaseEntry || '';
-          setJournalEntry(finalEntry);
-          updateJournalEntry(dayNum, finalEntry);
-        } catch (error) {
-          console.warn('Journal loading failed, using empty entry:', error);
+        if (supabaseEntry) {
+          // Found existing entry
+          setJournalEntry(supabaseEntry);
+          updateJournalEntry(dayNum, supabaseEntry);
+        } else {
+          // No entry exists, create empty one
           setJournalEntry('');
           updateJournalEntry(dayNum, '');
         }
       } catch (error) {
-        console.error('Error in journal loading:', error);
+        console.error('Error loading journal entry:', error);
         setJournalEntry('');
+        updateJournalEntry(dayNum, '');
       } finally {
         setIsLoading(false);
       }
