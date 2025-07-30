@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import ThemeToggle from './ThemeToggle';
+import LogoutModal from './LogoutModal';
 
 const Navigation = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
-  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   
   const navItems = [
     { 
@@ -45,7 +46,11 @@ const Navigation = () => {
       // Use replace to prevent going back to authenticated state
       navigate('/', { replace: true });
     }
-    setIsUserMenuOpen(false);
+    setIsLogoutModalOpen(false);
+  };
+
+  const handleLogoutClick = () => {
+    setIsLogoutModalOpen(true);
   };
 
   return (
@@ -72,37 +77,18 @@ const Navigation = () => {
               ))}
             </div>
             
-            {/* Right side - User menu and Theme Toggle */}
+            {/* Right side - Logout button and Theme Toggle */}
             <div className="flex items-center space-x-3">
               {user ? (
-                <div className="relative">
-                  <button
-                    onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                    className="flex items-center space-x-2 px-3 py-2 rounded-full bg-white border border-accent/10 hover:bg-background transition-colors"
-                  >
-                    <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center">
-                      <span className="text-white text-xs font-medium">
-                        {user.email?.charAt(0).toUpperCase()}
-                      </span>
-                    </div>
-                    <span className="text-sm text-accent hidden sm:block">{user.email}</span>
-                  </button>
-                  
-                  {isUserMenuOpen && (
-                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-accent/10 py-1 z-50">
-                      <div className="px-4 py-2 border-b border-accent/10">
-                        <p className="text-xs text-accent/70">Signed in as</p>
-                        <p className="text-sm font-medium text-accent truncate">{user.email}</p>
-                      </div>
-                      <button
-                        onClick={handleSignOut}
-                        className="w-full text-left px-4 py-2 text-sm text-accent hover:bg-background transition-colors"
-                      >
-                        Sign out
-                      </button>
-                    </div>
-                  )}
-                </div>
+                <button
+                  onClick={handleLogoutClick}
+                  className="flex items-center justify-center w-10 h-10 rounded-full bg-white border border-accent/10 hover:bg-background transition-colors"
+                  title="Sign out"
+                >
+                  <svg className="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                  </svg>
+                </button>
               ) : (
                 <Link
                   to="/auth"
@@ -121,19 +107,17 @@ const Navigation = () => {
       {/* Mobile Navigation - Top bar */}
       <nav className="md:hidden fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-sm border-b border-accent/10 z-50 safe-area-pt">
         <div className="px-2 py-2">
-          {/* User menu and Theme Toggle for Mobile */}
+          {/* Logout button and Theme Toggle for Mobile */}
           <div className="flex justify-between items-center px-4 mb-2">
             {user ? (
               <button
-                onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                className="flex items-center space-x-2 px-3 py-2 rounded-full bg-white border border-accent/10"
+                onClick={handleLogoutClick}
+                className="flex items-center justify-center w-10 h-10 rounded-full bg-white border border-accent/10"
+                title="Sign out"
               >
-                <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center">
-                  <span className="text-white text-xs font-medium">
-                    {user.email?.charAt(0).toUpperCase()}
-                  </span>
-                </div>
-                <span className="text-sm text-accent">{user.email}</span>
+                <svg className="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
               </button>
             ) : (
               <Link
@@ -169,22 +153,19 @@ const Navigation = () => {
             ))}
           </div>
           
-          {/* Mobile user menu dropdown */}
-          {user && isUserMenuOpen && (
-            <div className="mt-2 mx-4 bg-white rounded-lg shadow-lg border border-accent/10 py-1">
-              <button
-                onClick={handleSignOut}
-                className="w-full text-left px-4 py-2 text-sm text-accent"
-              >
-                Sign out
-              </button>
-            </div>
-          )}
+
         </div>
       </nav>
 
       {/* Mobile top padding spacer */}
       <div className="md:hidden h-32"></div>
+      
+      {/* Logout Modal */}
+      <LogoutModal
+        isOpen={isLogoutModalOpen}
+        onClose={() => setIsLogoutModalOpen(false)}
+        onConfirm={handleSignOut}
+      />
     </>
   );
 };
