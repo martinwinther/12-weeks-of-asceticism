@@ -43,7 +43,7 @@ const ThemeToggle = () => {
           className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200 ${
             theme === themeOption.id
               ? 'bg-primary text-white shadow-sm'
-              : 'text-accent hover:text-primary hover:bg-background/50'
+              : 'text-accent hover:text-primary hover:bg-background'
           }`}
           aria-label={`Switch to ${themeOption.name} theme`}
         >
