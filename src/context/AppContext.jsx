@@ -116,6 +116,13 @@ export const AppProvider = ({ children }) => {
     if (!user) return;
 
     try {
+      // First, get the current theme to preserve it
+      const { data: currentData } = await supabase
+        .from('progress')
+        .select('theme')
+        .eq('user_id', user.id)
+        .single();
+
       const { error } = await supabase
         .from('progress')
         .upsert({
@@ -123,6 +130,7 @@ export const AppProvider = ({ children }) => {
           completed_days: updatedState.completedDays,
           start_date: updatedState.startDate,
           practice_completions: updatedState.practiceCompletions,
+          theme: currentData?.theme || 'monastic', // Preserve existing theme or use default
           updated_at: new Date().toISOString()
         }, {
           onConflict: 'user_id'

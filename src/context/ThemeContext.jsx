@@ -17,7 +17,7 @@ export const ThemeProvider = ({ children }) => {
   const { user } = useAuth();
   const [theme, setThemeState] = useState(() => {
     // Initialize with localStorage fallback
-    return getItem('theme', 'light');
+    return getItem('theme', 'monastic');
   });
   const [isLoading, setIsLoading] = useState(true);
 
@@ -42,14 +42,33 @@ export const ThemeProvider = ({ children }) => {
           setThemeState(data.theme);
           setItem('theme', data.theme); // Update localStorage
         } else {
-          // No theme in Supabase, use localStorage fallback
-          const localTheme = getItem('theme', 'light');
+          // No theme in Supabase, use localStorage fallback and save to database
+          const localTheme = getItem('theme', 'monastic');
           setThemeState(localTheme);
+          
+          // Save the default theme to database if no theme exists
+          try {
+            const { error: saveError } = await supabase
+              .from('progress')
+              .upsert({
+                user_id: user.id,
+                theme: localTheme,
+                updated_at: new Date().toISOString()
+              }, {
+                onConflict: 'user_id'
+              });
+
+            if (saveError) {
+              console.error('Error saving default theme:', saveError);
+            }
+          } catch (saveError) {
+            console.error('Error saving default theme:', saveError);
+          }
         }
       } catch (error) {
         console.error('Error loading theme:', error);
         // Fallback to localStorage
-        const localTheme = getItem('theme', 'light');
+        const localTheme = getItem('theme', 'monastic');
         setThemeState(localTheme);
       } finally {
         setIsLoading(false);
