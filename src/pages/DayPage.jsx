@@ -11,7 +11,7 @@ const DayPage = () => {
   const { dayNumber } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { isDayAvailable, hasStarted, startJourney, currentDay, getJournalEntry, updateJournalEntry, isLoading: contextLoading } = useAppContext();
+  const { isDayAvailable, hasStarted, startJourney, currentDay, getJournalEntry, updateJournalEntry, isLoading: contextLoading, isPracticeComplete, togglePracticeCompletion, getDayCompletionStatus } = useAppContext();
   const dayNum = parseInt(dayNumber);
   const [journalEntry, setJournalEntry] = useState('');
   const [isLoading, setIsLoading] = useState(true);
@@ -265,29 +265,86 @@ const DayPage = () => {
           <p className="text-accent max-w-lg mx-auto text-sm md:text-base">
             {currentWeekLayer?.description}
           </p>
+          
+          {/* Day Completion Progress */}
+          {(() => {
+            const completionStatus = getDayCompletionStatus(dayNum);
+            const progressPercentage = completionStatus.practicesTotal > 0 
+              ? Math.round(((completionStatus.practicesCompleted + (completionStatus.hasJournal ? 1 : 0)) / (completionStatus.practicesTotal + 1)) * 100)
+              : completionStatus.hasJournal ? 100 : 0;
+            
+            return (
+              <div className="mt-6 max-w-md mx-auto">
+                <div className="flex items-center justify-between text-sm text-accent mb-2">
+                  <span>Today's Progress</span>
+                  <span>{progressPercentage}%</span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-2">
+                  <div 
+                    className="bg-primary h-2 rounded-full transition-all duration-300"
+                    style={{ width: `${progressPercentage}%` }}
+                  ></div>
+                </div>
+                <div className="flex items-center justify-between text-xs text-accent/70 mt-1">
+                  <span>Practices: {completionStatus.practicesCompleted}/{completionStatus.practicesTotal}</span>
+                  <span>Journal: {completionStatus.hasJournal ? '✓' : '○'}</span>
+                </div>
+              </div>
+            );
+          })()}
         </div>
 
         {/* Active Actions - Stacked List */}
         <div className="mb-8 md:mb-12">
           <h3 className="text-lg md:text-xl font-medium text-primary mb-4 md:mb-6">Active Practices</h3>
           <div className="space-y-3 md:space-y-4">
-            {activeActions.map((layer, index) => (
-              <div key={index} className="bg-white rounded-lg p-3 md:p-4 border-l-4 border-primary shadow-sm border border-accent/20">
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <h4 className="font-semibold text-primary mb-2 text-sm md:text-base">
-                      Week {index + 1}: {layer.title}
-                    </h4>
-                    <p className="text-accent text-xs md:text-sm">
-                      {layer.action}
-                    </p>
-                  </div>
-                  <div className="ml-2 md:ml-4 text-xs text-accent bg-background rounded-full px-2 py-1 shrink-0">
-                    Week {index + 1}
+            {activeActions.map((layer, index) => {
+              const weekNumber = index + 1;
+              const isCompleted = isPracticeComplete(dayNum, weekNumber);
+              
+              return (
+                <div 
+                  key={index} 
+                  onClick={() => togglePracticeCompletion(dayNum, weekNumber)}
+                  className={`bg-white rounded-lg p-3 md:p-4 border-l-4 shadow-sm border border-accent/20 cursor-pointer transition-all duration-200 hover:shadow-md hover:scale-[1.02] ${
+                    isCompleted 
+                      ? 'border-green-500 bg-green-50' 
+                      : 'border-primary hover:border-primary/70'
+                  }`}
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <h4 className={`font-semibold mb-2 text-sm md:text-base ${
+                        isCompleted ? 'text-green-700' : 'text-primary'
+                      }`}>
+                        Week {weekNumber}: {layer.title}
+                      </h4>
+                      <p className={`text-xs md:text-sm ${
+                        isCompleted ? 'text-green-600' : 'text-accent'
+                      }`}>
+                        {layer.action}
+                      </p>
+                    </div>
+                    <div className="ml-2 md:ml-4 flex items-center gap-2">
+                      <div className="text-xs text-accent bg-background rounded-full px-2 py-1 shrink-0">
+                        Week {weekNumber}
+                      </div>
+                      <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
+                        isCompleted 
+                          ? 'bg-green-500 border-green-500 text-white' 
+                          : 'border-accent/30 hover:border-primary'
+                      }`}>
+                        {isCompleted && (
+                          <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                          </svg>
+                        )}
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 
@@ -321,7 +378,25 @@ const DayPage = () => {
 
         {/* Journal Textarea */}
         <div className="mb-8 md:mb-12">
-          <h3 className="text-lg md:text-xl font-medium text-primary mb-4">Your Journal</h3>
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg md:text-xl font-medium text-primary">Your Journal</h3>
+            <div className={`flex items-center gap-2 text-sm ${
+              getDayCompletionStatus(dayNum).hasJournal ? 'text-green-600' : 'text-accent/70'
+            }`}>
+              <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
+                getDayCompletionStatus(dayNum).hasJournal 
+                  ? 'bg-green-500 border-green-500 text-white' 
+                  : 'border-accent/30'
+              }`}>
+                {getDayCompletionStatus(dayNum).hasJournal && (
+                  <svg className="w-2 h-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                )}
+              </div>
+              <span>{getDayCompletionStatus(dayNum).hasJournal ? 'Complete' : 'Incomplete'}</span>
+            </div>
+          </div>
           <div className="relative">
             <textarea
               className="w-full h-48 md:h-64 p-3 md:p-4 border border-accent/30 rounded-lg resize-none focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent font-mono text-sm leading-relaxed touch-manipulation"

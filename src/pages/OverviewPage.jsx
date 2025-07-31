@@ -5,10 +5,10 @@ import { useAppContext } from '../context/AppContext';
 
 const OverviewPage = () => {
   const navigate = useNavigate();
-  const { currentDay, isDayAvailable, hasStarted, startJourney, isDayComplete, state } = useAppContext();
+  const { currentDay, isDayAvailable, hasStarted, startJourney, isDayComplete, getDayCompletionStatus, state } = useAppContext();
   const [completedDays, setCompletedDays] = useState([]);
 
-  // Load completedDays from AppContext (Supabase data)
+  // Load completion data from AppContext (Supabase data)
   useEffect(() => {
     const completed = [];
     
@@ -19,30 +19,51 @@ const OverviewPage = () => {
     }
     
     setCompletedDays(completed);
-  }, [isDayComplete, state.journalEntries, state.completedDays]); // Re-run when journal entries or completed days change
+  }, [isDayComplete, state.journalEntries, state.completedDays, state.practiceCompletions]); // Re-run when completion data changes
 
   // Calculate progress
   const progressPercentage = Math.round((completedDays.length / 84) * 100);
 
-  // Get day styles
-  const getDayStyles = (dayNumber) => {
-    const isCompleted = completedDays.includes(dayNumber);
+  // Get completion status and styles for a day
+  const getDayInfo = (dayNumber) => {
     const isToday = dayNumber === currentDay;
     const isAvailable = isDayAvailable(dayNumber);
+    const completionStatus = getDayCompletionStatus(dayNumber);
     
     let styles = "aspect-square flex items-center justify-center rounded-md text-xs md:text-sm font-medium transition-all duration-200 touch-manipulation ";
+    let icon = null;
+    let bgClass = "";
     
     if (!isAvailable) {
       styles += "bg-gray-100 text-gray-400 border md:border-2 border-gray-200 cursor-not-allowed opacity-60";
-    } else if (isCompleted) {
-      styles += "bg-accent/20 text-accent border md:border-2 border-accent/30 hover:bg-accent/30 cursor-pointer hover:scale-105";
+      icon = "🔒";
+    } else if (completionStatus.isFullyComplete) {
+      // Fully complete: all practices + journal
+      styles += "bg-green-100 text-green-700 border md:border-2 border-green-300 hover:bg-green-200 cursor-pointer hover:scale-105";
+      icon = "✅";
+    } else if (completionStatus.practicesCompleted > 0 && completionStatus.hasJournal) {
+      // Partial practices + journal
+      styles += "bg-blue-100 text-blue-700 border md:border-2 border-blue-300 hover:bg-blue-200 cursor-pointer hover:scale-105";
+      icon = "📝";
+    } else if (completionStatus.practicesCompleted === completionStatus.practicesTotal && !completionStatus.hasJournal) {
+      // All practices but no journal
+      styles += "bg-yellow-100 text-yellow-700 border md:border-2 border-yellow-300 hover:bg-yellow-200 cursor-pointer hover:scale-105";
+      icon = "🏃";
+    } else if (completionStatus.practicesCompleted > 0 || completionStatus.hasJournal) {
+      // Some progress
+      styles += "bg-orange-100 text-orange-700 border md:border-2 border-orange-300 hover:bg-orange-200 cursor-pointer hover:scale-105";
+      icon = "⏸️";
     } else if (isToday) {
+      // Today but not started
       styles += "bg-primary/20 text-primary border md:border-2 border-primary ring-1 md:ring-2 ring-primary/30 hover:bg-primary/30 cursor-pointer hover:scale-105";
+      icon = "●";
     } else {
+      // Available but not started
       styles += "bg-white text-accent border md:border-2 border-accent/20 hover:bg-background cursor-pointer hover:scale-105";
+      icon = null;
     }
     
-    return styles;
+    return { styles, icon, completionStatus };
   };
 
   // Handle day click
@@ -126,26 +147,19 @@ const OverviewPage = () => {
                 {/* Week Grid - 7 days */}
                 <div className="grid grid-cols-7 gap-1 md:gap-2">
                   {week.map((dayNumber) => {
-                    const isCompleted = completedDays.includes(dayNumber);
-                    const isToday = dayNumber === currentDay;
-                    const isAvailable = isDayAvailable(dayNumber);
+                    const { styles, icon, completionStatus } = getDayInfo(dayNumber);
                     
                     return (
                       <div
                         key={dayNumber}
                         onClick={() => handleDayClick(dayNumber)}
-                        className={getDayStyles(dayNumber)}
+                        className={styles}
+                        title={`Day ${dayNumber} - Practices: ${completionStatus.practicesCompleted}/${completionStatus.practicesTotal}, Journal: ${completionStatus.hasJournal ? 'Complete' : 'Incomplete'}`}
                       >
                         <div className="text-center">
                           <div className="font-semibold text-xs md:text-sm">{dayNumber}</div>
-                          {!isAvailable && (
-                            <div className="text-xs mt-0.5">🔒</div>
-                          )}
-                          {isCompleted && isAvailable && (
-                            <div className="text-xs mt-0.5">✓</div>
-                          )}
-                          {isToday && isAvailable && (
-                            <div className="text-xs mt-0.5">●</div>
+                          {icon && (
+                            <div className="text-xs mt-0.5">{icon}</div>
                           )}
                         </div>
                       </div>
@@ -160,24 +174,38 @@ const OverviewPage = () => {
         {/* Legend */}
         <div className="mt-6 md:mt-8 bg-white rounded-lg shadow-sm p-4 md:p-6 border border-accent/20">
           <h3 className="text-base md:text-lg font-medium text-primary mb-3 md:mb-4">Legend</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-            <div className="flex items-center space-x-2 md:space-x-3">
-              <div className="w-6 h-6 md:w-8 md:h-8 bg-accent/20 border md:border-2 border-accent/30 rounded-md flex items-center justify-center">
-                <span className="text-accent text-xs">✓</span>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
+            <div className="flex items-center space-x-2">
+              <div className="w-6 h-6 md:w-8 md:h-8 bg-green-100 border md:border-2 border-green-300 rounded-md flex items-center justify-center">
+                <span className="text-green-700 text-xs">✅</span>
               </div>
-              <span className="text-xs md:text-sm text-accent">Completed</span>
+              <span className="text-xs md:text-sm text-accent">Complete</span>
             </div>
-            <div className="flex items-center space-x-2 md:space-x-3">
+            <div className="flex items-center space-x-2">
+              <div className="w-6 h-6 md:w-8 md:h-8 bg-yellow-100 border md:border-2 border-yellow-300 rounded-md flex items-center justify-center">
+                <span className="text-yellow-700 text-xs">🏃</span>
+              </div>
+              <span className="text-xs md:text-sm text-accent">Practices Only</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-6 h-6 md:w-8 md:h-8 bg-blue-100 border md:border-2 border-blue-300 rounded-md flex items-center justify-center">
+                <span className="text-blue-700 text-xs">📝</span>
+              </div>
+              <span className="text-xs md:text-sm text-accent">Partial + Journal</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-6 h-6 md:w-8 md:h-8 bg-orange-100 border md:border-2 border-orange-300 rounded-md flex items-center justify-center">
+                <span className="text-orange-700 text-xs">⏸️</span>
+              </div>
+              <span className="text-xs md:text-sm text-accent">In Progress</span>
+            </div>
+            <div className="flex items-center space-x-2">
               <div className="w-6 h-6 md:w-8 md:h-8 bg-primary/20 border md:border-2 border-primary rounded-md flex items-center justify-center">
                 <span className="text-primary text-xs">●</span>
               </div>
-              <span className="text-xs md:text-sm text-accent">Current</span>
+              <span className="text-xs md:text-sm text-accent">Today</span>
             </div>
-            <div className="flex items-center space-x-2 md:space-x-3">
-              <div className="w-6 h-6 md:w-8 md:h-8 bg-white border md:border-2 border-accent/20 rounded-md"></div>
-              <span className="text-xs md:text-sm text-accent">Available</span>
-            </div>
-            <div className="flex items-center space-x-2 md:space-x-3">
+            <div className="flex items-center space-x-2">
               <div className="w-6 h-6 md:w-8 md:h-8 bg-gray-100 border md:border-2 border-gray-200 rounded-md flex items-center justify-center opacity-60">
                 <span className="text-gray-400 text-xs">🔒</span>
               </div>

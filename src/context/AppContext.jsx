@@ -9,6 +9,7 @@ const defaultState = {
   journalEntries: {},
   currentDay: 1,
   completedDays: [],
+  practiceCompletions: {}, // New: tracks completion of individual practices per day
   startDate: null, // Will be set when user begins journey
 };
 
@@ -33,7 +34,7 @@ export const AppProvider = ({ children }) => {
         // Load progress data from Supabase
         const { data: progressData, error: progressError } = await supabase
           .from('progress')
-          .select('completed_days, start_date')
+          .select('completed_days, start_date, practice_completions')
           .eq('user_id', user.id)
           .single();
 
@@ -66,6 +67,7 @@ export const AppProvider = ({ children }) => {
           ...defaultState,
           completedDays: progressData?.completed_days || [],
           startDate: progressData?.start_date || null,
+          practiceCompletions: progressData?.practice_completions || {},
           journalEntries: journalEntries,
         });
 
@@ -120,6 +122,7 @@ export const AppProvider = ({ children }) => {
           user_id: user.id,
           completed_days: updatedState.completedDays,
           start_date: updatedState.startDate,
+          practice_completions: updatedState.practiceCompletions,
           updated_at: new Date().toISOString()
         }, {
           onConflict: 'user_id'
@@ -151,7 +154,7 @@ export const AppProvider = ({ children }) => {
 
   // Reset journey (for testing or restarting)
   const resetJourney = async () => {
-    const updatedState = { ...state, startDate: null, completedDays: [], journalEntries: {} };
+    const updatedState = { ...state, startDate: null, completedDays: [], journalEntries: {}, practiceCompletions: {} };
     setState(updatedState);
     await syncProgressToSupabase(updatedState);
     
@@ -209,10 +212,66 @@ export const AppProvider = ({ children }) => {
     }));
   };
   
+  // Check if a specific practice is completed for a day
+  const isPracticeComplete = (dayNumber, weekNumber) => {
+    const dayKey = dayNumber.toString();
+    const practiceKey = `week${weekNumber}`;
+    return state.practiceCompletions[dayKey]?.[practiceKey] || false;
+  };
+
+  // Toggle practice completion for a specific day and week
+  const togglePracticeCompletion = async (dayNumber, weekNumber) => {
+    const dayKey = dayNumber.toString();
+    const practiceKey = `week${weekNumber}`;
+    
+    const currentPracticeCompletions = { ...state.practiceCompletions };
+    
+    // Initialize day object if it doesn't exist
+    if (!currentPracticeCompletions[dayKey]) {
+      currentPracticeCompletions[dayKey] = {};
+    }
+    
+    // Toggle the practice completion
+    currentPracticeCompletions[dayKey][practiceKey] = !currentPracticeCompletions[dayKey][practiceKey];
+    
+    const updatedState = {
+      ...state,
+      practiceCompletions: currentPracticeCompletions
+    };
+    
+    setState(updatedState);
+    await syncProgressToSupabase(updatedState);
+  };
+
+  // Get completion status for a day (practices + journal)
+  const getDayCompletionStatus = (dayNumber) => {
+    const dayKey = dayNumber.toString();
+    const weekNumber = Math.ceil(dayNumber / 7);
+    
+    // Get required practices for this day (cumulative)
+    const requiredWeeks = [];
+    for (let week = 1; week <= weekNumber; week++) {
+      requiredWeeks.push(week);
+    }
+    
+    // Check practice completions
+    const dayPractices = state.practiceCompletions[dayKey] || {};
+    const completedPractices = requiredWeeks.filter(week => dayPractices[`week${week}`]);
+    
+    // Check journal completion
+    const hasJournal = state.journalEntries[dayKey]?.trim().length > 0;
+    
+    return {
+      practicesCompleted: completedPractices.length,
+      practicesTotal: requiredWeeks.length,
+      hasJournal,
+      isFullyComplete: completedPractices.length === requiredWeeks.length && hasJournal,
+      requiredWeeks
+    };
+  };
+
   const isDayComplete = (day) => {
-    const hasJournal = state.journalEntries[day.toString()]?.trim().length > 0;
-    const isMarkedComplete = (state.completedDays || []).includes(day);
-    return hasJournal || isMarkedComplete;
+    return getDayCompletionStatus(day).isFullyComplete;
   };
 
   const value = {
@@ -228,6 +287,9 @@ export const AppProvider = ({ children }) => {
     updateJournalEntry,
     isDayAvailable,
     isDayComplete,
+    isPracticeComplete,
+    togglePracticeCompletion,
+    getDayCompletionStatus,
     setCurrentWeek,
     setCurrentDay,
   };
