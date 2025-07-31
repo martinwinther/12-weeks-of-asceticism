@@ -10,7 +10,7 @@ const ProgressTracker = ({ currentWeek, completedWeeks }) => (
         <div
           key={week}
           className={`w-6 h-6 rounded-full border-2 flex items-center justify-center font-mono text-xs
-            ${isCompleted ? 'bg-slate-600 border-slate-600 text-white' : isCurrent ? 'bg-slate-700 border-slate-700 text-white' : 'bg-white border-slate-300 text-slate-500'}`}
+            ${isCompleted ? 'bg-primary border-primary text-white' : isCurrent ? 'bg-accent border-accent text-white' : 'bg-surface border-accent text-muted'}`}
           title={`Week ${week}`}
         >
           {week}

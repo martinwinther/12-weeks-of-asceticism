@@ -35,7 +35,7 @@ const OverviewPage = () => {
     let bgClass = "";
     
     if (!isAvailable) {
-      styles += "bg-gray-100 text-gray-400 border md:border-2 border-gray-200 cursor-not-allowed opacity-60";
+      styles += "bg-muted/20 text-muted border md:border-2 border-muted/30 cursor-not-allowed opacity-60";
       icon = "🔒";
     } else if (completionStatus.isFullyComplete) {
       // Fully complete: all practices + journal
@@ -206,8 +206,8 @@ const OverviewPage = () => {
               <span className="text-xs md:text-sm text-accent">Today</span>
             </div>
             <div className="flex items-center space-x-2">
-              <div className="w-6 h-6 md:w-8 md:h-8 bg-gray-100 border md:border-2 border-gray-200 rounded-md flex items-center justify-center opacity-60">
-                <span className="text-gray-400 text-xs">🔒</span>
+              <div className="w-6 h-6 md:w-8 md:h-8 bg-muted/20 border md:border-2 border-muted/30 rounded-md flex items-center justify-center opacity-60">
+                <span className="text-muted text-xs">🔒</span>
               </div>
               <span className="text-xs md:text-sm text-accent">Locked</span>
             </div>
