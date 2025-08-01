@@ -21,10 +21,10 @@ const WeeklyTeachings = ({ weekNumber, teachings }) => {
       <div className="space-y-4 md:space-y-6">
         {/* Ancient Teaching */}
         {ancient && (
-          <div className="bg-gray-50 rounded-lg p-4 md:p-6 border-l-4 border-amber-500">
+          <div className="bg-white rounded-lg p-4 md:p-6 border-l-4 border-primary/60 shadow-sm border border-accent/20">
             <div className="flex items-center gap-2 mb-3">
-              <div className="w-2 h-2 bg-amber-500 rounded-full"></div>
-              <span className="text-xs font-medium text-amber-700 uppercase tracking-wide">
+              <div className="w-2 h-2 bg-primary/60 rounded-full"></div>
+              <span className="text-xs font-medium text-primary/80 uppercase tracking-wide">
                 Ancient Wisdom
               </span>
             </div>
@@ -47,10 +47,10 @@ const WeeklyTeachings = ({ weekNumber, teachings }) => {
 
         {/* Modern Teaching */}
         {modern && (
-          <div className="bg-gray-50 rounded-lg p-4 md:p-6 border-l-4 border-blue-500">
+          <div className="bg-white rounded-lg p-4 md:p-6 border-l-4 border-accent/60 shadow-sm border border-accent/20">
             <div className="flex items-center gap-2 mb-3">
-              <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-              <span className="text-xs font-medium text-blue-700 uppercase tracking-wide">
+              <div className="w-2 h-2 bg-accent/60 rounded-full"></div>
+              <span className="text-xs font-medium text-accent/80 uppercase tracking-wide">
                 Modern Insight
               </span>
             </div>
