@@ -110,10 +110,10 @@ const Dashboard = () => {
                       title={`Day ${day}${hasReflection ? ' - Has reflection' : ''}`}
                     >
                       <div className="relative w-full h-full flex items-center justify-center">
-                        {hasReflection && (
-                          <div className="absolute top-0.5 left-0.5 w-1.5 h-1.5 bg-primary rounded-full"></div>
-                        )}
                         {day}
+                        {hasReflection && (
+                          <div className="absolute bottom-0 left-1 right-1 h-0.5 bg-primary/40 rounded-full"></div>
+                        )}
                       </div>
                     </Link>
                   );
