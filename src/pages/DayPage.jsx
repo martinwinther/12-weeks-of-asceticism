@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { layersByWeek } from '../data/layersByWeek';
 import { promptsByWeek } from '../data/promptsByWeek';
+import weeklyTeachings from '../data/weeklyTeachings';
+import WeeklyTeachings from '../components/WeeklyTeachings';
 import { useAppContext } from '../context/AppContext';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../lib/supabaseClient';
@@ -347,6 +349,12 @@ const DayPage = () => {
             })}
           </div>
         </div>
+
+        {/* Weekly Teachings */}
+        <WeeklyTeachings 
+          weekNumber={weekNumber} 
+          teachings={weeklyTeachings[weekNumber]} 
+        />
 
         {/* Reflection Prompt */}
         <div className="mb-8 md:mb-12">
