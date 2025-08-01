@@ -39,19 +39,19 @@ const OverviewPage = () => {
       icon = "🔒";
     } else if (completionStatus.isFullyComplete) {
       // Fully complete: all practices + journal
-      styles += "bg-green-100 text-green-700 border md:border-2 border-green-300 hover:bg-green-200 cursor-pointer hover:scale-105";
+      styles += "bg-primary/10 text-primary border md:border-2 border-primary/60 hover:bg-primary/20 cursor-pointer hover:scale-105";
       icon = "✅";
     } else if (completionStatus.practicesCompleted > 0 && completionStatus.hasJournal) {
       // Partial practices + journal
-      styles += "bg-blue-100 text-blue-700 border md:border-2 border-blue-300 hover:bg-blue-200 cursor-pointer hover:scale-105";
+      styles += "bg-accent/10 text-accent border md:border-2 border-accent/60 hover:bg-accent/20 cursor-pointer hover:scale-105";
       icon = "📝";
     } else if (completionStatus.practicesCompleted === completionStatus.practicesTotal && !completionStatus.hasJournal) {
       // All practices but no journal
-      styles += "bg-yellow-100 text-yellow-700 border md:border-2 border-yellow-300 hover:bg-yellow-200 cursor-pointer hover:scale-105";
+      styles += "bg-primary/5 text-primary/80 border md:border-2 border-primary/40 hover:bg-primary/10 cursor-pointer hover:scale-105";
       icon = "🏃";
     } else if (completionStatus.practicesCompleted > 0 || completionStatus.hasJournal) {
       // Some progress
-      styles += "bg-orange-100 text-orange-700 border md:border-2 border-orange-300 hover:bg-orange-200 cursor-pointer hover:scale-105";
+      styles += "bg-accent/5 text-accent/80 border md:border-2 border-accent/40 hover:bg-accent/10 cursor-pointer hover:scale-105";
       icon = "⏸️";
     } else if (isToday) {
       // Today but not started
@@ -176,26 +176,26 @@ const OverviewPage = () => {
           <h3 className="text-base md:text-lg font-medium text-primary mb-3 md:mb-4">Legend</h3>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
             <div className="flex items-center space-x-2">
-              <div className="w-6 h-6 md:w-8 md:h-8 bg-green-100 border md:border-2 border-green-300 rounded-md flex items-center justify-center">
-                <span className="text-green-700 text-xs">✅</span>
+              <div className="w-6 h-6 md:w-8 md:h-8 bg-primary/10 border md:border-2 border-primary/60 rounded-md flex items-center justify-center">
+                <span className="text-primary text-xs">✅</span>
               </div>
               <span className="text-xs md:text-sm text-accent">Complete</span>
             </div>
             <div className="flex items-center space-x-2">
-              <div className="w-6 h-6 md:w-8 md:h-8 bg-yellow-100 border md:border-2 border-yellow-300 rounded-md flex items-center justify-center">
-                <span className="text-yellow-700 text-xs">🏃</span>
+              <div className="w-6 h-6 md:w-8 md:h-8 bg-primary/5 border md:border-2 border-primary/40 rounded-md flex items-center justify-center">
+                <span className="text-primary/80 text-xs">🏃</span>
               </div>
               <span className="text-xs md:text-sm text-accent">Practices Only</span>
             </div>
             <div className="flex items-center space-x-2">
-              <div className="w-6 h-6 md:w-8 md:h-8 bg-blue-100 border md:border-2 border-blue-300 rounded-md flex items-center justify-center">
-                <span className="text-blue-700 text-xs">📝</span>
+              <div className="w-6 h-6 md:w-8 md:h-8 bg-accent/10 border md:border-2 border-accent/60 rounded-md flex items-center justify-center">
+                <span className="text-accent text-xs">📝</span>
               </div>
               <span className="text-xs md:text-sm text-accent">Partial + Journal</span>
             </div>
             <div className="flex items-center space-x-2">
-              <div className="w-6 h-6 md:w-8 md:h-8 bg-orange-100 border md:border-2 border-orange-300 rounded-md flex items-center justify-center">
-                <span className="text-orange-700 text-xs">⏸️</span>
+              <div className="w-6 h-6 md:w-8 md:h-8 bg-accent/5 border md:border-2 border-accent/40 rounded-md flex items-center justify-center">
+                <span className="text-accent/80 text-xs">⏸️</span>
               </div>
               <span className="text-xs md:text-sm text-accent">In Progress</span>
             </div>

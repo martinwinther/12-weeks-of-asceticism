@@ -111,7 +111,7 @@ const Dashboard = () => {
                     >
                       <div className="relative w-full h-full flex items-center justify-center">
                         {hasReflection && (
-                          <div className="absolute top-0.5 left-0.5 w-1.5 h-1.5 bg-yellow-500 rounded-full"></div>
+                          <div className="absolute top-0.5 left-0.5 w-1.5 h-1.5 bg-primary rounded-full"></div>
                         )}
                         {day}
                       </div>

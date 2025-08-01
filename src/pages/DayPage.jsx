@@ -310,19 +310,19 @@ const DayPage = () => {
                   onClick={() => togglePracticeCompletion(dayNum, weekNumber)}
                   className={`bg-white rounded-lg p-3 md:p-4 border-l-4 shadow-sm border border-accent/20 cursor-pointer transition-all duration-200 hover:shadow-md hover:scale-[1.02] ${
                     isCompleted 
-                      ? 'border-green-500 bg-green-50' 
+                      ? 'border-primary/80 bg-primary/10' 
                       : 'border-primary hover:border-primary/70'
                   }`}
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <h4 className={`font-semibold mb-2 text-sm md:text-base ${
-                        isCompleted ? 'text-green-700' : 'text-primary'
+                        isCompleted ? 'text-primary' : 'text-primary'
                       }`}>
                         Week {weekNumber}: {layer.title}
                       </h4>
                       <p className={`text-xs md:text-sm ${
-                        isCompleted ? 'text-green-600' : 'text-accent'
+                        isCompleted ? 'text-accent/80' : 'text-accent'
                       }`}>
                         {layer.action}
                       </p>
@@ -333,7 +333,7 @@ const DayPage = () => {
                       </div>
                       <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
                         isCompleted 
-                          ? 'bg-green-500 border-green-500 text-white' 
+                          ? 'bg-primary border-primary text-white' 
                           : 'border-accent/30 hover:border-primary'
                       }`}>
                         {isCompleted && (
@@ -389,11 +389,11 @@ const DayPage = () => {
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg md:text-xl font-medium text-primary">Your Journal</h3>
             <div className={`flex items-center gap-2 text-sm ${
-              getDayCompletionStatus(dayNum).hasJournal ? 'text-green-600' : 'text-accent/70'
+              getDayCompletionStatus(dayNum).hasJournal ? 'text-primary' : 'text-accent/70'
             }`}>
               <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
                 getDayCompletionStatus(dayNum).hasJournal 
-                  ? 'bg-green-500 border-green-500 text-white' 
+                  ? 'bg-primary border-primary text-white' 
                   : 'border-accent/30'
               }`}>
                 {getDayCompletionStatus(dayNum).hasJournal && (
