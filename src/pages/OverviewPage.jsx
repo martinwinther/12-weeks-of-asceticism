@@ -82,7 +82,7 @@ const OverviewPage = () => {
   return (
     <div className="min-h-screen bg-background font-serif text-primary">
       {/* Header */}
-      <div className="bg-white border-b border-accent/20 shadow-sm">
+              <div className="bg-surface border-b border-accent/20 shadow-sm">
         <div className="max-w-6xl mx-auto px-4 py-4 md:px-6 md:py-6">
           <div className="text-center">
             <h1 className="text-2xl md:text-3xl font-light text-primary">Overview</h1>
@@ -133,7 +133,7 @@ const OverviewPage = () => {
             const weekLayer = layersByWeek[weekNumber];
             
             return (
-              <div key={weekIndex} className="bg-white rounded-lg shadow-sm p-4 md:p-6 border border-accent/20">
+              <div key={weekIndex} className="bg-surface rounded-lg shadow-sm p-4 md:p-6 border border-accent/20">
                 {/* Week Header */}
                 <div className="mb-3 md:mb-4">
                   <h3 className="text-base md:text-lg font-semibold text-primary">
@@ -172,7 +172,7 @@ const OverviewPage = () => {
         </div>
 
         {/* Legend */}
-        <div className="mt-6 md:mt-8 bg-white rounded-lg shadow-sm p-4 md:p-6 border border-accent/20">
+        <div className="mt-6 md:mt-8 bg-surface rounded-lg shadow-sm p-4 md:p-6 border border-accent/20">
           <h3 className="text-base md:text-lg font-medium text-primary mb-3 md:mb-4">Legend</h3>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
             <div className="flex items-center space-x-2">

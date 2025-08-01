@@ -57,7 +57,7 @@ const Dashboard = () => {
     } else if (isComplete) {
       return `${baseStyles} bg-accent text-white border-accent hover:bg-accent/80`;
     } else {
-      return `${baseStyles} bg-white text-primary border-accent/30 hover:border-primary hover:shadow-sm`;
+      return `${baseStyles} bg-surface text-primary border-accent/30 hover:border-primary hover:shadow-sm`;
     }
   };
 
@@ -82,7 +82,7 @@ const Dashboard = () => {
         {/* 84-Day Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 mb-6 md:mb-8">
           {weeks.map((weekDays, weekIndex) => (
-            <div key={weekIndex} className="bg-white rounded-lg shadow-sm p-3 md:p-4 border border-accent/20">
+            <div key={weekIndex} className="bg-surface rounded-lg shadow-sm p-3 md:p-4 border border-accent/20">
               <h3 className="text-xs md:text-sm font-semibold text-accent mb-2 md:mb-3 text-center">
                 Week {weekIndex + 1}
               </h3>
@@ -124,7 +124,7 @@ const Dashboard = () => {
         </div>
 
         {/* Current Progress Summary */}
-        <div className="bg-white rounded-lg shadow-sm p-6 text-center border border-accent/20">
+        <div className="bg-surface rounded-lg shadow-sm p-6 text-center border border-accent/20">
           <h2 className="text-xl font-bold mb-4 text-primary">Your Progress</h2>
           <div className="flex justify-center gap-8 text-sm">
             <div>

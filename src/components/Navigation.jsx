@@ -56,11 +56,11 @@ const Navigation = () => {
   return (
     <>
       {/* Desktop Navigation - Clean minimal top bar */}
-      <nav className="hidden md:block bg-white/80 backdrop-blur-sm border-b border-accent/10 sticky top-0 z-50">
+              <nav className="hidden md:block bg-surface/80 backdrop-blur-sm border-b border-accent/10 sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-6">
           <div className="flex items-center justify-between h-16">
             {/* Main Navigation */}
-            <div className="flex items-center space-x-1 bg-white rounded-full px-2 py-2 shadow-sm border border-accent/10">
+            <div className="flex items-center space-x-1 bg-surface rounded-full px-2 py-2 shadow-sm border border-accent/10">
               {navItems.map((item) => (
                 <Link
                   key={item.path}
@@ -82,7 +82,7 @@ const Navigation = () => {
               {user ? (
                 <button
                   onClick={handleLogoutClick}
-                  className="flex items-center justify-center w-10 h-10 rounded-full bg-white border border-accent/10 hover:bg-background hover:text-primary transition-colors"
+                  className="flex items-center justify-center w-10 h-10 rounded-full bg-surface border border-accent/10 hover:bg-background hover:text-primary transition-colors"
                   title="Sign out"
                 >
                   <svg className="w-5 h-5 text-accent hover:text-primary transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -105,14 +105,14 @@ const Navigation = () => {
       </nav>
 
       {/* Mobile Navigation - Top bar */}
-      <nav className="md:hidden fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-sm border-b border-accent/10 z-50 safe-area-pt">
+      <nav className="md:hidden fixed top-0 left-0 right-0 bg-surface/95 backdrop-blur-sm border-b border-accent/10 z-50 safe-area-pt">
         <div className="px-2 py-2">
           {/* Logout button and Theme Toggle for Mobile */}
           <div className="flex justify-between items-center px-4 mb-2">
             {user ? (
               <button
                 onClick={handleLogoutClick}
-                className="flex items-center justify-center w-10 h-10 rounded-full bg-white border border-accent/10 hover:bg-background hover:text-primary transition-colors"
+                className="flex items-center justify-center w-10 h-10 rounded-full bg-surface border border-accent/10 hover:bg-background hover:text-primary transition-colors"
                 title="Sign out"
               >
                 <svg className="w-5 h-5 text-accent hover:text-primary transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">

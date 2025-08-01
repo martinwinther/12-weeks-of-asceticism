@@ -21,7 +21,7 @@ const WeeklyTeachings = ({ weekNumber, teachings }) => {
       <div className="space-y-4 md:space-y-6">
         {/* Ancient Teaching */}
         {ancient && (
-          <div className="bg-white rounded-lg p-4 md:p-6 border-l-4 border-primary/60 shadow-sm border border-accent/20">
+          <div className="bg-surface rounded-lg p-4 md:p-6 border-l-4 border-primary/60 shadow-sm border border-accent/20">
             <div className="flex items-center gap-2 mb-3">
               <div className="w-2 h-2 bg-primary/60 rounded-full"></div>
               <span className="text-xs font-medium text-primary/80 uppercase tracking-wide">
@@ -47,7 +47,7 @@ const WeeklyTeachings = ({ weekNumber, teachings }) => {
 
         {/* Modern Teaching */}
         {modern && (
-          <div className="bg-white rounded-lg p-4 md:p-6 border-l-4 border-accent/60 shadow-sm border border-accent/20">
+          <div className="bg-surface rounded-lg p-4 md:p-6 border-l-4 border-accent/60 shadow-sm border border-accent/20">
             <div className="flex items-center gap-2 mb-3">
               <div className="w-2 h-2 bg-accent/60 rounded-full"></div>
               <span className="text-xs font-medium text-accent/80 uppercase tracking-wide">

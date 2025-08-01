@@ -35,7 +35,7 @@ const ThemeToggle = () => {
   ];
 
   return (
-    <div className="flex items-center space-x-1 bg-white/90 backdrop-blur-sm rounded-full p-1 shadow-sm border border-accent/20">
+    <div className="flex items-center space-x-1 bg-surface/90 backdrop-blur-sm rounded-full p-1 shadow-sm border border-accent/20">
       {themes.map((themeOption) => (
         <button
           key={themeOption.id}

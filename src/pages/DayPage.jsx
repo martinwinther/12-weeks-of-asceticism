@@ -75,7 +75,7 @@ const DayPage = () => {
           </button>
           <button
             onClick={() => navigate('/overview')}
-            className="bg-white text-primary border-2 border-primary px-6 py-3 rounded-md hover:bg-background transition-colors font-medium"
+            className="bg-surface text-primary border-2 border-primary px-6 py-3 rounded-md hover:bg-background transition-colors font-medium"
           >
             View Overview
           </button>
@@ -281,7 +281,7 @@ const DayPage = () => {
                   <span>Today's Progress</span>
                   <span>{progressPercentage}%</span>
                 </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
+                <div className="w-full bg-accent/20 rounded-full h-2">
                   <div 
                     className="bg-primary h-2 rounded-full transition-all duration-300"
                     style={{ width: `${progressPercentage}%` }}
@@ -308,7 +308,7 @@ const DayPage = () => {
                 <div 
                   key={index} 
                   onClick={() => togglePracticeCompletion(dayNum, weekNumber)}
-                  className={`bg-white rounded-lg p-3 md:p-4 border-l-4 shadow-sm border border-accent/20 cursor-pointer transition-all duration-200 hover:shadow-md hover:scale-[1.02] ${
+                  className={`bg-surface rounded-lg p-3 md:p-4 border-l-4 shadow-sm border border-accent/20 cursor-pointer transition-all duration-200 hover:shadow-md hover:scale-[1.02] ${
                     isCompleted 
                       ? 'border-primary/80 bg-primary/10' 
                       : 'border-primary hover:border-primary/70'

@@ -41,7 +41,7 @@ const TimelinePage = () => {
   return (
     <div className="min-h-screen bg-background font-serif text-primary">
       {/* Header */}
-      <div className="bg-white border-b border-accent/20 shadow-sm">
+              <div className="bg-surface border-b border-accent/20 shadow-sm">
         <div className="max-w-4xl mx-auto px-6 py-6">
           <div className="text-center">
             <h1 className="text-3xl font-light text-primary">Timeline</h1>
@@ -77,7 +77,7 @@ const TimelinePage = () => {
             {journalEntries.map((entry) => (
               <div
                 key={entry.dayNumber}
-                className="bg-white rounded-lg shadow-sm p-6 border border-accent/20"
+                className="bg-surface rounded-lg shadow-sm p-6 border border-accent/20"
               >
                 {/* Entry Header */}
                 <div className="mb-4">

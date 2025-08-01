@@ -15,11 +15,11 @@ const LogoutModal = ({ isOpen, onClose, onConfirm }) => {
       />
       
       {/* Modal */}
-      <div className="relative bg-white rounded-lg shadow-xl border border-accent/20 max-w-sm w-full mx-4 overflow-hidden">
+      <div className="relative bg-surface rounded-lg shadow-xl border border-accent/20 max-w-sm w-full mx-4 overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-center p-6 border-b border-accent/10">
-          <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mr-4">
-            <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="w-12 h-12 bg-error rounded-full flex items-center justify-center mr-4">
+            <svg className="w-6 h-6 text-error" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
             </svg>
           </div>
@@ -46,7 +46,7 @@ const LogoutModal = ({ isOpen, onClose, onConfirm }) => {
           </button>
           <button
             onClick={onConfirm}
-            className="flex-1 px-4 py-3 text-sm font-medium text-white bg-red-600 hover:bg-red-700 transition-colors"
+            className="flex-1 px-4 py-3 text-sm font-medium text-white bg-error hover:bg-error/80 transition-colors"
           >
             Sign Out
           </button>
