@@ -130,7 +130,7 @@ const Dashboard = () => {
             <div>
               <div className="text-2xl font-bold text-primary">
                 {isLoading || currentDay === null ? (
-                  <div className="w-8 h-8 bg-accent/30 rounded animate-pulse mx-auto"></div>
+                  <div className="w-6 h-8 bg-accent/20 rounded animate-pulse mx-auto"></div>
                 ) : (
                   currentDay
                 )}
@@ -140,7 +140,7 @@ const Dashboard = () => {
             <div>
               <div className="text-2xl font-bold text-accent">
                 {isLoading ? (
-                  <div className="w-8 h-8 bg-accent/30 rounded animate-pulse mx-auto"></div>
+                  <div className="w-6 h-8 bg-accent/20 rounded animate-pulse mx-auto"></div>
                 ) : (
                   Array.from({length: 84}, (_, i) => i + 1).filter(day => isDayComplete(day)).length
                 )}
@@ -150,7 +150,7 @@ const Dashboard = () => {
             <div>
               <div className="text-2xl font-bold text-accent">
                 {isLoading ? (
-                  <div className="w-8 h-8 bg-accent/30 rounded animate-pulse mx-auto"></div>
+                  <div className="w-6 h-8 bg-accent/20 rounded animate-pulse mx-auto"></div>
                 ) : (
                   Array.from({length: 84}, (_, i) => i + 1).filter(day => getJournalEntry(day.toString()).trim().length > 0).length
                 )}
