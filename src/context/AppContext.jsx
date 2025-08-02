@@ -21,16 +21,12 @@ export const AppProvider = ({ children }) => {
   const { user } = useAuth();
   const [state, setState] = useState(defaultState);
   const [isLoading, setIsLoading] = useState(true);
-  const [hasInitialized, setHasInitialized] = useState(false);
 
   // Load data from Supabase (all users are authenticated)
   useEffect(() => {
     const loadData = async () => {
-      // Always start with loading true
-      setIsLoading(true);
-      
-      // If no user, keep loading until we have a user
       if (!user?.id) {
+        setIsLoading(false);
         return;
       }
 
@@ -79,7 +75,6 @@ export const AppProvider = ({ children }) => {
         console.error('Error loading data from Supabase:', error);
         setState(defaultState);
       } finally {
-        setHasInitialized(true);
         setIsLoading(false);
       }
     };
@@ -288,8 +283,8 @@ export const AppProvider = ({ children }) => {
 
   const value = {
     state,
-    isLoading: isLoading || !hasInitialized,
-    currentDay: (isLoading || !hasInitialized) ? null : getCurrentDay(),
+    isLoading: isLoading,
+    currentDay: (isLoading) ? null : getCurrentDay(),
     hasStarted: !!state.startDate || Object.keys(state.journalEntries).length > 0 || state.completedDays.length > 0,
     startJourney,
     resetJourney,
