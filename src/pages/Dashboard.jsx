@@ -7,9 +7,6 @@ const Dashboard = () => {
   const { currentDay, isDayComplete, getJournalEntry, state, isLoading } = useAppContext();
   const { loading: authLoading } = useAuth();
 
-  // Debug logging
-  console.log('Dashboard render:', { isLoading, currentDay, authLoading });
-
   // Show loading state while authentication is being processed
   if (authLoading) {
     return (
