@@ -129,7 +129,7 @@ const Dashboard = () => {
           <div className="flex justify-center gap-8 text-sm">
             <div>
               <div className="text-2xl font-bold text-primary">
-                {isLoading ? (
+                {isLoading || currentDay === null ? (
                   <div className="w-8 h-8 bg-accent/20 rounded animate-pulse"></div>
                 ) : (
                   currentDay

@@ -285,7 +285,7 @@ export const AppProvider = ({ children }) => {
   const value = {
     state,
     isLoading,
-    currentDay: getCurrentDay(),
+    currentDay: isLoading ? null : getCurrentDay(),
     hasStarted: !!state.startDate || Object.keys(state.journalEntries).length > 0 || state.completedDays.length > 0,
     startJourney,
     resetJourney,
