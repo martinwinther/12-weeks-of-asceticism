@@ -25,12 +25,15 @@ export const AppProvider = ({ children }) => {
   // Load data from Supabase (all users are authenticated)
   useEffect(() => {
     const loadData = async () => {
+      console.log('AppContext: Starting data load, user:', user?.id);
       if (!user?.id) {
+        console.log('AppContext: No user ID, setting loading to false');
         setIsLoading(false);
         return;
       }
 
       try {
+        console.log('AppContext: Loading data from Supabase...');
         // Load progress data from Supabase
         const { data: progressData, error: progressError } = await supabase
           .from('progress')
@@ -62,6 +65,7 @@ export const AppProvider = ({ children }) => {
           });
         }
 
+        console.log('AppContext: Data loaded, updating state...');
         // Update state with Supabase data
         setState({
           ...defaultState,
@@ -71,10 +75,14 @@ export const AppProvider = ({ children }) => {
           journalEntries: journalEntries,
         });
 
+        // Add a small delay to make loading state more visible (remove this in production)
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
       } catch (error) {
         console.error('Error loading data from Supabase:', error);
         setState(defaultState);
       } finally {
+        console.log('AppContext: Setting loading to false');
         setIsLoading(false);
       }
     };
