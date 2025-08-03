@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
 import { useAuth } from '../context/AuthContext';
@@ -6,6 +6,8 @@ import { useAuth } from '../context/AuthContext';
 const Dashboard = () => {
   const { currentDay, isDayComplete, getJournalEntry, state, isLoading } = useAppContext();
   const { loading: authLoading } = useAuth();
+  const [showCelebration, setShowCelebration] = useState(false);
+  const [celebratedWeek, setCelebratedWeek] = useState(null);
 
   // Show loading state while authentication is being processed
   if (authLoading) {
@@ -69,8 +71,55 @@ const Dashboard = () => {
     return '';
   };
 
+  // Check if a week is completed (all 7 days are complete)
+  const isWeekCompleted = (weekDays) => {
+    return weekDays.every(day => isDayComplete(day));
+  };
+
+  // Check for newly completed weeks and trigger celebration
+  useEffect(() => {
+    weeks.forEach((weekDays, weekIndex) => {
+      const weekNumber = weekIndex + 1;
+      if (isWeekCompleted(weekDays) && celebratedWeek !== weekNumber) {
+        setCelebratedWeek(weekNumber);
+        setShowCelebration(true);
+        
+        // Hide celebration after 3 seconds
+        setTimeout(() => {
+          setShowCelebration(false);
+        }, 3000);
+      }
+    });
+  }, [state.completedDays, state.journalEntries]);
+
+  // Get week container styles
+  const getWeekContainerStyles = (weekDays, weekIndex) => {
+    const isCompleted = isWeekCompleted(weekDays);
+    const baseStyles = "bg-surface rounded-lg shadow-sm p-3 md:p-4 border border-accent/20 transition-all duration-300";
+    
+    if (isCompleted) {
+      return `${baseStyles} bg-gradient-to-br from-success/10 to-success/5 border-success/30 shadow-lg shadow-success/20 relative overflow-hidden celebration-glow`;
+    }
+    
+    return baseStyles;
+  };
+
   return (
     <div className="min-h-screen bg-background text-primary font-serif">
+      {/* Celebration Notification */}
+      {showCelebration && (
+        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 celebration-bounce">
+          <div className="bg-success text-white px-6 py-3 rounded-lg shadow-lg border border-success/30">
+            <div className="flex items-center gap-2">
+              <span className="text-lg">🎉</span>
+              <span className="font-semibold">Week {celebratedWeek} Complete!</span>
+              <span className="text-lg">🎉</span>
+            </div>
+            <p className="text-xs mt-1 opacity-90">You've completed an entire week of ascetic practice!</p>
+          </div>
+        </div>
+      )}
+
       <div className="max-w-6xl mx-auto p-4 md:p-6">
         
         {/* Header */}
@@ -81,46 +130,60 @@ const Dashboard = () => {
 
         {/* 84-Day Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 mb-6 md:mb-8">
-          {weeks.map((weekDays, weekIndex) => (
-            <div key={weekIndex} className="bg-surface rounded-lg shadow-sm p-3 md:p-4 border border-accent/20">
-              <h3 className="text-xs md:text-sm font-semibold text-accent mb-2 md:mb-3 text-center">
-                Week {weekIndex + 1}
-              </h3>
-              <div className="grid grid-cols-7 gap-0.5 md:gap-1">
-                {weekDays.map((day) => {
-                  const { isFuture, hasReflection } = getDayStatus(day);
-                  
-                  if (isFuture) {
+          {weeks.map((weekDays, weekIndex) => {
+            const isCompleted = isWeekCompleted(weekDays);
+            
+            return (
+              <div key={weekIndex} className={getWeekContainerStyles(weekDays, weekIndex)}>
+                {isCompleted && (
+                  <>
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-success to-success/60"></div>
+                    <div className="absolute top-2 right-2 w-4 h-4 bg-success rounded-full border-2 border-white shadow-sm animate-pulse"></div>
+                  </>
+                )}
+                <h3 className={`text-xs md:text-sm font-semibold mb-2 md:mb-3 text-center transition-all duration-300
+                  ${isCompleted ? 'text-success font-bold' : 'text-accent'}`}>
+                  Week {weekIndex + 1}
+                  {isCompleted && (
+                    <span className="ml-1 text-xs">✓</span>
+                  )}
+                </h3>
+                <div className="grid grid-cols-7 gap-0.5 md:gap-1">
+                  {weekDays.map((day) => {
+                    const { isFuture, hasReflection } = getDayStatus(day);
+                    
+                    if (isFuture) {
+                      return (
+                        <div
+                          key={day}
+                          className={getDayStyles(day)}
+                          title={`Day ${day} - Not yet available`}
+                        >
+                          {day}
+                        </div>
+                      );
+                    }
+                    
                     return (
-                      <div
+                      <Link
                         key={day}
+                        to={`/day/${day}`}
                         className={getDayStyles(day)}
-                        title={`Day ${day} - Not yet available`}
+                        title={`Day ${day}${hasReflection ? ' - Has reflection' : ''}`}
                       >
-                        {day}
-                      </div>
+                        <div className="relative w-full h-full flex items-center justify-center">
+                          {day}
+                          {hasReflection && (
+                            <div className="absolute top-0.5 left-0.5 w-1.5 h-1.5 bg-white/80 rounded-full shadow-sm"></div>
+                          )}
+                        </div>
+                      </Link>
                     );
-                  }
-                  
-                  return (
-                    <Link
-                      key={day}
-                      to={`/day/${day}`}
-                      className={getDayStyles(day)}
-                      title={`Day ${day}${hasReflection ? ' - Has reflection' : ''}`}
-                    >
-                      <div className="relative w-full h-full flex items-center justify-center">
-                        {day}
-                        {hasReflection && (
-                          <div className="absolute top-0.5 left-0.5 w-1.5 h-1.5 bg-white/80 rounded-full shadow-sm"></div>
-                        )}
-                      </div>
-                    </Link>
-                  );
-                })}
+                  })}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* Current Progress Summary */}
