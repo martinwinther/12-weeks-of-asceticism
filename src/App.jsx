@@ -5,12 +5,14 @@ import { ThemeProvider, useTheme } from './context/ThemeContext';
 import { AuthProvider } from './context/AuthContext';
 import Navigation from './components/Navigation';
 import PrivateRoute from './components/PrivateRoute';
+import CookieConsent from './components/CookieConsent';
 import LandingPage from './pages/LandingPage';
 import Dashboard from './pages/Dashboard';
 import OverviewPage from './pages/OverviewPage';
 import TimelinePage from './pages/TimelinePage';
 import DayPage from './pages/DayPage';
 import AuthPage from './pages/AuthPage';
+import PrivacyPage from './pages/PrivacyPage';
 
 const AppContent = () => {
   const location = useLocation();
@@ -23,6 +25,7 @@ const AppContent = () => {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/auth" element={<AuthPage />} />
+        <Route path="/privacy" element={<PrivacyPage />} />
         {/* Redirect old auth routes to new unified auth page */}
         <Route path="/login" element={<Navigate to="/auth" replace />} />
         <Route path="/signup" element={<Navigate to="/auth" replace />} />
@@ -47,6 +50,7 @@ const AppContent = () => {
           </PrivateRoute>
         } />
       </Routes>
+      <CookieConsent />
     </div>
   );
 };
