@@ -17,7 +17,7 @@ import PrivacyPage from './pages/PrivacyPage';
 const AppContent = () => {
   const location = useLocation();
   const { theme } = useTheme();
-  const showNavigation = location.pathname !== '/' && location.pathname !== '/auth';
+  const showNavigation = location.pathname !== '/' && location.pathname !== '/auth' && location.pathname !== '/privacy';
 
   return (
     <div className={`theme-${theme} min-h-screen transition-colors duration-300`}>
