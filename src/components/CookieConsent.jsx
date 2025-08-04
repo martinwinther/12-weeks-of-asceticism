@@ -78,7 +78,7 @@ const CookieConsent = () => {
                     type="checkbox"
                     checked={preferences.necessary}
                     disabled
-                    className="w-4 h-4 text-primary bg-background border-accent/30 rounded focus:ring-primary cursor-not-allowed opacity-50"
+                    className="w-4 h-4 text-primary bg-background border-2 border-accent/60 rounded focus:ring-primary cursor-not-allowed opacity-50"
                   />
                 </div>
               </div>
@@ -95,7 +95,7 @@ const CookieConsent = () => {
                     type="checkbox"
                     checked={preferences.analytics}
                     onChange={(e) => setPreferences(prev => ({ ...prev, analytics: e.target.checked }))}
-                    className="w-4 h-4 text-primary bg-background border-accent/30 rounded focus:ring-primary cursor-pointer"
+                    className="w-4 h-4 text-primary bg-background border-2 border-accent/60 rounded focus:ring-primary cursor-pointer hover:border-accent/80 transition-colors"
                   />
                 </div>
               </div>
@@ -112,7 +112,7 @@ const CookieConsent = () => {
                     type="checkbox"
                     checked={preferences.marketing}
                     onChange={(e) => setPreferences(prev => ({ ...prev, marketing: e.target.checked }))}
-                    className="w-4 h-4 text-primary bg-background border-accent/30 rounded focus:ring-primary cursor-pointer"
+                    className="w-4 h-4 text-primary bg-background border-2 border-accent/60 rounded focus:ring-primary cursor-pointer hover:border-accent/80 transition-colors"
                   />
                 </div>
               </div>
