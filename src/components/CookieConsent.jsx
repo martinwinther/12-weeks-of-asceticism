@@ -65,8 +65,10 @@ const CookieConsent = () => {
               </a>.
             </p>
             
-            <div className="space-y-2 mb-4">
-              <div className="flex items-center justify-between">
+            <div className="space-y-3 mb-4">
+              <div className={`flex items-center justify-between p-3 rounded-lg border ${
+                preferences.necessary ? 'border-primary/30 bg-primary/5' : 'border-accent/20'
+              }`}>
                 <div>
                   <span className="text-sm font-medium text-primary">Necessary cookies</span>
                   <p className="text-xs text-accent/80">Required for the website to function properly</p>
@@ -76,12 +78,14 @@ const CookieConsent = () => {
                     type="checkbox"
                     checked={preferences.necessary}
                     disabled
-                    className="w-4 h-4 text-primary bg-background border-accent/30 rounded focus:ring-primary"
+                    className="w-4 h-4 text-primary bg-background border-accent/30 rounded focus:ring-primary cursor-not-allowed opacity-50"
                   />
                 </div>
               </div>
               
-              <div className="flex items-center justify-between">
+              <div className={`flex items-center justify-between p-3 rounded-lg border ${
+                preferences.analytics ? 'border-primary/30 bg-primary/5' : 'border-accent/20'
+              }`}>
                 <div>
                   <span className="text-sm font-medium text-primary">Analytics cookies</span>
                   <p className="text-xs text-accent/80">Help us understand how visitors interact with our website</p>
@@ -91,12 +95,14 @@ const CookieConsent = () => {
                     type="checkbox"
                     checked={preferences.analytics}
                     onChange={(e) => setPreferences(prev => ({ ...prev, analytics: e.target.checked }))}
-                    className="w-4 h-4 text-primary bg-background border-accent/30 rounded focus:ring-primary"
+                    className="w-4 h-4 text-primary bg-background border-accent/30 rounded focus:ring-primary cursor-pointer"
                   />
                 </div>
               </div>
               
-              <div className="flex items-center justify-between">
+              <div className={`flex items-center justify-between p-3 rounded-lg border ${
+                preferences.marketing ? 'border-primary/30 bg-primary/5' : 'border-accent/20'
+              }`}>
                 <div>
                   <span className="text-sm font-medium text-primary">Marketing cookies</span>
                   <p className="text-xs text-accent/80">Used to deliver personalized content and advertisements</p>
@@ -106,7 +112,7 @@ const CookieConsent = () => {
                     type="checkbox"
                     checked={preferences.marketing}
                     onChange={(e) => setPreferences(prev => ({ ...prev, marketing: e.target.checked }))}
-                    className="w-4 h-4 text-primary bg-background border-accent/30 rounded focus:ring-primary"
+                    className="w-4 h-4 text-primary bg-background border-accent/30 rounded focus:ring-primary cursor-pointer"
                   />
                 </div>
               </div>
@@ -124,7 +130,7 @@ const CookieConsent = () => {
               onClick={handleAcceptSelected}
               className="px-4 py-2 text-sm bg-accent/10 text-primary border border-accent/30 rounded hover:bg-accent/20 transition-colors"
             >
-              Accept Selected
+              Accept Selected ({[preferences.analytics, preferences.marketing].filter(Boolean).length} selected)
             </button>
             <button
               onClick={handleAcceptAll}
