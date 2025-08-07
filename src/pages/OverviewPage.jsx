@@ -31,96 +31,97 @@ const OverviewPage = () => {
     const completionStatus = getDayCompletionStatus(dayNumber);
     
     let styles = "aspect-square flex items-center justify-center rounded-md text-xs md:text-sm font-medium transition-all duration-200 touch-manipulation ";
-    let icon = null;
-    let bgClass = "";
     
     if (!isAvailable) {
-      styles += "bg-muted/20 text-muted border md:border-2 border-muted/30 cursor-not-allowed opacity-60";
-      icon = "🔒";
+      styles += "bg-background text-accent/60 border-accent/20 cursor-not-allowed";
     } else if (completionStatus.isFullyComplete) {
       // Fully complete: all practices + journal
-      styles += "bg-primary/10 text-primary border md:border-2 border-primary/60 hover:bg-primary/20 cursor-pointer hover:scale-105";
-      icon = "✅";
-    } else if (completionStatus.practicesCompleted > 0 && completionStatus.hasJournal) {
-      // Partial practices + journal
-      styles += "bg-accent/10 text-accent border md:border-2 border-accent/60 hover:bg-accent/20 cursor-pointer hover:scale-105";
-      icon = "📝";
-    } else if (completionStatus.practicesCompleted === completionStatus.practicesTotal && !completionStatus.hasJournal) {
-      // All practices but no journal
-      styles += "bg-primary/5 text-primary/80 border md:border-2 border-primary/40 hover:bg-primary/10 cursor-pointer hover:scale-105";
-      icon = "🏃";
-    } else if (completionStatus.practicesCompleted > 0 || completionStatus.hasJournal) {
-      // Some progress
-      styles += "bg-accent/5 text-accent/80 border md:border-2 border-accent/40 hover:bg-accent/10 cursor-pointer hover:scale-105";
-      icon = "⏸️";
+      styles += "bg-accent text-white border-accent hover:bg-accent/80";
     } else if (isToday) {
       // Today but not started
-      styles += "bg-primary/20 text-primary border md:border-2 border-primary ring-1 md:ring-2 ring-primary/30 hover:bg-primary/30 cursor-pointer hover:scale-105";
-      icon = "●";
+      styles += "bg-primary text-white border-primary shadow-md ring-1 md:ring-2 ring-primary/30";
     } else {
-      // Available but not started
-      styles += "bg-white text-accent border md:border-2 border-accent/20 hover:bg-background cursor-pointer hover:scale-105";
-      icon = null;
+      // Available but not complete
+      styles += "bg-surface text-primary border-accent/30 hover:border-primary hover:shadow-sm";
     }
     
-    return { styles, icon, completionStatus };
+    return { styles, completionStatus };
   };
 
-  // Handle day click
+  // Generate 84 days grouped by weeks (12 weeks x 7 days)
+  const weeks = [];
+  for (let week = 0; week < 12; week++) {
+    const weekDays = [];
+    for (let day = 0; day < 7; day++) {
+      const dayNumber = week * 7 + day + 1;
+      weekDays.push(dayNumber);
+    }
+    weeks.push(weekDays);
+  }
+
+  // Check if a week is completed (all 7 days are complete)
+  const isWeekCompleted = (weekDays) => {
+    return weekDays.every(day => isDayComplete(day));
+  };
+
+  // Get week container styles
+  const getWeekContainerStyles = (weekDays, weekIndex) => {
+    const isCompleted = isWeekCompleted(weekDays);
+    const baseStyles = "bg-surface rounded-lg shadow-sm p-3 md:p-4 border border-accent/20";
+    
+    if (isCompleted) {
+      return `${baseStyles} border-2 border-primary shadow-md`;
+    }
+    
+    return baseStyles;
+  };
+
   const handleDayClick = (dayNumber) => {
     if (isDayAvailable(dayNumber)) {
       navigate(`/day/${dayNumber}`);
     }
   };
 
-  // Generate 12 weeks of 7 days each
-  const weeks = Array.from({ length: 12 }, (_, weekIndex) => {
-    const startDay = weekIndex * 7 + 1;
-    return Array.from({ length: 7 }, (_, dayIndex) => startDay + dayIndex);
-  });
-
   return (
-    <div className="min-h-screen bg-background font-serif text-primary">
+    <div className="min-h-screen bg-background text-primary font-serif">
       {/* Header */}
-              <div className="bg-surface border-b border-accent/20 shadow-sm">
-        <div className="max-w-6xl mx-auto px-4 py-4 md:px-6 md:py-6">
-          <div className="text-center">
-            <h1 className="text-2xl md:text-3xl font-light text-primary">Overview</h1>
-            <p className="text-accent mt-1 text-sm md:text-base">84 days of ascetic practice</p>
-            {hasStarted && (
-              <div>
-                <p className="text-accent/80 text-sm mt-2">
-                  Day {currentDay} • {84 - currentDay + 1} days remaining
-                </p>
-              </div>
-            )}
-            {!hasStarted && (
-              <div className="mt-4">
-                <p className="text-accent mb-3">Ready to begin your journey?</p>
-                <button
-                  onClick={() => navigate('/day/1')}
-                  className="bg-primary text-white px-6 py-2 rounded-md hover:bg-accent transition-colors font-medium"
-                >
-                  Start Day 1
-                </button>
-              </div>
-            )}
-          </div>
+      <div className="max-w-6xl mx-auto px-4 py-4 md:px-6 md:py-6">
+        <div className="text-center">
+          <h1 className="text-2xl md:text-3xl font-light text-primary">Overview</h1>
+          <p className="text-accent mt-1 text-sm md:text-base">84 days of ascetic practice</p>
+          {hasStarted && (
+            <div>
+              <p className="text-accent/80 text-sm mt-2">
+                Day {currentDay} • {84 - currentDay + 1} days remaining
+              </p>
+            </div>
+          )}
+          {!hasStarted && (
+            <div className="mt-4">
+              <p className="text-accent mb-3">Ready to begin your journey?</p>
+              <button
+                onClick={() => navigate('/day/1')}
+                className="bg-primary text-white px-6 py-2 rounded-md hover:bg-accent transition-colors font-medium"
+              >
+                Start Day 1
+              </button>
+            </div>
+          )}
+        </div>
 
-          {/* Progress Indicator */}
-          <div className="mt-6">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium text-accent">Progress</span>
-              <span className="text-sm font-medium text-accent">
-                {completedDays.length}/84 days ({progressPercentage}% complete)
-              </span>
-            </div>
-            <div className="w-full bg-accent/20 rounded-full h-3">
-              <div 
-                className="bg-gradient-to-r from-accent to-primary h-3 rounded-full transition-all duration-500"
-                style={{ width: `${progressPercentage}%` }}
-              />
-            </div>
+        {/* Progress Indicator */}
+        <div className="mt-6">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm font-medium text-accent">Progress</span>
+            <span className="text-sm font-medium text-accent">
+              {completedDays.length}/84 days ({progressPercentage}% complete)
+            </span>
+          </div>
+          <div className="w-full bg-accent/20 rounded-full h-3">
+            <div 
+              className="bg-gradient-to-r from-accent to-primary h-3 rounded-full transition-all duration-500"
+              style={{ width: `${progressPercentage}%` }}
+            />
           </div>
         </div>
       </div>
@@ -128,38 +129,41 @@ const OverviewPage = () => {
       {/* 12 × 7 Grid */}
       <div className="max-w-6xl mx-auto px-4 py-6 md:px-6 md:py-8">
         <div className="space-y-4 md:space-y-6">
-          {weeks.map((week, weekIndex) => {
+          {weeks.map((weekDays, weekIndex) => {
             const weekNumber = weekIndex + 1;
             const weekLayer = layersByWeek[weekNumber];
+            const isCompleted = isWeekCompleted(weekDays);
             
             return (
-              <div key={weekIndex} className="bg-surface rounded-lg shadow-sm p-4 md:p-6 border border-accent/20">
+              <div key={weekIndex} className={getWeekContainerStyles(weekDays, weekIndex)}>
                 {/* Week Header */}
                 <div className="mb-3 md:mb-4">
-                  <h3 className="text-base md:text-lg font-semibold text-primary">
+                  <h3 className={`text-base md:text-lg font-semibold mb-1
+                    ${isCompleted ? 'text-primary' : 'text-primary'}`}>
                     Week {weekNumber}: {weekLayer?.title}
                   </h3>
-                  <p className="text-xs md:text-sm text-accent mt-1">
+                  <p className="text-xs md:text-sm text-accent">
                     {weekLayer?.description}
                   </p>
                 </div>
                 
                 {/* Week Grid - 7 days */}
                 <div className="grid grid-cols-7 gap-1 md:gap-2">
-                  {week.map((dayNumber) => {
-                    const { styles, icon, completionStatus } = getDayInfo(dayNumber);
+                  {weekDays.map((dayNumber) => {
+                    const { styles, completionStatus } = getDayInfo(dayNumber);
+                    const hasReflection = completionStatus.hasJournal;
                     
                     return (
                       <div
                         key={dayNumber}
                         onClick={() => handleDayClick(dayNumber)}
                         className={styles}
-                        title={`Day ${dayNumber} - Practices: ${completionStatus.practicesCompleted}/${completionStatus.practicesTotal}, Journal: ${completionStatus.hasJournal ? 'Complete' : 'Incomplete'}`}
+                        title={`Day ${dayNumber}${hasReflection ? ' - Has reflection' : ''}`}
                       >
-                        <div className="text-center">
-                          <div className="font-semibold text-xs md:text-sm">{dayNumber}</div>
-                          {icon && (
-                            <div className="text-xs mt-0.5">{icon}</div>
+                        <div className="relative w-full h-full flex items-center justify-center">
+                          {dayNumber}
+                          {hasReflection && (
+                            <div className="absolute top-0.5 left-0.5 w-1.5 h-1.5 bg-white/80 rounded-full shadow-sm"></div>
                           )}
                         </div>
                       </div>
@@ -169,49 +173,6 @@ const OverviewPage = () => {
               </div>
             );
           })}
-        </div>
-
-        {/* Legend */}
-        <div className="mt-6 md:mt-8 bg-surface rounded-lg shadow-sm p-4 md:p-6 border border-accent/20">
-          <h3 className="text-base md:text-lg font-medium text-primary mb-3 md:mb-4">Legend</h3>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
-            <div className="flex items-center space-x-2">
-              <div className="w-6 h-6 md:w-8 md:h-8 bg-primary/10 border md:border-2 border-primary/60 rounded-md flex items-center justify-center">
-                <span className="text-primary text-xs">✅</span>
-              </div>
-              <span className="text-xs md:text-sm text-accent">Complete</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <div className="w-6 h-6 md:w-8 md:h-8 bg-primary/5 border md:border-2 border-primary/40 rounded-md flex items-center justify-center">
-                <span className="text-primary/80 text-xs">🏃</span>
-              </div>
-              <span className="text-xs md:text-sm text-accent">Practices Only</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <div className="w-6 h-6 md:w-8 md:h-8 bg-accent/10 border md:border-2 border-accent/60 rounded-md flex items-center justify-center">
-                <span className="text-accent text-xs">📝</span>
-              </div>
-              <span className="text-xs md:text-sm text-accent">Partial + Journal</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <div className="w-6 h-6 md:w-8 md:h-8 bg-accent/5 border md:border-2 border-accent/40 rounded-md flex items-center justify-center">
-                <span className="text-accent/80 text-xs">⏸️</span>
-              </div>
-              <span className="text-xs md:text-sm text-accent">In Progress</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <div className="w-6 h-6 md:w-8 md:h-8 bg-primary/20 border md:border-2 border-primary rounded-md flex items-center justify-center">
-                <span className="text-primary text-xs">●</span>
-              </div>
-              <span className="text-xs md:text-sm text-accent">Today</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <div className="w-6 h-6 md:w-8 md:h-8 bg-muted/20 border md:border-2 border-muted/30 rounded-md flex items-center justify-center opacity-60">
-                <span className="text-muted text-xs">🔒</span>
-              </div>
-              <span className="text-xs md:text-sm text-accent">Locked</span>
-            </div>
-          </div>
         </div>
       </div>
     </div>

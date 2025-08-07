@@ -63,8 +63,8 @@ const PrivacySettings = () => {
       {message && (
         <div className={`p-4 rounded-lg ${
           message.includes('Error') 
-            ? 'bg-red-100 text-red-800 border border-red-200' 
-            : 'bg-green-100 text-green-800 border border-green-200'
+            ? 'bg-error border border-error text-error' 
+            : 'bg-accent/10 border border-accent text-accent'
         }`}>
           {message}
         </div>
