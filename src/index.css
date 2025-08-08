@@ -92,6 +92,7 @@ input, textarea, select {
 .theme-light .text-muted { color: #94a3b8 !important; }
 .theme-light .border-accent { border-color: #e2e8f0 !important; }
 .theme-light .bg-primary { background-color: #334155 !important; }
+.theme-light .bg-accent { background-color: #64748b !important; }
 .theme-light .bg-primary\/10 { background-color: rgba(51, 65, 85, 0.1) !important; }
 .theme-light .bg-primary\/20 { background-color: rgba(51, 65, 85, 0.2) !important; }
 .theme-light .bg-error { background-color: rgba(239, 68, 68, 0.1) !important; }
@@ -113,6 +114,7 @@ input, textarea, select {
 .theme-dark .text-muted { color: #64748b !important; }
 .theme-dark .border-accent { border-color: #334155 !important; }
 .theme-dark .bg-primary { background-color: #f1f5f9 !important; }
+.theme-dark .bg-accent { background-color: #cbd5e1 !important; }
 .theme-dark .text-white { color: #0f172a !important; }
 .theme-dark .bg-primary\/10 { background-color: rgba(241, 245, 249, 0.1) !important; }
 .theme-dark .bg-primary\/20 { background-color: rgba(241, 245, 249, 0.2) !important; }
@@ -138,6 +140,7 @@ input, textarea, select {
 .theme-monastic .text-muted { color: #7a6b52 !important; }
 .theme-monastic .border-accent { border-color: #c4b594 !important; }
 .theme-monastic .bg-primary { background-color: #2a1f15 !important; }
+.theme-monastic .bg-accent { background-color: #5d4e3a !important; }
 .theme-monastic .bg-primary\/10 { background-color: rgba(42, 31, 21, 0.1) !important; }
 .theme-monastic .bg-primary\/20 { background-color: rgba(42, 31, 21, 0.2) !important; }
 .theme-monastic .bg-white\/80, .theme-monastic .bg-white\/90, .theme-monastic .bg-white\/95 { 
