@@ -105,24 +105,39 @@ export const AuthProvider = ({ children }) => {
         throw new Error('No authenticated user found');
       }
 
-      // First, clean up any user data from the database
-      // This would typically include journal entries, progress data, etc.
-      // For now, we'll just sign out and clear local state
-      // In a production app, you'd want to call a serverless function to properly delete user data
-      
-      const { error } = await supabase.auth.signOut();
-      
-      if (error) {
-        throw error;
+      // Step 1: Delete all user data from your tables
+      const [progressDelete, journalsDelete] = await Promise.all([
+        // Delete progress data
+        supabase
+          .from('progress')
+          .delete()
+          .eq('user_id', currentUser.id),
+        
+        // Delete journal entries
+        supabase
+          .from('journals')
+          .delete()
+          .eq('user_id', currentUser.id)
+      ]);
+
+      // Check for errors in data deletion
+      if (progressDelete.error) {
+        console.error('Error deleting progress data:', progressDelete.error);
+      }
+      if (journalsDelete.error) {
+        console.error('Error deleting journal data:', journalsDelete.error);
       }
 
-      // Clear user state
-      setUser(null);
+      // Step 2: Sign out the user (this clears the session)
+      const { error: signOutError } = await supabase.auth.signOut();
       
-      // Clear any local storage data
-      localStorage.removeItem('user-preferences');
-      localStorage.removeItem('journal-entries');
-      localStorage.removeItem('progress-data');
+      if (signOutError) {
+        throw signOutError;
+      }
+
+      // Step 3: Clear local state and storage
+      setUser(null);
+      localStorage.clear(); // Clear all local storage
       
       return { success: true };
     } catch (error) {
