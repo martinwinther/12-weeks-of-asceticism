@@ -154,7 +154,7 @@ const AccountSettingsPage = () => {
                       disabled={isDeleting || confirmationText !== 'DELETE'}
                       className="flex-1"
                     >
-                      {isDeleting ? 'Deleting Data...' : '🗑️ PERMANENTLY DELETE ALL DATA'}
+                      {isDeleting ? 'Deleting Data...' : 'PERMANENTLY DELETE ALL DATA'}
                     </Button>
                     <Button 
                       onClick={() => {
