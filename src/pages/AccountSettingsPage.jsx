@@ -99,7 +99,7 @@ const AccountSettingsPage = () => {
             <div className="border-t pt-4">
               <h3 className="text-lg font-medium mb-2 text-red-600"> Data Management</h3>
               <p className="text-muted mb-3">
-                <strong className="text-red-600">DESTRUCTIVE ACTION:</strong> This will permanently delete all your local data and sign you out. This action cannot be undone.
+                This will permanently delete all your data and sign you out. This action cannot be undone.
               </p>
               
               {!showDeleteConfirmation ? (
@@ -108,7 +108,7 @@ const AccountSettingsPage = () => {
                   variant="destructive"
                   className="w-full sm:w-auto"
                 >
-                  🗑️ Delete All Data & Sign Out
+                 Delete All Data & Sign Out
                 </Button>
               ) : (
                 <div className="space-y-4 p-4 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800">
@@ -117,16 +117,16 @@ const AccountSettingsPage = () => {
                       ⚠️ FINAL WARNING: This action is PERMANENT
                     </p>
                     <p className="text-sm text-red-600 dark:text-red-400">
-                      This will immediately sign you out and permanently delete all your local data including:
+                      This will immediately sign you out and permanently delete all your data including:
                     </p>
                     <ul className="text-sm text-red-600 dark:text-red-400 ml-4 list-disc">
                       <li>All journal entries</li>
                       <li>Progress tracking data</li>
                       <li>Settings and preferences</li>
-                      <li>Local storage data</li>
+                      
                     </ul>
                     <p className="text-sm font-medium text-red-700 dark:text-red-300">
-                      This action cannot be undone. For complete account deletion including server-side data, please contact support.
+                      This action cannot be undone.
                     </p>
                   </div>
 
