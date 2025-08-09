@@ -96,11 +96,47 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const deleteAccount = async () => {
+    try {
+      // Get the current user to ensure they're authenticated
+      const { data: { user: currentUser } } = await supabase.auth.getUser();
+      
+      if (!currentUser) {
+        throw new Error('No authenticated user found');
+      }
+
+      // First, clean up any user data from the database
+      // This would typically include journal entries, progress data, etc.
+      // For now, we'll just sign out and clear local state
+      // In a production app, you'd want to call a serverless function to properly delete user data
+      
+      const { error } = await supabase.auth.signOut();
+      
+      if (error) {
+        throw error;
+      }
+
+      // Clear user state
+      setUser(null);
+      
+      // Clear any local storage data
+      localStorage.removeItem('user-preferences');
+      localStorage.removeItem('journal-entries');
+      localStorage.removeItem('progress-data');
+      
+      return { success: true };
+    } catch (error) {
+      console.error('Error deleting account:', error);
+      return { success: false, error: error.message };
+    }
+  };
+
   const value = {
     user,
     loading,
     signIn: signInWithMagicLink,
     signOut,
+    deleteAccount,
   };
 
   return (

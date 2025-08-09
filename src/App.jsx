@@ -13,6 +13,7 @@ import TimelinePage from './pages/TimelinePage';
 import DayPage from './pages/DayPage';
 import AuthPage from './pages/AuthPage';
 import PrivacyPage from './pages/PrivacyPage';
+import AccountSettingsPage from './pages/AccountSettingsPage';
 
 const AppContent = () => {
   const location = useLocation();
@@ -47,6 +48,11 @@ const AppContent = () => {
         <Route path="/day/:dayNumber" element={
           <PrivateRoute>
             <DayPage />
+          </PrivateRoute>
+        } />
+        <Route path="/account" element={
+          <PrivateRoute>
+            <AccountSettingsPage />
           </PrivateRoute>
         } />
       </Routes>
