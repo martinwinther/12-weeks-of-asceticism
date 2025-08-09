@@ -97,9 +97,9 @@ const AccountSettingsPage = () => {
             </div>
 
             <div className="border-t pt-4">
-              <h3 className="text-lg font-medium mb-2 text-destructive">Data Management</h3>
+              <h3 className="text-lg font-medium mb-2 text-red-600"> Data Management</h3>
               <p className="text-muted mb-3">
-                Sign out and clear all local data. This action cannot be undone.
+                <strong className="text-red-600">DESTRUCTIVE ACTION:</strong> This will permanently delete all your local data and sign you out. This action cannot be undone.
               </p>
               
               {!showDeleteConfirmation ? (
@@ -108,34 +108,43 @@ const AccountSettingsPage = () => {
                   variant="destructive"
                   className="w-full sm:w-auto"
                 >
-                  Sign Out & Clear Data
+                  🗑️ Delete All Data & Sign Out
                 </Button>
               ) : (
-                <div className="space-y-4 p-4 bg-destructive/10 rounded-lg border border-destructive/20">
-                                <div className="space-y-2">
-                <p className="text-sm font-medium text-destructive">
-                  ⚠️ This action is irreversible
-                </p>
-                <p className="text-sm text-muted">
-                  This will sign you out and clear all local data. For complete account deletion including server-side data, please contact support.
-                </p>
-              </div>
+                <div className="space-y-4 p-4 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800">
+                  <div className="space-y-2">
+                    <p className="text-sm font-bold text-red-700 dark:text-red-300">
+                      ⚠️ FINAL WARNING: This action is PERMANENT
+                    </p>
+                    <p className="text-sm text-red-600 dark:text-red-400">
+                      This will immediately sign you out and permanently delete all your local data including:
+                    </p>
+                    <ul className="text-sm text-red-600 dark:text-red-400 ml-4 list-disc">
+                      <li>All journal entries</li>
+                      <li>Progress tracking data</li>
+                      <li>Settings and preferences</li>
+                      <li>Local storage data</li>
+                    </ul>
+                    <p className="text-sm font-medium text-red-700 dark:text-red-300">
+                      This action cannot be undone. For complete account deletion including server-side data, please contact support.
+                    </p>
+                  </div>
 
                   <div className="space-y-2">
-                    <label className="block text-sm font-medium">
-                      Type <span className="font-mono bg-muted px-1 rounded">DELETE</span> to confirm:
+                    <label className="block text-sm font-medium text-red-700 dark:text-red-300">
+                      Type <span className="font-mono bg-red-100 dark:bg-red-800 px-2 py-1 rounded border">DELETE</span> to confirm:
                     </label>
                     <input
                       type="text"
                       value={confirmationText}
                       onChange={(e) => setConfirmationText(e.target.value)}
-                      className="w-full px-3 py-2 border rounded-md bg-background text-foreground"
+                      className="w-full px-3 py-2 border border-red-300 dark:border-red-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
                       placeholder="DELETE"
                     />
                   </div>
 
                   {error && (
-                    <p className="text-sm text-destructive">{error}</p>
+                    <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
                   )}
 
                   <div className="flex flex-col sm:flex-row gap-2">
@@ -145,7 +154,7 @@ const AccountSettingsPage = () => {
                       disabled={isDeleting || confirmationText !== 'DELETE'}
                       className="flex-1"
                     >
-                      {isDeleting ? 'Signing Out...' : 'Sign Out & Clear Data'}
+                      {isDeleting ? 'Deleting Data...' : '🗑️ PERMANENTLY DELETE ALL DATA'}
                     </Button>
                     <Button 
                       onClick={() => {
