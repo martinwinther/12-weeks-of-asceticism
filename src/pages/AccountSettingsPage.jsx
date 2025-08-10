@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import Button from '../components/Button';
 import LoadingSpinner from '../components/LoadingSpinner';
 
@@ -91,15 +91,23 @@ const AccountSettingsPage = () => {
           
           <div className="space-y-4">
             <div>
-              <h3 className="text-lg font-medium mb-2">Sign Out</h3>
-              <p className="text-muted mb-3">Sign out of your account on this device</p>
-              <Button 
-                onClick={handleSignOut}
-                variant="outline"
-                className="w-full sm:w-auto"
-              >
-                Sign Out
-              </Button>
+              <h3 className="text-lg font-medium mb-2">Privacy & Data</h3>
+              <p className="text-muted mb-3">Manage your privacy settings and data</p>
+              <div className="flex flex-col sm:flex-row gap-2">
+                <Link
+                  to="/privacy"
+                  className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-md border border-accent/20 bg-surface text-accent hover:bg-background hover:text-primary transition-colors"
+                >
+                  Privacy Policy
+                </Link>
+                <Button 
+                  onClick={handleSignOut}
+                  variant="outline"
+                  className="w-full sm:w-auto"
+                >
+                  Sign Out
+                </Button>
+              </div>
             </div>
 
             <div className="border-t pt-4">
