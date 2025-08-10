@@ -169,7 +169,6 @@ const PrivacyPage = () => {
             </p>
             <p>
               <strong>Email:</strong> privacy@12weeksofasceticism.com<br />
-              <strong>Address:</strong> [Your EU Address]
             </p>
             <p className="mt-4">
               You also have the right to lodge a complaint with your local data protection authority if you believe 
