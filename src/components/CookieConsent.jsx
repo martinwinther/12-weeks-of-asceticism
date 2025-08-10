@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import LoadingSpinner from './LoadingSpinner';
 
 const CookieConsent = () => {
   const [showBanner, setShowBanner] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [preferences, setPreferences] = useState({
     necessary: true, // Always true, cannot be disabled
     analytics: false,
@@ -14,6 +16,7 @@ const CookieConsent = () => {
     if (!consent) {
       setShowBanner(true);
     }
+    setIsLoading(false);
   }, []);
 
   const handleAcceptAll = () => {
@@ -47,6 +50,7 @@ const CookieConsent = () => {
     setShowBanner(false);
   };
 
+  if (isLoading) return null;
   if (!showBanner) return null;
 
   return (

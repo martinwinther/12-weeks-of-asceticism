@@ -2,14 +2,20 @@ import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import Button from '../components/Button';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const AccountSettingsPage = () => {
-  const { user, deleteAccount, signOut } = useAuth();
+  const { user, deleteAccount, signOut, loading } = useAuth();
   const navigate = useNavigate();
   const [isDeleting, setIsDeleting] = useState(false);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [confirmationText, setConfirmationText] = useState('');
   const [error, setError] = useState('');
+
+  // Show loading state while authentication is being processed
+  if (loading) {
+    return <LoadingSpinner fullScreen size="lg" text="Loading account settings..." />;
+  }
 
   const handleDeleteAccount = async () => {
     if (confirmationText !== 'DELETE') {
@@ -151,10 +157,12 @@ const AccountSettingsPage = () => {
                     <Button 
                       onClick={handleDeleteAccount}
                       variant="destructive"
-                      disabled={isDeleting || confirmationText !== 'DELETE'}
+                      loading={isDeleting}
+                      loadingText="Deleting Data..."
+                      disabled={confirmationText !== 'DELETE'}
                       className="flex-1"
                     >
-                      {isDeleting ? 'Deleting Data...' : 'PERMANENTLY DELETE ALL DATA'}
+                      PERMANENTLY DELETE ALL DATA
                     </Button>
                     <Button 
                       onClick={() => {

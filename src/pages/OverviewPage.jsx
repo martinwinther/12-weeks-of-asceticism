@@ -2,11 +2,28 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { layersByWeek } from '../data/layersByWeek';
 import { useAppContext } from '../context/AppContext';
+import { useAuth } from '../context/AuthContext';
+import LoadingSpinner from '../components/LoadingSpinner';
+import SkeletonLoader from '../components/SkeletonLoader';
 
 const OverviewPage = () => {
   const navigate = useNavigate();
-  const { currentDay, isDayAvailable, hasStarted, startJourney, isDayComplete, getDayCompletionStatus, state } = useAppContext();
+  const { currentDay, isDayAvailable, hasStarted, startJourney, isDayComplete, getDayCompletionStatus, state, isLoading } = useAppContext();
+  const { loading: authLoading } = useAuth();
   const [completedDays, setCompletedDays] = useState([]);
+
+  // Show loading state while authentication or data is loading
+  if (authLoading || isLoading) {
+    return (
+      <div className="min-h-screen bg-background text-primary font-serif">
+        <div className="max-w-6xl mx-auto px-4 py-4 md:px-6 md:py-6">
+          <div className="text-center">
+            <LoadingSpinner size="lg" text="Loading your progress..." />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   // Load completion data from AppContext (Supabase data)
   useEffect(() => {

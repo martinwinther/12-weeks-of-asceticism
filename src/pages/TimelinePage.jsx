@@ -1,11 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
+import { useAuth } from '../context/AuthContext';
+import LoadingSpinner from '../components/LoadingSpinner';
+import SkeletonLoader from '../components/SkeletonLoader';
 
 const TimelinePage = () => {
   const navigate = useNavigate();
   const [journalEntries, setJournalEntries] = useState([]);
-  const { getJournalEntry, state } = useAppContext();
+  const { getJournalEntry, state, isLoading } = useAppContext();
+  const { loading: authLoading } = useAuth();
+
+  // Show loading state while authentication or data is loading
+  if (authLoading || isLoading) {
+    return (
+      <div className="min-h-screen bg-background font-serif text-primary">
+        <div className="max-w-4xl mx-auto px-6 py-8">
+          <div className="text-center">
+            <LoadingSpinner size="lg" text="Loading your reflections..." />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   // Load journalEntries from AppContext (Supabase data)
   useEffect(() => {

@@ -8,6 +8,7 @@ import { useAppContext } from '../context/AppContext';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../lib/supabaseClient';
 import { sanitizeText, validateText } from '../utils/sanitize';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const DayPage = () => {
   const { dayNumber } = useParams();
@@ -419,7 +420,7 @@ const DayPage = () => {
             />
             {(isLoading || isSaving) && (
               <div className="absolute top-2 right-2">
-                <div className="w-4 h-4 border-2 border-accent/30 border-t-accent rounded-full animate-spin"></div>
+                <LoadingSpinner size="sm" variant="accent" />
               </div>
             )}
           </div>

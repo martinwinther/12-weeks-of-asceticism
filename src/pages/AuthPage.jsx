@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Button from '../components/Button';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const AuthPage = () => {
   const [email, setEmail] = useState('');
@@ -87,9 +88,10 @@ const AuthPage = () => {
               type="submit"
               variant="primary"
               className="w-full"
-              disabled={isLoading}
+              loading={isLoading}
+              loadingText="Sending Magic Link..."
             >
-              {isLoading ? 'Sending Magic Link...' : 'Send Magic Link'}
+              Send Magic Link
             </Button>
           </form>
 
