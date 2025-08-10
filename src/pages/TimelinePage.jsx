@@ -58,14 +58,12 @@ const TimelinePage = () => {
   return (
     <div className="min-h-screen bg-background font-serif text-primary">
       {/* Header */}
-              <div className="bg-surface border-b border-accent/20 shadow-sm">
-        <div className="max-w-4xl mx-auto px-6 py-6">
-          <div className="text-center">
-            <h1 className="text-3xl font-light text-primary">Timeline</h1>
-            <p className="text-accent mt-1">
-              {journalEntries.length} reflection{journalEntries.length !== 1 ? 's' : ''} recorded
-            </p>
-          </div>
+      <div className="max-w-4xl mx-auto px-6 py-6">
+        <div className="text-center">
+          <h1 className="text-3xl font-light text-primary">Timeline</h1>
+          <p className="text-accent mt-1">
+            {journalEntries.length} reflection{journalEntries.length !== 1 ? 's' : ''} recorded
+          </p>
         </div>
       </div>
 
