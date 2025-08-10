@@ -31,10 +31,9 @@ const PrivacyPage = () => {
               For the purposes of GDPR, we are the data controller of your personal data.
             </p>
             <p>
-              <strong>Contact Information:</strong><br />
-                {/* TODO: Add contact information */}
+              <strong>Contact Information:</strong><br />           
               Email: privacy@12weeksofasceticism.com<br />
-              Address: [Your EU Address]
+            
             </p>
           </section>
 
