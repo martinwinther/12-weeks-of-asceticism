@@ -91,7 +91,7 @@ const Dashboard = () => {
         
         {/* Header */}
         <div className="text-center mb-6 md:mb-8">
-          <h1 className="text-2xl md:text-3xl font-bold text-primary mb-2">Your Journey</h1>
+          <h1 className="text-2xl md:text-3xl font-light text-primary mb-2">Your Journey</h1>
           <p className="text-accent text-sm md:text-base">Track your progress through 84 days of ascetic practice</p>
         </div>
 
@@ -146,7 +146,7 @@ const Dashboard = () => {
 
         {/* Current Progress Summary */}
         <div className="bg-surface rounded-lg shadow-sm p-6 text-center border border-accent/20">
-          <h2 className="text-xl font-bold mb-4 text-primary">Your Progress</h2>
+          <h2 className="text-xl font-light mb-4 text-primary">Your Progress</h2>
           <div className="flex justify-center gap-8 text-sm">
             <div>
               <div className="text-2xl font-bold text-primary">{currentDay}</div>

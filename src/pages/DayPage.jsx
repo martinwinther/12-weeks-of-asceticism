@@ -28,58 +28,73 @@ const DayPage = () => {
     }
   }, [user, dayNum, hasStarted, startJourney]);
 
-  // Validate dayNumber is between 1 and 84
-  if (isNaN(dayNum) || dayNum < 1 || dayNum > 84) {
+  // Show error state for invalid day
+  if (dayNum < 1 || dayNum > 84) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center font-serif">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-primary mb-4">Invalid Day</h1>
-          <p className="text-accent">Please choose a day between 1 and 84.</p>
+      <div className="min-h-screen bg-background font-serif text-primary">
+        <div className="max-w-2xl mx-auto px-4 py-6 md:px-6 md:py-12">
+          <div className="text-center">
+            <h1 className="text-2xl font-light text-primary mb-4">Invalid Day</h1>
+            <p className="text-accent mb-6">Please select a day between 1 and 84.</p>
+            <button
+              onClick={() => navigate('/dashboard')}
+              className="bg-primary text-white px-6 py-2 rounded-md hover:bg-accent transition-colors"
+            >
+              Go to Dashboard
+            </button>
+          </div>
         </div>
       </div>
     );
   }
 
-  // Check if journey has started and day is available
-  if (!hasStarted && dayNum > 1) {
+  // Show error state if journey hasn't started
+  if (!hasStarted) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center font-serif">
-        <div className="text-center max-w-md mx-auto p-6">
-          <h1 className="text-2xl font-bold text-primary mb-4">Journey Not Started</h1>
-          <p className="text-accent mb-6">You need to begin your 84-day ascetic journey to access this day.</p>
-          <button
-            onClick={() => navigate('/day/1')}
-            className="bg-primary text-white px-6 py-3 rounded-md hover:bg-accent transition-colors font-medium"
-          >
-            Start with Day 1
-          </button>
+      <div className="min-h-screen bg-background font-serif text-primary">
+        <div className="max-w-2xl mx-auto px-4 py-6 md:px-6 md:py-12">
+          <div className="text-center">
+            <h1 className="text-2xl font-light text-primary mb-4">Journey Not Started</h1>
+            <p className="text-accent mb-6">You need to start your journey from Day 1 first.</p>
+            <button
+              onClick={() => navigate('/day/1')}
+              className="bg-primary text-white px-6 py-2 rounded-md hover:bg-accent transition-colors"
+            >
+              Start Day 1
+            </button>
+          </div>
         </div>
       </div>
     );
   }
 
+  // Show error state if day is locked
   if (!isDayAvailable(dayNum)) {
     const daysToWait = dayNum - currentDay;
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center font-serif">
-        <div className="text-center max-w-md mx-auto p-6">
-          <h1 className="text-2xl font-bold text-primary mb-4">Day {dayNum} Locked</h1>
-          <p className="text-accent mb-4">This day isn't available yet. You're currently on Day {currentDay}.</p>
-          <p className="text-accent/80 text-sm mb-6">
-            Come back in {daysToWait} day{daysToWait !== 1 ? 's' : ''} to unlock this day.
-          </p>
-          <button
-            onClick={() => navigate(`/day/${currentDay}`)}
-            className="bg-primary text-white px-6 py-3 rounded-md hover:bg-accent transition-colors font-medium mr-3"
-          >
-            Go to Day {currentDay}
-          </button>
-          <button
-            onClick={() => navigate('/overview')}
-            className="bg-surface text-primary border-2 border-primary px-6 py-3 rounded-md hover:bg-background transition-colors font-medium"
-          >
-            View Overview
-          </button>
+      <div className="min-h-screen bg-background font-serif text-primary">
+        <div className="max-w-2xl mx-auto px-4 py-6 md:px-6 md:py-12">
+          <div className="text-center">
+            <h1 className="text-2xl font-light text-primary mb-4">Day {dayNum} Locked</h1>
+            <p className="text-accent mb-4">This day isn't available yet. You're currently on Day {currentDay}.</p>
+            <p className="text-accent/80 text-sm mb-6">
+              Come back in {daysToWait} day{daysToWait !== 1 ? 's' : ''} to unlock this day.
+            </p>
+            <div className="space-x-3">
+              <button
+                onClick={() => navigate(`/day/${currentDay}`)}
+                className="bg-primary text-white px-6 py-2 rounded-md hover:bg-accent transition-colors"
+              >
+                Go to Day {currentDay}
+              </button>
+              <button
+                onClick={() => navigate('/overview')}
+                className="bg-surface text-primary border-2 border-primary px-6 py-2 rounded-md hover:bg-background transition-colors"
+              >
+                View Overview
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     );

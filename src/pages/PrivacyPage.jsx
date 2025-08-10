@@ -9,7 +9,7 @@ const PrivacyPage = () => {
           <Link to="/" className="text-primary hover:text-primary/80 mb-4 inline-block">
             ← Back to Home
           </Link>
-          <h1 className="text-3xl font-bold text-primary mb-4">Privacy Policy</h1>
+          <h1 className="text-3xl font-light text-primary mb-4">Privacy Policy</h1>
           <p className="text-accent">Last updated: {new Date().toLocaleDateString()}</p>
         </div>
 

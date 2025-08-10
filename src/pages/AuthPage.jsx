@@ -43,7 +43,7 @@ const AuthPage = () => {
     <div className="min-h-screen flex items-center justify-center bg-background px-4">
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-primary mb-2">
+          <h1 className="text-3xl font-light text-primary mb-2">
             Welcome to 12 Weeks of Asceticism
           </h1>
           <p className="text-accent">
@@ -63,7 +63,7 @@ const AuthPage = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email"
-                className="w-full px-4 py-3 border border-accent rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors touch-manipulation bg-background text-primary placeholder:text-muted"
+                className="w-full px-4 py-3 border border-accent rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors touch-manipulation bg-background text-primary placeholder:text-accent"
                 disabled={isLoading}
                 autoComplete="email"
                 autoCorrect="off"
@@ -96,7 +96,7 @@ const AuthPage = () => {
           </form>
 
           <div className="mt-6 text-center">
-            <div className="text-xs text-muted space-y-1">
+            <div className="text-xs text-accent space-y-1">
               <p>We'll email you a secure link to sign in or create your account.</p>
               <p>No password required!</p>
             </div>

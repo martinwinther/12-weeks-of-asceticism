@@ -51,34 +51,34 @@ const AccountSettingsPage = () => {
 
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-background font-serif text-primary">
         <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">Access Denied</h1>
-          <p className="text-muted">You must be logged in to access account settings.</p>
+          <h1 className="text-2xl font-light mb-4">Access Denied</h1>
+          <p className="text-accent">You must be logged in to access account settings.</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen p-4">
-      <div className="max-w-2xl mx-auto">
+    <div className="min-h-screen bg-background font-serif text-primary">
+      <div className="max-w-2xl mx-auto px-4 py-6 md:px-6 md:py-12">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Account Settings</h1>
-          <p className="text-muted">Manage your account and privacy settings</p>
+          <h1 className="text-3xl font-light mb-2">Account Settings</h1>
+          <p className="text-accent">Manage your account and privacy settings</p>
         </div>
 
         {/* Account Information */}
-        <div className="bg-card rounded-lg p-6 mb-6 border">
+        <div className="bg-surface rounded-lg p-6 mb-6 border border-accent/20">
           <h2 className="text-xl font-semibold mb-4">Account Information</h2>
           <div className="space-y-3">
             <div>
-              <label className="block text-sm font-medium text-muted mb-1">Email</label>
-              <p className="text-foreground">{user.email}</p>
+              <label className="block text-sm font-medium text-accent mb-1">Email</label>
+              <p className="text-primary">{user.email}</p>
             </div>
             <div>
-              <label className="block text-sm font-medium text-muted mb-1">Account Created</label>
-              <p className="text-foreground">
+              <label className="block text-sm font-medium text-accent mb-1">Account Created</label>
+              <p className="text-primary">
                 {new Date(user.created_at).toLocaleDateString()}
               </p>
             </div>
@@ -86,13 +86,13 @@ const AccountSettingsPage = () => {
         </div>
 
         {/* Account Actions */}
-        <div className="bg-card rounded-lg p-6 mb-6 border">
+        <div className="bg-surface rounded-lg p-6 mb-6 border border-accent/20">
           <h2 className="text-xl font-semibold mb-4">Account Actions</h2>
           
           <div className="space-y-4">
             <div>
               <h3 className="text-lg font-medium mb-2">Privacy & Data</h3>
-              <p className="text-muted mb-3">Manage your privacy settings and data</p>
+              <p className="text-accent mb-3">Manage your privacy settings and data</p>
               <div className="flex flex-col sm:flex-row gap-2">
                 <Link
                   to="/privacy"
@@ -112,7 +112,7 @@ const AccountSettingsPage = () => {
 
             <div className="border-t pt-4">
               <h3 className="text-lg font-medium mb-2 text-red-600"> Data Management</h3>
-              <p className="text-muted mb-3">
+              <p className="text-accent mb-3">
                 This will permanently delete all your data and sign you out. This action cannot be undone.
               </p>
               
