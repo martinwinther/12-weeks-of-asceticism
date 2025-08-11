@@ -35,10 +35,10 @@ const weeklyTeachings = {
       link: "https://www.amazon.com/Mao-Life-Philip-Short/dp/0805066381/"
     },
     modern: {
-      quote: "Cold water exposure is the single most powerful tool for building mental resilience.",
-      author: "Dr. Andrew Huberman",
-      source: "Huberman Lab Podcast (2021)",
-      link: "https://www.amazon.com/Protocols-Optimizing-Physical-Mental-Health/dp/059371932X/"
+      quote: "The cold is your warm friend. Today's cold makes you feel alive and resistant.",
+      author: "Wim Hof",
+      source: "The Wim Hof Method (2020)",
+      link: "https://www.amazon.com/Wim-Hof-Method-Activate-Potential/dp/1683644093/"
     }
   },
   4: {
