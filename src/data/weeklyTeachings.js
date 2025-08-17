@@ -35,10 +35,10 @@ const weeklyTeachings = {
       link: "https://www.amazon.com/Mao-Life-Philip-Short/dp/0805066381/"
     },
     modern: {
-      quote: "The cold is your warm friend. Today's cold makes you feel alive and resistant.",
-      author: "Wim Hof",
-      source: "The Wim Hof Method (2020)",
-      link: "https://www.amazon.com/Wim-Hof-Method-Activate-Potential/dp/1683644093/"
+      quote: "You begin to take charge of your life and smash your comfort zone by tackling the hardest thing first thing in the morning: a cold shower.",
+      author: "Jesse Harless",
+      source: "Smash Your Comfort Zone with Cold Showers(2018)",
+      link: "https://www.amazon.com/Smash-Your-Comfort-Zone-Showers/dp/0578407892/"
     }
   },
   4: {
