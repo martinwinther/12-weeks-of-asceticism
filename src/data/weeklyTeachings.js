@@ -1,9 +1,9 @@
 const weeklyTeachings = {
   1: {
     ancient: {
-      quote: "When you wake up in the morning, tell yourself: The people I deal with today will be meddling, ungrateful, arrogant...",
+      quote: "At dawn, when you have trouble getting out of bed, tell yourself: 'I must go to work — as a human being.' What do I have to complain of, if I'm going to do what I was born for?",
       author: "Marcus Aurelius",
-      source: "Meditations 2.1",
+      source: "Meditations 5.1",
       link: "https://www.amazon.com/Meditations-New-Translation-Marcus-Aurelius/dp/0812968255/"
     },
     modern: {
@@ -29,10 +29,10 @@ const weeklyTeachings = {
   },
   3: {
     ancient: {
-      quote: "Winter swimming is the king of all exercises.",
-      author: "Mao Zedong",
-      source: "Historical Practice",
-      link: "https://www.amazon.com/Mao-Life-Philip-Short/dp/0805066381/"
+      quote: "We must undergo a hard winter training and not rush into things for which we haven't prepared.",
+      author: "Epictetus",
+      source: "Discourses, Book 1, Chapter 2",
+      link: "https://www.amazon.com/Discourses-Selected-Writings-Penguin-Classics/dp/0140449469/"
     },
     modern: {
       quote: "You begin to take charge of your life and smash your comfort zone by tackling the hardest thing first thing in the morning: a cold shower.",
