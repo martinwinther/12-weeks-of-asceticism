@@ -43,10 +43,10 @@ const weeklyTeachings = {
   },
   4: {
     ancient: {
-      quote: "The Buddha ate one meal a day for the last 45 years of his life.",
-      author: "Buddhist Tradition",
-      source: "Vinaya Pitaka",
-      link: "https://www.amazon.com/Buddhist-Monastic-Code-Training-Translation/dp/1478395729/"
+      quote: "Plain fare gives as much pleasure as a costly diet, when once the pain of want has been removed, while bread and water confer the highest possible pleasure when they are brought to hungry lips.",
+      author: "Epicurus",
+      source: "Letter to Menoeceus",
+      link: "https://www.amazon.com/Letters-Principal-Doctrines-Vatican-Sayings/dp/0672603535/"
     },
     modern: {
       quote: "Constraints breed creativity. In food, as in life.",
