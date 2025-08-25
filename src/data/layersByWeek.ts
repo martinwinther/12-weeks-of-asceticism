@@ -26,9 +26,9 @@ export const layersByWeek: Record<number, Layer> = {
     action: "Eat the same basic meals every day this week."
   },
   5: {
-    title: "Daily Solitude",
-    description: "Learn self-awareness through intentional time alone without distractions.",
-    action: "Spend 30 minutes alone in silence — no phone, music, or books."
+    title: "Daily Silent Walk",
+    description: "A short, device‑free walk with no inputs.",
+    action: "Walk for at least 10 minutes without your phone, audio, or talking."
   },
   6: {
     title: "Sunset-to-Sunrise Digital Fast",
