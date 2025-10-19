@@ -201,46 +201,19 @@ Start your own journey at 12weeksofasceticism.com`;
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 animate-fadeIn">
-      <div className="bg-surface rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border-2 border-accent/20" style={{backgroundColor: theme === 'dark' ? '#1e293b' : undefined}}>
-        {/* Header */}
-        <div 
-          className="p-6 md:p-8 rounded-t-xl text-center relative"
-          style={{
-            backgroundColor: theme === 'dark' ? '#1e293b' : theme === 'monastic' ? '#2a1f15' : '#334155',
-            color: theme === 'dark' ? '#f1f5f9' : theme === 'monastic' ? '#f0ebe0' : '#ffffff'
-          }}
+      <div className="bg-surface rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border-2 border-accent/20 relative" style={{backgroundColor: theme === 'dark' ? '#1e293b' : undefined}}>
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 z-10 text-accent hover:text-primary transition-colors"
+          aria-label="Close modal"
         >
-          <button
-            onClick={onClose}
-            className="absolute top-4 right-4 transition-colors"
-            aria-label="Close modal"
-            style={{
-              color: theme === 'dark' ? '#cbd5e1' : theme === 'monastic' ? '#5d4e3a' : 'rgba(255, 255, 255, 0.8)'
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.color = theme === 'dark' ? '#f1f5f9' : theme === 'monastic' ? '#f0ebe0' : '#ffffff';
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.color = theme === 'dark' ? '#cbd5e1' : theme === 'monastic' ? '#5d4e3a' : 'rgba(255, 255, 255, 0.8)';
-            }}
-          >
-            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-          <h2 className="text-3xl md:text-4xl font-light mb-2">🎉 Your Journey Stats!</h2>
-          <p 
-            className="text-lg"
-            style={{
-              color: theme === 'dark' ? '#cbd5e1' : theme === 'monastic' ? '#5d4e3a' : 'rgba(255, 255, 255, 0.9)'
-            }}
-          >
-            Here's what you accomplished over 84 days
-          </p>
-        </div>
+          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
 
         {/* Content */}
-        <div className="p-6 md:p-8">
+        <div className="p-6 md:p-8 pt-12">
           {/* Journey Period */}
           <div className="text-center mb-8 pb-6 border-b border-accent/20">
             <p className="text-accent text-sm mb-1">Your Journey</p>
