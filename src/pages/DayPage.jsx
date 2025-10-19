@@ -15,7 +15,7 @@ const DayPage = () => {
   const { dayNumber } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { isDayAvailable, hasStarted, startJourney, currentDay, getJournalEntry, updateJournalEntry, isLoading: contextLoading, isPracticeComplete, togglePracticeCompletion, getDayCompletionStatus, isProgramComplete } = useAppContext();
+  const { state, isDayAvailable, hasStarted, startJourney, currentDay, getJournalEntry, updateJournalEntry, isLoading: contextLoading, isPracticeComplete, togglePracticeCompletion, getDayCompletionStatus, isProgramComplete } = useAppContext();
   const dayNum = parseInt(dayNumber);
   const [journalEntry, setJournalEntry] = useState('');
   const [isLoading, setIsLoading] = useState(true);
@@ -261,14 +261,14 @@ const DayPage = () => {
 
   // Check if program is complete and show modal for day 84
   useEffect(() => {
-    if (dayNum === 84 && isProgramComplete()) {
+    if (dayNum === 84 && !isLoading && isProgramComplete()) {
       // Small delay to let the user see the completion animation
       const timer = setTimeout(() => {
         setShowCompletionModal(true);
       }, 1000);
       return () => clearTimeout(timer);
     }
-  }, [dayNum, isProgramComplete, state]);
+  }, [dayNum, isLoading, state.practiceCompletions, state.journalEntries, isProgramComplete]);
 
   // Navigation handlers
   const goToPreviousDay = () => {
@@ -463,6 +463,29 @@ const DayPage = () => {
              'Auto-saved to cloud'}
           </p>
         </div>
+
+        {/* Day 84 Completion Button */}
+        {dayNum === 84 && isProgramComplete() && (
+          <div className="mb-8 md:mb-12 text-center">
+            <div className="bg-primary/10 rounded-lg p-6 md:p-8 border-2 border-primary">
+              <div className="text-4xl mb-3">🎉</div>
+              <h3 className="text-xl md:text-2xl font-light text-primary mb-3">You Did It!</h3>
+              <p className="text-accent mb-6 max-w-lg mx-auto">
+                You've completed all 84 days of ascetic practice. 
+                View your statistics and share your incredible achievement!
+              </p>
+              <button
+                onClick={() => setShowCompletionModal(true)}
+                className="bg-primary text-white px-8 py-3 rounded-lg hover:bg-accent transition-colors font-medium inline-flex items-center gap-2"
+              >
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+                View Journey Stats
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Navigation */}
         <div className="flex flex-col space-y-4 md:flex-row md:justify-between md:items-center md:space-y-0">
