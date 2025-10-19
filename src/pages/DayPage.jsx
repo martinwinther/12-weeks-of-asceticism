@@ -268,7 +268,7 @@ const DayPage = () => {
       }, 1000);
       return () => clearTimeout(timer);
     }
-  }, [dayNum, isProgramComplete]);
+  }, [dayNum, isProgramComplete, state]);
 
   // Navigation handlers
   const goToPreviousDay = () => {
