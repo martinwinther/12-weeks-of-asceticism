@@ -201,13 +201,14 @@ Start your own journey at 12weeksofasceticism.com`;
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 animate-fadeIn">
-      <div className="bg-surface rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border-2 border-accent/20">
+      <div className="bg-surface rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border-2 border-accent/20" style={{backgroundColor: theme === 'dark' ? '#1e293b' : undefined}}>
         {/* Header */}
-        <div className="bg-primary text-white p-6 md:p-8 rounded-t-xl text-center relative">
+        <div className="bg-primary text-white p-6 md:p-8 rounded-t-xl text-center relative" style={{backgroundColor: theme === 'dark' ? '#334155' : undefined, color: theme === 'dark' ? '#f1f5f9' : undefined}}>
           <button
             onClick={onClose}
             className="absolute top-4 right-4 text-white/80 hover:text-white transition-colors"
             aria-label="Close modal"
+            style={{color: theme === 'dark' ? '#f1f5f9' : undefined}}
           >
             <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -228,28 +229,28 @@ Start your own journey at 12weeksofasceticism.com`;
 
           {/* Statistics Grid */}
           <div className="grid grid-cols-2 gap-4 md:gap-6 mb-8">
-            <div className="bg-background rounded-lg p-4 md:p-6 text-center border border-accent/20">
+            <div className="bg-background rounded-lg p-4 md:p-6 text-center border border-accent/20" style={{backgroundColor: theme === 'dark' ? '#0f172a' : undefined}}>
               <div className="text-3xl md:text-4xl font-bold text-primary mb-2">
                 {stats.completedDays}
               </div>
               <div className="text-accent text-sm">Days Completed</div>
             </div>
 
-            <div className="bg-background rounded-lg p-4 md:p-6 text-center border border-accent/20">
+            <div className="bg-background rounded-lg p-4 md:p-6 text-center border border-accent/20" style={{backgroundColor: theme === 'dark' ? '#0f172a' : undefined}}>
               <div className="text-3xl md:text-4xl font-bold text-primary mb-2">
                 {stats.journalEntries}
               </div>
               <div className="text-accent text-sm">Journal Entries</div>
             </div>
 
-            <div className="bg-background rounded-lg p-4 md:p-6 text-center border border-accent/20">
+            <div className="bg-background rounded-lg p-4 md:p-6 text-center border border-accent/20" style={{backgroundColor: theme === 'dark' ? '#0f172a' : undefined}}>
               <div className="text-3xl md:text-4xl font-bold text-primary mb-2">
                 {stats.totalWords.toLocaleString()}
               </div>
               <div className="text-accent text-sm">Words Written</div>
             </div>
 
-            <div className="bg-background rounded-lg p-4 md:p-6 text-center border border-accent/20">
+            <div className="bg-background rounded-lg p-4 md:p-6 text-center border border-accent/20" style={{backgroundColor: theme === 'dark' ? '#0f172a' : undefined}}>
               <div className="text-3xl md:text-4xl font-bold text-primary mb-2">
                 {stats.averageWords}
               </div>
