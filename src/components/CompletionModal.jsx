@@ -9,9 +9,21 @@ const CompletionModal = ({ isOpen, onClose }) => {
   const cardRef = useRef(null);
 
   const calculateStatistics = () => {
-    const completedDays = Array.from({ length: 84 }, (_, i) => i + 1).filter(
-      day => state.completedDays.includes(day)
-    );
+    // Calculate actually completed days based on practices + journal
+    const completedDays = Array.from({ length: 84 }, (_, i) => i + 1).filter(day => {
+      const dayKey = day.toString();
+      const weekNumber = Math.ceil(day / 7);
+      
+      // Check if all required practices are completed
+      const dayPractices = state.practiceCompletions[dayKey] || {};
+      const requiredWeeks = Array.from({ length: weekNumber }, (_, i) => i + 1);
+      const completedPractices = requiredWeeks.filter(week => dayPractices[`week${week}`]);
+      
+      // Check journal completion
+      const hasJournal = state.journalEntries[dayKey]?.trim().length > 0;
+      
+      return completedPractices.length === requiredWeeks.length && hasJournal;
+    });
     
     const journalEntries = Object.keys(state.journalEntries).filter(
       key => state.journalEntries[key]?.trim().length > 0

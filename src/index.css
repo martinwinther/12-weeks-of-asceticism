@@ -130,6 +130,8 @@ input, textarea, select {
 .theme-dark .bg-primary { background-color: #f1f5f9 !important; }
 .theme-dark .bg-accent { background-color: #cbd5e1 !important; }
 .theme-dark .text-white { color: #0f172a !important; }
+.theme-dark .bg-primary .text-primary { color: #0f172a !important; }
+.theme-dark .bg-primary .text-accent { color: #475569 !important; }
 .theme-dark .bg-primary\/10 { background-color: rgba(241, 245, 249, 0.1) !important; }
 .theme-dark .bg-primary\/20 { background-color: rgba(241, 245, 249, 0.2) !important; }
 .theme-dark .bg-white\/80, .theme-dark .bg-white\/90, .theme-dark .bg-white\/95 { 
