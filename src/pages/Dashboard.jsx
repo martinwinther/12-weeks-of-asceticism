@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import LoadingSpinner from '../components/LoadingSpinner';
 import CompletionModal from '../components/CompletionModal';
 
 const Dashboard = () => {
   const { currentDay, isDayComplete, getJournalEntry, state, isLoading, isProgramComplete } = useAppContext();
   const { loading: authLoading } = useAuth();
+  const { theme } = useTheme();
   const [showCompletionModal, setShowCompletionModal] = useState(false);
 
   // Show loading state while authentication is being processed
@@ -153,16 +155,38 @@ const Dashboard = () => {
 
         {/* Journey Finished Celebration - show if they reached day 84 */}
         {currentDay >= 84 && (
-          <div className="bg-primary text-white rounded-lg shadow-lg p-6 md:p-8 mb-6 text-center border-2 border-primary">
+          <div 
+            className="rounded-lg shadow-lg p-6 md:p-8 mb-6 text-center border-2"
+            style={{
+              backgroundColor: theme === 'dark' ? '#1e293b' : theme === 'monastic' ? '#2a1f15' : '#334155',
+              borderColor: theme === 'dark' ? '#334155' : theme === 'monastic' ? '#2a1f15' : '#334155',
+              color: theme === 'dark' ? '#f1f5f9' : theme === 'monastic' ? '#f0ebe0' : '#ffffff'
+            }}
+          >
             <div className="text-4xl mb-3">🎉</div>
             <h2 className="text-2xl md:text-3xl font-light mb-3">Journey Finished!</h2>
-            <p className="text-white/90 mb-6 max-w-xl mx-auto">
+            <p 
+              className="mb-6 max-w-xl mx-auto"
+              style={{
+                color: theme === 'dark' ? '#cbd5e1' : theme === 'monastic' ? '#5d4e3a' : 'rgba(255, 255, 255, 0.9)'
+              }}
+            >
               You've reached the end of the 84-day program. 
               View your journey statistics and share your achievement!
             </p>
             <button
               onClick={() => setShowCompletionModal(true)}
-              className="bg-white text-primary px-6 py-3 rounded-lg hover:bg-white/90 transition-colors font-medium inline-flex items-center gap-2"
+              className="px-6 py-3 rounded-lg transition-colors font-medium inline-flex items-center gap-2"
+              style={{
+                backgroundColor: theme === 'dark' ? '#f1f5f9' : theme === 'monastic' ? '#f0ebe0' : '#ffffff',
+                color: theme === 'dark' ? '#0f172a' : theme === 'monastic' ? '#2a1f15' : '#334155'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.opacity = '0.9';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.opacity = '1';
+              }}
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
@@ -178,19 +202,50 @@ const Dashboard = () => {
           <div className="flex justify-center gap-8 text-sm">
             <div>
               <div className="text-2xl font-bold text-primary">{currentDay}</div>
-              <div className="text-accent">Current Day</div>
+              <div 
+                className="text-accent"
+                style={{
+                  color: theme === 'dark' ? '#cbd5e1' : theme === 'monastic' ? '#5d4e3a' : '#64748b'
+                }}
+              >
+                Current Day
+              </div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-accent">
+              <div 
+                className="text-2xl font-bold"
+                style={{
+                  color: theme === 'dark' ? '#cbd5e1' : theme === 'monastic' ? '#5d4e3a' : '#64748b'
+                }}
+              >
                 {Array.from({length: 84}, (_, i) => i + 1).filter(day => isDayComplete(day)).length}
               </div>
-              <div className="text-accent">Days Completed</div>
+              <div 
+                className="text-accent"
+                style={{
+                  color: theme === 'dark' ? '#cbd5e1' : theme === 'monastic' ? '#5d4e3a' : '#64748b'
+                }}
+              >
+                Days Completed
+              </div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-accent">
+              <div 
+                className="text-2xl font-bold"
+                style={{
+                  color: theme === 'dark' ? '#cbd5e1' : theme === 'monastic' ? '#5d4e3a' : '#64748b'
+                }}
+              >
                 {Array.from({length: 84}, (_, i) => i + 1).filter(day => getJournalEntry(day.toString()).trim().length > 0).length}
               </div>
-              <div className="text-accent">Reflections Written</div>
+              <div 
+                className="text-accent"
+                style={{
+                  color: theme === 'dark' ? '#cbd5e1' : theme === 'monastic' ? '#5d4e3a' : '#64748b'
+                }}
+              >
+                Reflections Written
+              </div>
             </div>
           </div>
         </div>
