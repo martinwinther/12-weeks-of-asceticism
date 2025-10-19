@@ -34,7 +34,7 @@ const DayPage = () => {
   if (dayNum < 1 || dayNum > 84) {
     return (
       <div className="min-h-screen bg-background font-serif text-primary">
-        <div className="max-w-2xl mx-auto px-4 py-6 md:px-6 md:py-12">
+        <div className="max-w-2xl mx-auto px-3 sm:px-4 py-4 sm:py-6 md:px-6 md:py-12">
           <div className="text-center">
             <h1 className="text-2xl font-light text-primary mb-4">Invalid Day</h1>
             <p className="text-accent mb-6">Please select a day between 1 and 84.</p>
@@ -54,7 +54,7 @@ const DayPage = () => {
   if (!hasStarted) {
     return (
       <div className="min-h-screen bg-background font-serif text-primary">
-        <div className="max-w-2xl mx-auto px-4 py-6 md:px-6 md:py-12">
+        <div className="max-w-2xl mx-auto px-3 sm:px-4 py-4 sm:py-6 md:px-6 md:py-12">
           <div className="text-center">
             <h1 className="text-2xl font-light text-primary mb-4">Journey Not Started</h1>
             <p className="text-accent mb-6">You need to start your journey from Day 1 first.</p>
@@ -75,7 +75,7 @@ const DayPage = () => {
     const daysToWait = dayNum - currentDay;
     return (
       <div className="min-h-screen bg-background font-serif text-primary">
-        <div className="max-w-2xl mx-auto px-4 py-6 md:px-6 md:py-12">
+        <div className="max-w-2xl mx-auto px-3 sm:px-4 py-4 sm:py-6 md:px-6 md:py-12">
           <div className="text-center">
             <h1 className="text-2xl font-light text-primary mb-4">Day {dayNum} Locked</h1>
             <p className="text-accent mb-4">This day isn't available yet. You're currently on Day {currentDay}.</p>
@@ -291,15 +291,15 @@ const DayPage = () => {
         onClose={() => setShowCompletionModal(false)} 
       />
       <div className="min-h-screen bg-background font-serif text-primary">
-        <div className="max-w-2xl mx-auto px-4 py-6 md:px-6 md:py-12">
+        <div className="max-w-2xl mx-auto px-3 sm:px-4 py-4 sm:py-6 md:px-6 md:py-12">
         
         {/* Header - Current Week's Layer Title and Description */}
-        <div className="text-center mb-8 md:mb-12">
-          <h1 className="text-2xl md:text-4xl font-light text-primary mb-2">Day {dayNum}</h1>
-          <h2 className="text-base md:text-lg font-normal text-accent mb-4">
+        <div className="text-center mb-6 sm:mb-8 md:mb-12">
+          <h1 className="text-xl sm:text-2xl md:text-4xl font-light text-primary mb-2">Day {dayNum}</h1>
+          <h2 className="text-sm sm:text-base md:text-lg font-normal text-accent mb-3 sm:mb-4">
             Week {weekNumber}: {currentWeekLayer?.title}
           </h2>
-          <p className="text-accent max-w-lg mx-auto text-sm md:text-base">
+          <p className="text-accent max-w-lg mx-auto text-xs sm:text-sm md:text-base">
             {currentWeekLayer?.description}
           </p>
           
@@ -332,9 +332,9 @@ const DayPage = () => {
         </div>
 
         {/* Active Actions - Stacked List */}
-        <div className="mb-8 md:mb-12">
-          <h3 className="text-lg md:text-xl font-medium text-primary mb-4 md:mb-6">Active Practices</h3>
-          <div className="space-y-3 md:space-y-4">
+        <div className="mb-6 sm:mb-8 md:mb-12">
+          <h3 className="text-base sm:text-lg md:text-xl font-medium text-primary mb-3 sm:mb-4 md:mb-6">Active Practices</h3>
+          <div className="space-y-2 sm:space-y-3 md:space-y-4">
             {activeActions.map((layer, index) => {
               const weekNumber = index + 1;
               const isCompleted = isPracticeComplete(dayNum, weekNumber);
@@ -343,7 +343,7 @@ const DayPage = () => {
                 <div 
                   key={index} 
                   onClick={() => togglePracticeCompletion(dayNum, weekNumber)}
-                  className={`bg-surface rounded-lg p-3 md:p-4 border-l-4 shadow-sm border border-accent/20 cursor-pointer transition-all duration-200 hover:shadow-md hover:scale-[1.02] ${
+                  className={`bg-surface rounded-lg p-3 sm:p-4 border-l-4 shadow-sm border border-accent/20 cursor-pointer transition-all duration-200 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] touch-manipulation ${
                     isCompleted 
                       ? 'border-primary/80 bg-primary/10' 
                       : 'border-primary hover:border-primary/70'
@@ -351,22 +351,22 @@ const DayPage = () => {
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <h4 className={`font-semibold mb-2 text-sm md:text-base ${
+                      <h4 className={`font-semibold mb-1 sm:mb-2 text-sm sm:text-base ${
                         isCompleted ? 'text-primary' : 'text-primary'
                       }`}>
                         Week {weekNumber}: {layer.title}
                       </h4>
-                      <p className={`text-xs md:text-sm ${
+                      <p className={`text-xs sm:text-sm ${
                         isCompleted ? 'text-accent/80' : 'text-accent'
                       }`}>
                         {layer.action}
                       </p>
                     </div>
-                    <div className="ml-2 md:ml-4 flex items-center gap-2">
-                      <div className="text-xs text-accent bg-background rounded-full px-2 py-1 shrink-0">
+                    <div className="ml-2 sm:ml-4 flex items-center gap-1 sm:gap-2">
+                      <div className="text-xs text-accent bg-background rounded-full px-1.5 sm:px-2 py-1 shrink-0">
                         Week {weekNumber}
                       </div>
-                      <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
+                      <div className={`w-7 h-7 sm:w-6 sm:h-6 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
                         isCompleted 
                           ? 'bg-primary border-primary text-white' 
                           : 'border-accent/30 hover:border-primary'
@@ -420,29 +420,30 @@ const DayPage = () => {
         )}
 
         {/* Journal Textarea */}
-        <div className="mb-8 md:mb-12">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg md:text-xl font-medium text-primary">Your Journal</h3>
-            <div className={`flex items-center gap-2 text-sm ${
+        <div className="mb-6 sm:mb-8 md:mb-12">
+          <div className="flex items-center justify-between mb-3 sm:mb-4">
+            <h3 className="text-base sm:text-lg md:text-xl font-medium text-primary">Your Journal</h3>
+            <div className={`flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm ${
               getDayCompletionStatus(dayNum).hasJournal ? 'text-primary' : 'text-accent/70'
             }`}>
-              <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
+              <div className={`w-4 h-4 sm:w-5 sm:h-5 rounded-full border-2 flex items-center justify-center ${
                 getDayCompletionStatus(dayNum).hasJournal 
                   ? 'bg-primary border-primary text-white' 
                   : 'border-accent/30'
               }`}>
                 {getDayCompletionStatus(dayNum).hasJournal && (
-                  <svg className="w-2 h-2" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="w-2 h-2 sm:w-3 sm:h-3" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                   </svg>
                 )}
               </div>
-              <span>{getDayCompletionStatus(dayNum).hasJournal ? 'Complete' : 'Incomplete'}</span>
+              <span className="hidden sm:inline">{getDayCompletionStatus(dayNum).hasJournal ? 'Complete' : 'Incomplete'}</span>
+              <span className="sm:hidden">{getDayCompletionStatus(dayNum).hasJournal ? '✓' : '○'}</span>
             </div>
           </div>
           <div className="relative">
             <textarea
-              className="w-full h-48 md:h-64 p-3 md:p-4 border border-accent/30 rounded-lg resize-none focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent font-mono text-sm leading-relaxed touch-manipulation"
+              className="w-full h-40 sm:h-48 md:h-64 p-3 sm:p-4 border border-accent/30 rounded-lg resize-none focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent font-mono text-xs sm:text-sm leading-relaxed touch-manipulation"
               value={journalEntry}
               onChange={handleJournalChange}
               placeholder={isLoading ? "Loading your entry..." : "Write your thoughts and reflections..."}
@@ -489,18 +490,18 @@ const DayPage = () => {
         )}
 
         {/* Navigation */}
-        <div className="flex flex-col space-y-4 md:flex-row md:justify-between md:items-center md:space-y-0">
+        <div className="flex flex-col space-y-3 sm:space-y-4 md:flex-row md:justify-between md:items-center md:space-y-0">
           <button
             onClick={goToPreviousDay}
             disabled={dayNum === 1}
-            className={`px-4 py-3 md:px-6 md:py-2 text-sm font-medium rounded-md transition-colors touch-manipulation ${
+            className={`px-4 py-3 sm:px-6 sm:py-3 md:py-2 text-sm font-medium rounded-md transition-colors touch-manipulation active:scale-95 ${
               dayNum === 1
                 ? 'text-accent/50 cursor-not-allowed'
-                : 'text-accent hover:text-primary hover:bg-background'
+                : 'text-accent hover:text-primary hover:bg-background active:bg-background'
             }`}
           >
-            <span className="hidden md:inline">← Previous Day</span>
-            <span className="md:hidden">← Previous</span>
+            <span className="hidden sm:inline">← Previous Day</span>
+            <span className="sm:hidden">← Previous</span>
           </button>
           
           <div className="text-sm text-accent text-center md:order-none">
@@ -510,16 +511,16 @@ const DayPage = () => {
           <button
             onClick={goToNextDay}
             disabled={dayNum === 84 || !isDayAvailable(dayNum + 1)}
-            className={`px-4 py-3 md:px-6 md:py-2 text-sm font-medium rounded-md transition-colors touch-manipulation ${
+            className={`px-4 py-3 sm:px-6 sm:py-3 md:py-2 text-sm font-medium rounded-md transition-colors touch-manipulation active:scale-95 ${
               dayNum === 84 || !isDayAvailable(dayNum + 1)
                 ? 'text-accent/50 cursor-not-allowed'
-                : 'text-accent hover:text-primary hover:bg-background'
+                : 'text-accent hover:text-primary hover:bg-background active:bg-background'
             }`}
           >
-            <span className="hidden md:inline">
+            <span className="hidden sm:inline">
               {dayNum === 84 ? 'Final Day' : !isDayAvailable(dayNum + 1) ? 'Locked →' : 'Next Day →'}
             </span>
-            <span className="md:hidden">
+            <span className="sm:hidden">
               {dayNum === 84 ? 'Final' : !isDayAvailable(dayNum + 1) ? 'Locked →' : 'Next →'}
             </span>
           </button>

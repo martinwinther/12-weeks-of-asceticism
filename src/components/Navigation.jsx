@@ -93,13 +93,13 @@ const Navigation = () => {
 
       {/* Mobile Navigation - Top bar */}
       <nav className="md:hidden fixed top-0 left-0 right-0 bg-surface/95 backdrop-blur-sm border-b border-accent/10 z-50 safe-area-pt">
-        <div className="px-2 py-2">
+        <div className="px-3 py-3">
           {/* Account menu and Theme Toggle for Mobile */}
-          <div className="flex justify-between items-center px-4 mb-2">
+          <div className="flex justify-between items-center px-2 mb-3">
             {user ? (
               <Link
                 to="/account"
-                className="flex items-center justify-center w-10 h-10 rounded-full bg-surface border border-accent/10 hover:bg-background hover:text-primary transition-colors"
+                className="flex items-center justify-center w-11 h-11 rounded-full bg-surface border border-accent/10 hover:bg-background hover:text-primary transition-colors touch-manipulation"
                 title="Account settings"
               >
                 <svg className="w-5 h-5 text-accent hover:text-primary transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -110,7 +110,7 @@ const Navigation = () => {
             ) : (
               <Link
                 to="/auth"
-                className="px-3 py-2 text-sm bg-primary text-white rounded-full"
+                className="px-4 py-2 text-sm bg-primary text-white rounded-full touch-manipulation"
               >
                 Sign in
               </Link>
@@ -120,15 +120,15 @@ const Navigation = () => {
           </div>
           
           {/* Main Navigation Tabs */}
-          <div className="flex items-center justify-around">
+          <div className="flex items-center justify-around gap-1">
             {navItems.map((item) => (
               <Link
                 key={item.path}
                 to={item.path}
-                className={`flex flex-col items-center space-y-1 px-3 py-2 rounded-xl transition-all duration-200 touch-manipulation min-w-0 flex-1 ${
+                className={`flex flex-col items-center space-y-1.5 px-3 py-3 rounded-xl transition-all duration-200 touch-manipulation min-w-0 flex-1 ${
                   location.pathname === item.path
                     ? 'text-primary bg-primary/10'
-                    : 'text-accent/70 hover:text-primary'
+                    : 'text-accent/70 hover:text-primary active:bg-primary/5'
                 }`}
               >
                 <div className={`transition-transform duration-200 ${
@@ -140,13 +140,11 @@ const Navigation = () => {
               </Link>
             ))}
           </div>
-          
-
         </div>
       </nav>
 
       {/* Mobile top padding spacer */}
-      <div className="md:hidden h-32"></div>
+      <div className="md:hidden h-28"></div>
     </>
   );
 };

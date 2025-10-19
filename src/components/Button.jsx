@@ -30,7 +30,7 @@ const Button = ({ children, onClick, className = '', variant = 'default', loadin
   return (
     <button
       onClick={onClick}
-      className={`px-6 py-3 rounded-lg font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors ${getVariantClasses()} ${className}`}
+      className={`px-6 py-3 rounded-lg font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors touch-manipulation active:scale-95 ${getVariantClasses()} ${className}`}
       disabled={loading || props.disabled}
       {...props}
     >

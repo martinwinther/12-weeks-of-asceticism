@@ -51,16 +51,16 @@ const Dashboard = () => {
   const getDayStyles = (day) => {
     const { isComplete, isCurrent, isFuture, hasReflection } = getDayStatus(day);
     
-    let baseStyles = "w-8 h-8 md:w-10 md:h-10 rounded-md flex items-center justify-center text-xs md:text-sm font-mono transition-all duration-200 border md:border-2 touch-manipulation";
+    let baseStyles = "w-9 h-9 sm:w-10 sm:h-10 md:w-10 md:h-10 rounded-md flex items-center justify-center text-xs sm:text-sm font-mono transition-all duration-200 border border-2 touch-manipulation active:scale-95";
     
     if (isFuture) {
       return `${baseStyles} bg-background text-accent/60 border-accent/20 cursor-not-allowed`;
     } else if (isCurrent) {
-      return `${baseStyles} bg-primary text-white border-primary shadow-md ring-1 md:ring-2 ring-primary/30`;
+      return `${baseStyles} bg-primary text-white border-primary shadow-md ring-1 sm:ring-2 ring-primary/30`;
     } else if (isComplete) {
-      return `${baseStyles} bg-accent text-white border-accent hover:bg-accent/80`;
+      return `${baseStyles} bg-accent text-white border-accent hover:bg-accent/80 active:bg-accent/90`;
     } else {
-      return `${baseStyles} bg-surface text-primary border-accent/30 hover:border-primary hover:shadow-sm`;
+      return `${baseStyles} bg-surface text-primary border-accent/30 hover:border-primary hover:shadow-sm active:bg-background`;
     }
   };
 
@@ -80,7 +80,7 @@ const Dashboard = () => {
   // Get week container styles
   const getWeekContainerStyles = (weekDays, weekIndex) => {
     const isCompleted = isWeekCompleted(weekDays);
-    const baseStyles = "bg-surface rounded-lg shadow-sm p-3 md:p-4 border border-accent/20";
+    const baseStyles = "bg-surface rounded-lg shadow-sm p-2 sm:p-3 md:p-4 border border-accent/20";
     
     if (isCompleted) {
       return `${baseStyles} border-2 border-primary shadow-md`;
@@ -96,26 +96,26 @@ const Dashboard = () => {
         onClose={() => setShowCompletionModal(false)} 
       />
       <div className="min-h-screen bg-background text-primary font-serif">
-        <div className="max-w-6xl mx-auto p-4 md:p-6">
+        <div className="max-w-6xl mx-auto p-3 sm:p-4 md:p-6">
         
         {/* Header */}
-        <div className="text-center mb-6 md:mb-8">
-          <h1 className="text-2xl md:text-3xl font-light text-primary mb-2">Your Journey</h1>
-          <p className="text-accent text-sm md:text-base">Track your progress through 84 days of ascetic practice</p>
+        <div className="text-center mb-4 sm:mb-6 md:mb-8">
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-light text-primary mb-2">Your Journey</h1>
+          <p className="text-accent text-sm sm:text-base">Track your progress through 84 days of ascetic practice</p>
         </div>
 
         {/* 84-Day Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 mb-6 md:mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-6 mb-4 sm:mb-6 md:mb-8">
           {weeks.map((weekDays, weekIndex) => {
             const isCompleted = isWeekCompleted(weekDays);
             
             return (
               <div key={weekIndex} className={getWeekContainerStyles(weekDays, weekIndex)}>
-                <h3 className={`text-xs md:text-sm font-semibold mb-2 md:mb-3 text-center
+                <h3 className={`text-xs sm:text-sm font-semibold mb-2 sm:mb-3 text-center
                   ${isCompleted ? 'text-primary' : 'text-accent'}`}>
                   Week {weekIndex + 1}
                 </h3>
-                <div className="grid grid-cols-7 gap-0.5 md:gap-1">
+                <div className="grid grid-cols-7 gap-0.5 sm:gap-1">
                   {weekDays.map((day) => {
                     const { isFuture, hasReflection } = getDayStatus(day);
                     
@@ -197,9 +197,9 @@ const Dashboard = () => {
         )}
 
         {/* Current Progress Summary */}
-        <div className="bg-surface rounded-lg shadow-sm p-6 text-center border border-accent/20">
-          <h2 className="text-xl font-light mb-4 text-primary">Your Progress</h2>
-          <div className="flex justify-center gap-8 text-sm">
+        <div className="bg-surface rounded-lg shadow-sm p-4 sm:p-6 text-center border border-accent/20">
+          <h2 className="text-lg sm:text-xl font-light mb-3 sm:mb-4 text-primary">Your Progress</h2>
+          <div className="flex justify-center gap-4 sm:gap-6 md:gap-8 text-sm">
             <div>
               <div className="text-2xl font-bold text-primary">{currentDay}</div>
               <div 

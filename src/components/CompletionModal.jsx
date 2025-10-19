@@ -200,68 +200,68 @@ Start your own journey at 12weeksofasceticism.com`;
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 animate-fadeIn">
-      <div className="bg-surface rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border-2 border-accent/20 relative" style={{backgroundColor: theme === 'dark' ? '#1e293b' : undefined}}>
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-2 sm:p-4 animate-fadeIn">
+      <div className="bg-surface rounded-xl shadow-2xl max-w-2xl w-full max-h-[95vh] overflow-y-auto border-2 border-accent/20 relative mx-2" style={{backgroundColor: theme === 'dark' ? '#1e293b' : undefined}}>
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-10 text-accent hover:text-primary transition-colors"
+          className="absolute top-3 right-3 sm:top-4 sm:right-4 z-10 text-accent hover:text-primary transition-colors"
           aria-label="Close modal"
         >
-          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
 
         {/* Content */}
-        <div className="p-6 md:p-8 pt-12">
+        <div className="p-3 sm:p-4 md:p-6 pt-10 sm:pt-12">
           {/* Journey Period */}
-          <div className="text-center mb-8 pb-6 border-b border-accent/20">
-            <p className="text-accent text-sm mb-1">Your Journey</p>
-            <p className="text-primary font-medium">{stats.startDate} - {stats.endDate}</p>
-            <p className="text-accent text-sm mt-1">{stats.daysSinceStart} days</p>
+          <div className="text-center mb-3 sm:mb-4 pb-3 sm:pb-4 border-b border-accent/20">
+            <p className="text-accent text-xs sm:text-sm mb-1">Your Journey</p>
+            <p className="text-primary font-medium text-sm sm:text-base">{stats.startDate} - {stats.endDate}</p>
+            <p className="text-accent text-xs sm:text-sm mt-1">{stats.daysSinceStart} days</p>
           </div>
 
           {/* Statistics Grid */}
-          <div className="grid grid-cols-2 gap-4 md:gap-6 mb-8">
-            <div className="bg-background rounded-lg p-4 md:p-6 text-center border border-accent/20" style={{backgroundColor: theme === 'dark' ? '#0f172a' : undefined}}>
-              <div className="text-3xl md:text-4xl font-bold text-primary mb-2">
+          <div className="grid grid-cols-2 gap-2 sm:gap-3 md:gap-4 mb-4 sm:mb-6">
+            <div className="bg-background rounded-lg p-2 sm:p-3 md:p-4 text-center border border-accent/20" style={{backgroundColor: theme === 'dark' ? '#0f172a' : undefined}}>
+              <div className="text-xl sm:text-2xl md:text-3xl font-bold text-primary mb-1">
                 {stats.completedDays}
               </div>
-              <div className="text-accent text-sm">Days Completed</div>
+              <div className="text-accent text-xs">Days Completed</div>
             </div>
 
-            <div className="bg-background rounded-lg p-4 md:p-6 text-center border border-accent/20" style={{backgroundColor: theme === 'dark' ? '#0f172a' : undefined}}>
-              <div className="text-3xl md:text-4xl font-bold text-primary mb-2">
+            <div className="bg-background rounded-lg p-2 sm:p-3 md:p-4 text-center border border-accent/20" style={{backgroundColor: theme === 'dark' ? '#0f172a' : undefined}}>
+              <div className="text-xl sm:text-2xl md:text-3xl font-bold text-primary mb-1">
                 {stats.journalEntries}
               </div>
-              <div className="text-accent text-sm">Journal Entries</div>
+              <div className="text-accent text-xs">Journal Entries</div>
             </div>
 
-            <div className="bg-background rounded-lg p-4 md:p-6 text-center border border-accent/20" style={{backgroundColor: theme === 'dark' ? '#0f172a' : undefined}}>
-              <div className="text-3xl md:text-4xl font-bold text-primary mb-2">
+            <div className="bg-background rounded-lg p-2 sm:p-3 md:p-4 text-center border border-accent/20" style={{backgroundColor: theme === 'dark' ? '#0f172a' : undefined}}>
+              <div className="text-xl sm:text-2xl md:text-3xl font-bold text-primary mb-1">
                 {stats.totalWords.toLocaleString()}
               </div>
-              <div className="text-accent text-sm">Words Written</div>
+              <div className="text-accent text-xs">Words Written</div>
             </div>
 
-            <div className="bg-background rounded-lg p-4 md:p-6 text-center border border-accent/20" style={{backgroundColor: theme === 'dark' ? '#0f172a' : undefined}}>
-              <div className="text-3xl md:text-4xl font-bold text-primary mb-2">
+            <div className="bg-background rounded-lg p-2 sm:p-3 md:p-4 text-center border border-accent/20" style={{backgroundColor: theme === 'dark' ? '#0f172a' : undefined}}>
+              <div className="text-xl sm:text-2xl md:text-3xl font-bold text-primary mb-1">
                 {stats.averageWords}
               </div>
-              <div className="text-accent text-sm">Average per Entry</div>
+              <div className="text-accent text-xs">Average per Entry</div>
             </div>
 
-            <div className="bg-background rounded-lg p-4 md:p-6 text-center border border-accent/20 col-span-2">
-              <div className="text-3xl md:text-4xl font-bold text-primary mb-2">
+            <div className="bg-background rounded-lg p-2 sm:p-3 md:p-4 text-center border border-accent/20 col-span-2">
+              <div className="text-xl sm:text-2xl md:text-3xl font-bold text-primary mb-1">
                 {stats.totalPracticesCompleted}
               </div>
-              <div className="text-accent text-sm">Total Practices Completed</div>
+              <div className="text-accent text-xs">Total Practices Completed</div>
             </div>
           </div>
 
           {/* Inspirational Message */}
-          <div className="bg-primary/10 rounded-lg p-6 mb-8 border-l-4 border-primary">
-            <p className="text-primary italic text-center leading-relaxed">
+          <div className="bg-primary/10 rounded-lg p-3 sm:p-4 mb-3 sm:mb-4 border-l-4 border-primary">
+            <p className="text-primary italic text-center text-xs sm:text-sm leading-relaxed">
               "You've journeyed through 84 days of intentional practice. 
               Every day completed, every word written, and every practice attempted 
               has contributed to your growth. Share your journey and inspire others to begin their own."
@@ -269,14 +269,14 @@ Start your own journey at 12weeksofasceticism.com`;
           </div>
 
           {/* Share Actions */}
-          <div className="space-y-3">
-            <h3 className="text-lg font-medium text-primary mb-4 text-center">Share Your Achievement</h3>
+          <div className="space-y-2 sm:space-y-3">
+            <h3 className="text-sm sm:text-base font-medium text-primary mb-2 sm:mb-3 text-center">Share Your Achievement</h3>
             
             <button
               onClick={handleDownloadStats}
-              className="w-full bg-accent text-white px-6 py-3 rounded-lg hover:bg-primary transition-colors font-medium flex items-center justify-center gap-2"
+              className="w-full bg-accent text-white px-3 sm:px-4 py-2 rounded-lg hover:bg-primary transition-colors font-medium flex items-center justify-center gap-2 text-xs sm:text-sm"
             >
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
               </svg>
               Download Stats Card
@@ -284,9 +284,9 @@ Start your own journey at 12weeksofasceticism.com`;
 
             <button
               onClick={handleShareNative}
-              className="w-full bg-background text-primary px-6 py-3 rounded-lg hover:bg-surface transition-colors font-medium border-2 border-accent flex items-center justify-center gap-2"
+              className="w-full bg-background text-primary px-3 sm:px-4 py-2 rounded-lg hover:bg-surface transition-colors font-medium border-2 border-accent flex items-center justify-center gap-2 text-xs sm:text-sm"
             >
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
               </svg>
               {navigator.share ? 'Share' : 'Copy Share Text'}
