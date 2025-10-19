@@ -9,16 +9,18 @@ import { useAuth } from '../context/AuthContext';
 import { supabase } from '../lib/supabaseClient';
 import { sanitizeText, validateText } from '../utils/sanitize';
 import LoadingSpinner from '../components/LoadingSpinner';
+import CompletionModal from '../components/CompletionModal';
 
 const DayPage = () => {
   const { dayNumber } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { isDayAvailable, hasStarted, startJourney, currentDay, getJournalEntry, updateJournalEntry, isLoading: contextLoading, isPracticeComplete, togglePracticeCompletion, getDayCompletionStatus } = useAppContext();
+  const { isDayAvailable, hasStarted, startJourney, currentDay, getJournalEntry, updateJournalEntry, isLoading: contextLoading, isPracticeComplete, togglePracticeCompletion, getDayCompletionStatus, isProgramComplete } = useAppContext();
   const dayNum = parseInt(dayNumber);
   const [journalEntry, setJournalEntry] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [showCompletionModal, setShowCompletionModal] = useState(false);
 
   // Auto-start journey if authenticated user visits Day 1 and hasn't started yet
   useEffect(() => {
@@ -257,6 +259,17 @@ const DayPage = () => {
     };
   }, []);
 
+  // Check if program is complete and show modal for day 84
+  useEffect(() => {
+    if (dayNum === 84 && isProgramComplete()) {
+      // Small delay to let the user see the completion animation
+      const timer = setTimeout(() => {
+        setShowCompletionModal(true);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [dayNum, isProgramComplete]);
+
   // Navigation handlers
   const goToPreviousDay = () => {
     if (dayNum > 1) {
@@ -271,8 +284,13 @@ const DayPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background font-serif text-primary">
-      <div className="max-w-2xl mx-auto px-4 py-6 md:px-6 md:py-12">
+    <>
+      <CompletionModal 
+        isOpen={showCompletionModal} 
+        onClose={() => setShowCompletionModal(false)} 
+      />
+      <div className="min-h-screen bg-background font-serif text-primary">
+        <div className="max-w-2xl mx-auto px-4 py-6 md:px-6 md:py-12">
         
         {/* Header - Current Week's Layer Title and Description */}
         <div className="text-center mb-8 md:mb-12">
@@ -483,8 +501,9 @@ const DayPage = () => {
           </button>
         </div>
 
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

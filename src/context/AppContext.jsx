@@ -281,6 +281,12 @@ export const AppProvider = ({ children }) => {
     return getDayCompletionStatus(day).isFullyComplete;
   };
 
+  // Check if the entire program is completed (all 84 days)
+  const isProgramComplete = () => {
+    const allDays = Array.from({ length: 84 }, (_, i) => i + 1);
+    return allDays.every(day => isDayComplete(day));
+  };
+
   const value = {
     state,
     isLoading: isLoading,
@@ -299,6 +305,7 @@ export const AppProvider = ({ children }) => {
     getDayCompletionStatus,
     setCurrentWeek,
     setCurrentDay,
+    isProgramComplete,
   };
 
   return (
