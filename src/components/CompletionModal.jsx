@@ -55,11 +55,11 @@ const CompletionModal = ({ isOpen, onClose }) => {
 
   const stats = calculateStatistics();
 
-  const shareableText = `I just completed 84 days of ascetic practice! 🎉
+  const shareableText = `I just finished the 84-day ascetic practice program! 🎉
 
-📅 ${stats.completedDays} days completed
-✍️ ${stats.journalEntries} journal entries
-📝 ${stats.totalWords.toLocaleString()} words written
+📅 ${stats.completedDays}/84 days completed
+✍️ ${stats.journalEntries} journal entries written
+📝 ${stats.totalWords.toLocaleString()} words journaled
 🏋️ ${stats.totalPracticesCompleted} practices completed
 
 Start your own journey at 12weeksofasceticism.com`;
@@ -123,12 +123,12 @@ Start your own journey at 12weeksofasceticism.com`;
     ctx.fillStyle = textColor;
     ctx.font = 'bold 64px serif';
     ctx.textAlign = 'center';
-    ctx.fillText('Journey Complete', canvas.width / 2, 100);
+    ctx.fillText('84-Day Journey', canvas.width / 2, 100);
 
     // Subtitle
     ctx.font = '32px serif';
     ctx.fillStyle = accentColor;
-    ctx.fillText('84 Days of Ascetic Practice', canvas.width / 2, 160);
+    ctx.fillText('Ascetic Practice', canvas.width / 2, 160);
 
     // Stats section
     const statsY = 250;
@@ -201,8 +201,8 @@ Start your own journey at 12weeksofasceticism.com`;
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
-          <h2 className="text-3xl md:text-4xl font-light mb-2">🎉 Journey Complete!</h2>
-          <p className="text-white/90 text-lg">Congratulations on finishing 84 days of ascetic practice</p>
+          <h2 className="text-3xl md:text-4xl font-light mb-2">🎉 Your Journey Stats!</h2>
+          <p className="text-white/90 text-lg">Here's what you accomplished over 84 days</p>
         </div>
 
         {/* Content */}
@@ -255,9 +255,9 @@ Start your own journey at 12weeksofasceticism.com`;
           {/* Inspirational Message */}
           <div className="bg-primary/10 rounded-lg p-6 mb-8 border-l-4 border-primary">
             <p className="text-primary italic text-center leading-relaxed">
-              "Through discipline and dedication, you have transformed yourself. 
-              The habits you've built and the wisdom you've gained will continue to serve you. 
-              Share your journey and inspire others to begin their own."
+              "You've journeyed through 84 days of intentional practice. 
+              Every day completed, every word written, and every practice attempted 
+              has contributed to your growth. Share your journey and inspire others to begin their own."
             </p>
           </div>
 

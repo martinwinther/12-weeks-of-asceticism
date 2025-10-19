@@ -151,14 +151,14 @@ const Dashboard = () => {
           })}
         </div>
 
-        {/* Program Completion Celebration */}
-        {isProgramComplete() && (
+        {/* Journey Finished Celebration - show if they reached day 84 */}
+        {currentDay >= 84 && (
           <div className="bg-primary text-white rounded-lg shadow-lg p-6 md:p-8 mb-6 text-center border-2 border-primary">
             <div className="text-4xl mb-3">🎉</div>
-            <h2 className="text-2xl md:text-3xl font-light mb-3">Journey Complete!</h2>
+            <h2 className="text-2xl md:text-3xl font-light mb-3">Journey Finished!</h2>
             <p className="text-white/90 mb-6 max-w-xl mx-auto">
-              Congratulations on completing all 84 days of ascetic practice. 
-              You've built lasting habits and gained invaluable wisdom.
+              You've reached the end of the 84-day program. 
+              View your journey statistics and share your achievement!
             </p>
             <button
               onClick={() => setShowCompletionModal(true)}

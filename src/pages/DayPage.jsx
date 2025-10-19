@@ -259,16 +259,17 @@ const DayPage = () => {
     };
   }, []);
 
-  // Check if program is complete and show modal for day 84
+  // Show completion modal when day 84 is complete
   useEffect(() => {
-    if (dayNum === 84 && !isLoading && isProgramComplete()) {
+    const day84Status = getDayCompletionStatus(84);
+    if (dayNum === 84 && !isLoading && day84Status.isFullyComplete) {
       // Small delay to let the user see the completion animation
       const timer = setTimeout(() => {
         setShowCompletionModal(true);
       }, 1000);
       return () => clearTimeout(timer);
     }
-  }, [dayNum, isLoading, state.practiceCompletions, state.journalEntries, isProgramComplete]);
+  }, [dayNum, isLoading, state.practiceCompletions, state.journalEntries, getDayCompletionStatus]);
 
   // Navigation handlers
   const goToPreviousDay = () => {
@@ -465,14 +466,14 @@ const DayPage = () => {
         </div>
 
         {/* Day 84 Completion Button */}
-        {dayNum === 84 && isProgramComplete() && (
+        {dayNum === 84 && getDayCompletionStatus(84).isFullyComplete && (
           <div className="mb-8 md:mb-12 text-center">
             <div className="bg-primary/10 rounded-lg p-6 md:p-8 border-2 border-primary">
               <div className="text-4xl mb-3">🎉</div>
-              <h3 className="text-xl md:text-2xl font-light text-primary mb-3">You Did It!</h3>
+              <h3 className="text-xl md:text-2xl font-light text-primary mb-3">You Reached the End!</h3>
               <p className="text-accent mb-6 max-w-lg mx-auto">
-                You've completed all 84 days of ascetic practice. 
-                View your statistics and share your incredible achievement!
+                You've completed day 84 and finished the program. 
+                View your journey statistics and share your achievement!
               </p>
               <button
                 onClick={() => setShowCompletionModal(true)}
