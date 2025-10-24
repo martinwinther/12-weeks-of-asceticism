@@ -1,76 +1,112 @@
 # 12 Weeks of Asceticism
 
-A minimalist web app to guide users through a 12-week asceticism program. Track your progress, unlock weekly practices, and reflect on your journey.
+A comprehensive web application designed to guide users through a structured 84-day asceticism program. The app combines modern web technologies with thoughtful UX design to create an engaging personal development platform.
 
-## Tech Stack
-- React 19 (Vite)
-- TailwindCSS 4
-- React Router 7
-- Supabase (Authentication & Database)
-- Context API + localStorage
+## What This App Does
 
-## Features
-- Landing page with welcome and CTA
-- User authentication and account management
-- Dashboard with progress tracker and week navigation
-- 12 weekly practice pages with journal entries and reflection prompts
-- Timeline view of all journal entries
-- Progress overview with weekly layer information
-- Dark/light theme toggle
-- GDPR compliant privacy policy
-- Responsive design for mobile and desktop
+This application serves as a digital companion for individuals undertaking a 12-week asceticism journey. It provides:
 
-## Getting Started
+- **Structured Progress Tracking**: Users navigate through 84 days (12 weeks × 7 days) with each week introducing new ascetic practices
+- **Daily Reflection System**: Integrated journaling with guided prompts for each day
+- **Practice Management**: Track completion of weekly practices like phone-free mornings, cold showers, and digital fasting
+- **Progress Visualization**: Interactive dashboard showing completion status, reflection indicators, and journey statistics
+- **Personalized Experience**: Multiple themes (light, dark, monastic) and responsive design for all devices
 
-1. Clone the repo:
-   ```sh
-   git clone https://github.com/martinwinther/12-weeks-of-asceticism.git
-   cd 12-weeks-of-asceticism
-   ```
+## Technical Architecture
 
-2. Install dependencies:
-   ```sh
-   npm install
-   ```
+### Frontend Stack
 
-3. Set up environment variables:
-   Create a `.env.local` file with your Supabase credentials:
-   ```env
-   VITE_SUPABASE_URL=your_supabase_url
-   VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
-   ```
+- **React 19** with modern hooks and functional components
+- **Vite** for fast development and optimized production builds
+- **TailwindCSS 4** with custom theme system and responsive design
+- **React Router 7** for client-side routing with protected routes
+- **Context API** for state management across authentication, theme, and app data
 
-4. Start the dev server:
-   ```sh
-   npm run dev
-   ```
+### Backend & Data
 
-5. Open your browser at the local address shown in the terminal.
+- **Supabase** for authentication, real-time database, and user management
+- **PostgreSQL** database with optimized schemas for user progress and journal entries
+- **Row Level Security (RLS)** for secure data access
+- **Real-time subscriptions** for live data updates
 
-## Project Structure
+### Key Technical Features
 
-```
+#### Data Synchronization
+
+- Automatic sync between local state and Supabase database
+- Optimistic updates with error handling and rollback
+- Efficient data loading with selective queries
+
+#### Security Implementation
+
+- Input sanitization using DOMPurify for XSS prevention
+- Protected routes with authentication guards
+- GDPR-compliant data handling and privacy controls
+
+#### Performance Optimizations
+
+- Lazy loading of components and routes
+- Memoized calculations for progress tracking
+- Efficient re-rendering with React.memo and useMemo
+- Optimized bundle splitting with Vite
+
+## Code Organization
+
+### Component Architecture
+
+```text
 src/
 ├── components/          # Reusable UI components
-├── context/            # React context providers
-├── data/               # Weekly content and prompts
-│   ├── layersByWeek.ts # Weekly layer definitions
-│   ├── promptsByWeek.ts # Reflection prompts
-│   └── weeklyTeachings.js # Weekly teachings content
-├── lib/                # External service configurations
-├── pages/              # Main application pages
-├── utils/              # Utility functions
-└── App.jsx             # Main application component
+│   ├── Button.jsx      # Consistent button styling
+│   ├── CompletionModal.jsx # Achievement celebration
+│   ├── LoadingSpinner.jsx  # Loading states
+│   └── ThemeToggle.jsx     # Theme switching
+├── context/            # State management
+│   ├── AppContext.jsx  # Main app state and business logic
+│   ├── AuthContext.jsx # Authentication state
+│   └── ThemeContext.jsx # Theme management
+├── pages/              # Route components
+│   ├── Dashboard.jsx   # Main progress tracking
+│   ├── DayPage.jsx     # Individual day interface
+│   └── TimelinePage.jsx # Journal timeline view
+└── utils/              # Helper functions
+    ├── localStorage.js  # Local storage utilities
+    └── sanitize.js     # Security utilities
 ```
 
-## Customization
-- Edit weekly content in `src/data/layersByWeek.ts` and `src/data/promptsByWeek.ts`
-- Modify weekly teachings in `src/data/weeklyTeachings.js`
-- Update styling using TailwindCSS classes
+### Data Flow
 
-## Deployment
-The app is configured for deployment on Vercel with proper routing and environment variable support.
+1. **Authentication**: Supabase Auth → AuthContext → Protected Routes
+2. **Progress Tracking**: User actions → AppContext → Supabase sync
+3. **Journal Entries**: Text input → Sanitization → Database storage
+4. **Theme Management**: User preference → ThemeContext → CSS variables
 
----
+## Development Practices
 
-Built for personal growth and simplicity.
+### Code Quality
+
+- **ESLint** configuration with React-specific rules
+- **TypeScript** interfaces for data structures
+- **Consistent naming conventions** and component patterns
+- **Error boundaries** and graceful error handling
+
+### User Experience
+
+- **Progressive disclosure** of features based on user progress
+- **Accessibility considerations** with semantic HTML and ARIA labels
+- **Mobile-first responsive design** with touch-friendly interactions
+- **Loading states** and skeleton screens for better perceived performance
+
+### Security & Privacy
+
+- **Input validation** and sanitization for all user-generated content
+- **Secure authentication** with Supabase Auth
+- **Privacy-focused design** with minimal data collection
+- **GDPR compliance** with cookie consent and data export capabilities
+
+## Deployment & Infrastructure
+
+- **Vercel** deployment with automatic CI/CD
+- **Environment variable management** for secure configuration
+- **CDN optimization** for global performance
+- **Database backups** and monitoring through Supabase
